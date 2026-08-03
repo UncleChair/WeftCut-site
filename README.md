@@ -57,8 +57,8 @@ Everything on the page is a real capture of the shipping app, not a mockup:
 - `assets/video/motif-showcase.mp4` (+ poster) — a real five-second WeftCut
   export combining Text FX, a lower third, and a countdown. The page plays it
   once when Scene 02 enters view.
-- `assets/shots/motif-text-fx.png` — a real transparent Text FX frame used by
-  the compact feature card later on the page.
+- `assets/shots/motif-text-fx.png` — a real transparent Text FX frame retained
+  from the Motif capture.
 - The demo footage itself is ffmpeg-generated abstract clips (`gradients`
   lavfi source + sine beds) — see `.work/media/`.
 

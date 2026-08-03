@@ -331,7 +331,6 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 
 .bezel {
   background: var(--card);
-  border: 1px solid var(--border2);
   border-radius: 12px;
   padding: 0 10px 10px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 2px 0 rgba(255, 255, 255, 0.03) inset;
@@ -896,21 +895,12 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 .fcard-body p { color: var(--dim); font-size: 13.5px; line-height: 1.7; }
 .fcard-wide { grid-column: span 12; }
 .fcard-wide .film img { border-radius: 3px; }
-.fcard-wide .fcard-body { max-width: 70ch; }
-.fcard-text {
-  grid-column: span 12;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 34px 24px;
-  background:
-    radial-gradient(420px 220px at 20% 0%, rgba(102, 150, 230, 0.09), transparent 70%),
-    var(--card);
+.fcard-wide .film img.timeline-closeup {
+  aspect-ratio: 1600 / 151;
+  object-fit: cover;
+  object-position: bottom;
 }
-.fcard-text .fcard-body { padding-top: 0; max-width: 56ch; }
-.fcard-note { margin-top: 14px; }
+.fcard-wide .fcard-body { max-width: 70ch; }
 
 /* ============ REEL 04 — OSS ============ */
 .oss-grid {

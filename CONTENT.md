@@ -132,8 +132,8 @@ mediabunny containers · MCP over streamable HTTP.
 - assets/video/motif-showcase.mp4 (+ poster): real five-second product export
   combining animated Text FX, a lower third, and a countdown; plays once in
   Scene 02.
-- assets/shots/motif-text-fx.png: transparent frame from the real Motif capture
-  path, used by the compact Kinetic text feature card.
+- assets/shots/motif-text-fx.png: transparent frame retained from the real Motif
+  capture path.
 - assets/icon.svg: the app icon (copy from repo).
 - assets/editor.png, assets/agent-edit.gif, assets/search-palette-doc.png: copies of
   the repo's docs/assets images (already public in the README).
