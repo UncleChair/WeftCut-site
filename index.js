@@ -33,6 +33,100 @@
     return `${pad(h)}:${pad(m)}:${pad(s)}:${pad(f)}`;
   }
 
+  /* ---------- page scroll timeline ---------- */
+  const timelineDock = document.getElementById("timelineDock");
+  const pageTimeline = document.getElementById("pageTimeline");
+  if (timelineDock && pageTimeline) {
+    const timelineMeter = document.getElementById("timelineMeter");
+    const siteNav = document.querySelector(".nav");
+    const markerEls = [...pageTimeline.querySelectorAll("[data-timeline-marker]")];
+
+    let timelineEnd = 1;
+    let markerStops = [];
+    let timelineFrame = 0;
+    let measureFrame = 0;
+    let isDocked = false;
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const documentY = (el) => el.getBoundingClientRect().top + window.scrollY;
+
+    function updateTimeline() {
+      timelineFrame = 0;
+
+      const timelineHeight = pageTimeline.offsetHeight;
+      const progress = clamp(window.scrollY / timelineEnd, 0, 1);
+      const percent = Math.round(progress * 100);
+      const progressCss = `${(progress * 100).toFixed(3)}%`;
+
+      pageTimeline.style.setProperty("--timeline-progress", progressCss);
+      if (timelineMeter) timelineMeter.setAttribute("aria-valuenow", String(percent));
+
+      let activeIndex = 0;
+      for (let i = 0; i < markerStops.length; i++) {
+        if (window.scrollY + 2 >= markerStops[i].scrollY) activeIndex = i;
+      }
+
+      markerStops.forEach((stop, index) => {
+        const active = index === activeIndex;
+        stop.marker.classList.toggle("is-active", active);
+        if (active) stop.link.setAttribute("aria-current", "location");
+        else stop.link.removeAttribute("aria-current");
+      });
+
+      const shouldDock = timelineDock.getBoundingClientRect().top <= window.innerHeight - timelineHeight + 0.5;
+      if (shouldDock !== isDocked) {
+        isDocked = shouldDock;
+        timelineDock.classList.toggle("is-docked", isDocked);
+      }
+    }
+
+    function requestTimelineUpdate() {
+      if (!timelineFrame) timelineFrame = requestAnimationFrame(updateTimeline);
+    }
+
+    function measureTimeline() {
+      measureFrame = 0;
+      const navHeight = siteNav ? siteNav.offsetHeight : 0;
+      const timelineHeight = pageTimeline.offsetHeight;
+      const dockTop = documentY(timelineDock);
+      timelineEnd = Math.max(1, dockTop - window.innerHeight + timelineHeight);
+
+      markerStops = markerEls.map((marker, index) => {
+        const link = marker.querySelector("a");
+        const target = link ? document.querySelector(link.hash) : null;
+        const rawTargetY = index === 0 || !target ? 0 : documentY(target) - navHeight - 16;
+        const scrollY = clamp(rawTargetY, 0, timelineEnd);
+        const ratio = scrollY / timelineEnd;
+
+        marker.style.setProperty("--marker-position", `${(ratio * 100).toFixed(3)}%`);
+
+        return { marker, link, scrollY, ratio };
+      });
+
+      updateTimeline();
+    }
+
+    function requestTimelineMeasure() {
+      if (!measureFrame) measureFrame = requestAnimationFrame(measureTimeline);
+    }
+
+    window.addEventListener("scroll", requestTimelineUpdate, { passive: true });
+    window.addEventListener("resize", requestTimelineMeasure, { passive: true });
+    window.addEventListener("load", requestTimelineMeasure, { once: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", requestTimelineMeasure, { passive: true });
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(requestTimelineMeasure);
+    }
+    if ("ResizeObserver" in window) {
+      const timelineResizeObserver = new ResizeObserver(requestTimelineMeasure);
+      timelineResizeObserver.observe(document.querySelector("main"));
+    }
+
+    measureTimeline();
+  }
+
   /* ---------- hero program-monitor timecode ---------- */
   const heroVideo = document.getElementById("heroVideo");
   const heroTc = document.getElementById("heroTc");

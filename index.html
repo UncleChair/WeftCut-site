@@ -96,8 +96,6 @@
     </div>
   </section>
 
-  <div class="ruler" aria-hidden="true"><i class="head"></i><span class="ruler-side">WEFTCUT</span><span class="ruler-tc">RT 00:00:00:00</span></div>
-
   <!-- ============ REEL 01 — AGENT-NATIVE ============ -->
   <section class="reel" id="agent" aria-labelledby="agent-h">
     <div class="wrap">
@@ -165,8 +163,6 @@
       </div>
     </div>
   </section>
-
-  <div class="ruler" aria-hidden="true"><i class="head"></i><span class="ruler-side">REEL 01 OUT</span><span class="ruler-tc">RT 00:00:46:00</span></div>
 
   <!-- ============ REEL 02 — A COMPLETE EDITOR ============ -->
   <section class="reel" id="editor" aria-labelledby="editor-h">
@@ -286,8 +282,6 @@
     </div>
   </section>
 
-  <div class="ruler" aria-hidden="true"><i class="head"></i><span class="ruler-side">REEL 02 OUT</span><span class="ruler-tc">RT 00:02:13:00</span></div>
-
   <!-- ============ REEL 04 — OPEN SOURCE ============ -->
   <section class="reel" id="oss" aria-labelledby="oss-h">
     <div class="wrap">
@@ -320,8 +314,6 @@ npm run dev</code></pre>
       </div>
     </div>
   </section>
-
-  <div class="ruler" aria-hidden="true"><i class="head"></i><span class="ruler-side">INTERMISSION</span><span class="ruler-tc">RT 00:02:13:00</span></div>
 
   <!-- ============ FAQ ============ -->
   <section class="reel" id="faq" aria-labelledby="faq-h">
@@ -356,8 +348,49 @@ npm run dev</code></pre>
     </div>
   </section>
 
-  <div class="ruler ruler-end" aria-hidden="true"><i class="head"></i><span class="ruler-side">END OF REEL</span><span class="ruler-tc">FIN</span></div>
 </main>
+
+<div class="timeline-dock" id="timelineDock">
+  <nav class="scroll-timeline" id="pageTimeline" aria-label="Page timeline">
+    <div class="timeline-rail">
+      <span class="timeline-meter" id="timelineMeter" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></span>
+      <span class="timeline-playhead" aria-hidden="true"></span>
+
+      <ol class="timeline-markers">
+        <li class="timeline-marker is-active" data-timeline-marker style="--marker-position: 0%">
+          <a href="#top" data-timeline-title="OPENING · INTRODUCTION" aria-label="Introduction" aria-current="location">
+            <span class="marker-index">00</span><span class="marker-label" data-short="IN">Intro</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 13%">
+          <a href="#demo" data-timeline-title="THE CUT · AGENT SESSION" aria-label="The Cut demonstration">
+            <span class="marker-index">01</span><span class="marker-label" data-short="CUT">The Cut</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 27%">
+          <a href="#agent" data-timeline-title="REEL 01 · AGENT-NATIVE" aria-label="Agent-native editing">
+            <span class="marker-index">02</span><span class="marker-label" data-short="AI">Agent</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 48%">
+          <a href="#editor" data-timeline-title="REEL 02 · THE HUMAN CUT" aria-label="The editor">
+            <span class="marker-index">03</span><span class="marker-label" data-short="EDIT">Editor</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 78%">
+          <a href="#oss" data-timeline-title="REEL 03 · OPEN SOURCE" aria-label="Open source">
+            <span class="marker-index">04</span><span class="marker-label" data-short="OSS">Open Source</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 92%">
+          <a href="#faq" data-timeline-title="INTERMISSION · QUESTIONS" aria-label="Frequently asked questions">
+            <span class="marker-index">05</span><span class="marker-label" data-short="FAQ">FAQ</span>
+          </a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+</div>
 
 <footer class="footer">
   <div class="wrap foot-in">
