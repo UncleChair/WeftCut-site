@@ -103,8 +103,13 @@
   </section>
 
   <!-- ============ DEMO — THE CUT ============ -->
-  <section class="demo-section" id="demo" aria-label="WeftCut editing demonstration">
+  <section class="demo-section" id="demo" aria-labelledby="demo-h">
     <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">Opening Scene</span><span class="scene-no">One take, unedited</span></p>
+        <h2 id="demo-h">A real session. <em>Every move, in sync.</em></h2>
+        <p class="lede">A full agent editing session, recorded start to finish — nothing staged, nothing trimmed. The terminal replays each move as it lands on the timeline; click any line to jump the video to that moment.</p>
+      </header>
       <div class="demo-stage rv">
         <video id="demoVideo" width="1600" height="852" poster="/assets/video/agent-session-poster.jpg"
                autoplay muted playsinline loop controls preload="metadata"
@@ -125,11 +130,11 @@
     </div>
   </section>
 
-  <!-- ============ REEL 01 — AGENT-NATIVE ============ -->
+  <!-- ============ SCENE 01 — AGENT-NATIVE ============ -->
   <section class="reel" id="agent" aria-labelledby="agent-h">
     <div class="wrap">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Reel 01</span><span class="scene-no">The differentiator</span></p>
+        <p class="kicker"><span class="reel-no">Scene 01</span><span class="scene-no">The differentiator</span></p>
         <h2 id="agent-h">Not bolted on. <em>Built in.</em></h2>
         <p class="lede">Most editors bolt AI on as a feature. WeftCut opens the whole editor to your
         agent — every track, trim, title and transition — over a standard MCP connection. The
@@ -193,11 +198,11 @@
     </div>
   </section>
 
-  <!-- ============ REEL 02 — A COMPLETE EDITOR ============ -->
+  <!-- ============ SCENE 02 — A COMPLETE EDITOR ============ -->
   <section class="reel" id="editor" aria-labelledby="editor-h">
     <div class="wrap">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Reel 02</span><span class="scene-no">The human cut</span></p>
+        <p class="kicker"><span class="reel-no">Scene 02</span><span class="scene-no">The human cut</span></p>
         <h2 id="editor-h">Great for agents. <em>Great&nbsp;for&nbsp;humans.</em></h2>
         <p class="lede">Everything an agent can do, you can do — same tools, same timeline. Blade,
         trim, keyframe, caption and export with the precision you&rsquo;d expect from a serious editor.</p>
@@ -311,11 +316,11 @@
     </div>
   </section>
 
-  <!-- ============ REEL 04 — OPEN SOURCE ============ -->
+  <!-- ============ SCENE 03 — OPEN SOURCE ============ -->
   <section class="reel" id="oss" aria-labelledby="oss-h">
     <div class="wrap">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Reel 03</span><span class="scene-no">Open source</span></p>
+        <p class="kicker"><span class="reel-no">Scene 03</span><span class="scene-no">Open source</span></p>
         <h2 id="oss-h">Free. Open. <em>Yours to build on.</em></h2>
         <p class="lede">MIT licensed, free forever. FFmpeg comes bundled under its own LGPL/GPL terms.</p>
       </header>
@@ -348,7 +353,7 @@ npm run dev</code></pre>
   <section class="reel" id="faq" aria-labelledby="faq-h">
     <div class="wrap wrap-narrow">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Intermission</span><span class="scene-no">Questions</span></p>
+        <p class="kicker"><span class="reel-no">Epilogue</span><span class="scene-no">Questions</span></p>
         <h2 id="faq-h">Frequently asked.</h2>
       </header>
 
@@ -386,32 +391,32 @@ npm run dev</code></pre>
 
       <ol class="timeline-markers">
         <li class="timeline-marker is-active" data-timeline-marker style="--marker-position: 0%">
-          <a href="#top" data-timeline-title="OPENING · INTRODUCTION" aria-label="Introduction" aria-current="location">
+          <a href="#top" data-timeline-title="TITLE CARD · INTRODUCTION" aria-label="Introduction" aria-current="location">
             <span class="marker-index">00</span><span class="marker-label" data-short="IN">Intro</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 13%">
-          <a href="#demo" data-timeline-title="THE CUT · AGENT SESSION" aria-label="The Cut demonstration">
+          <a href="#demo" data-timeline-title="OPENING SCENE · AGENT SESSION" aria-label="The Cut demonstration">
             <span class="marker-index">01</span><span class="marker-label" data-short="CUT">The Cut</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 27%">
-          <a href="#agent" data-timeline-title="REEL 01 · AGENT-NATIVE" aria-label="Agent-native editing">
+          <a href="#agent" data-timeline-title="SCENE 01 · AGENT-NATIVE" aria-label="Agent-native editing">
             <span class="marker-index">02</span><span class="marker-label" data-short="AI">Agent</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 48%">
-          <a href="#editor" data-timeline-title="REEL 02 · THE HUMAN CUT" aria-label="The editor">
+          <a href="#editor" data-timeline-title="SCENE 02 · THE HUMAN CUT" aria-label="The editor">
             <span class="marker-index">03</span><span class="marker-label" data-short="EDIT">Editor</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 78%">
-          <a href="#oss" data-timeline-title="REEL 03 · OPEN SOURCE" aria-label="Open source">
+          <a href="#oss" data-timeline-title="SCENE 03 · OPEN SOURCE" aria-label="Open source">
             <span class="marker-index">04</span><span class="marker-label" data-short="OSS">Open Source</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 92%">
-          <a href="#faq" data-timeline-title="INTERMISSION · QUESTIONS" aria-label="Frequently asked questions">
+          <a href="#faq" data-timeline-title="EPILOGUE · QUESTIONS" aria-label="Frequently asked questions">
             <span class="marker-index">05</span><span class="marker-label" data-short="FAQ">FAQ</span>
           </a>
         </li>

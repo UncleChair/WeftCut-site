@@ -135,8 +135,8 @@ mediabunny containers · MCP over streamable HTTP.
 
 **"Cinematic Timeline" (SELECTED — now the site root, `index.html`).** Film-editor
 romance: Georgia serif display headlines with letterspaced small-caps kickers,
-hairline film-ruler dividers, REEL-numbered sections. Hero: centered copy, then
+hairline film-ruler dividers, SCENE-numbered sections. Hero: centered copy, then
 the agent demo as one unit — bare frameless video (left) beside the synced
 action terminal (right), both at matched height in a fixed 2.66:1 unit.
-Reel 01 agent-native → Reel 02 "the human cut" (nle-tour) → Reel 03 open
-source → FAQ.
+Opening Scene (agent demo) → Scene 01 agent-native → Scene 02 "the human cut"
+(nle-tour) → Scene 03 open source → FAQ (Epilogue).
