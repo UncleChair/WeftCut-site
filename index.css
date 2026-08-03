@@ -618,7 +618,10 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   background-size: 100% 32px;
 }
 .motif-reel > .wrap { position: relative; }
-.motif-reel h2 em { color: var(--code-accent); }
+.motif-reel h2 em {
+  display: block;
+  color: var(--code-accent);
+}
 .motif-showcase {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(340px, 1fr);
@@ -1000,6 +1003,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 }
 
 @media (max-width: 560px) {
+  .motif-reel h2 em { display: inline; }
   .timeline-rail { margin-inline: 12px; }
   .timeline-marker a { gap: 0; padding-inline: 4px; font-size: 8px; letter-spacing: 0.08em; }
   .marker-index { display: none; }
