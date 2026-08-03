@@ -37,7 +37,8 @@
   const timelineDock = document.getElementById("timelineDock");
   const pageTimeline = document.getElementById("pageTimeline");
   if (timelineDock && pageTimeline) {
-    const timelineMeter = document.getElementById("timelineMeter");
+    const timelineRail = pageTimeline.querySelector(".timeline-rail");
+    const timelinePlayhead = pageTimeline.querySelector(".timeline-playhead");
     const siteNav = document.querySelector(".nav");
     const markerEls = [...pageTimeline.querySelectorAll("[data-timeline-marker]")];
 
@@ -46,20 +47,31 @@
     let timelineFrame = 0;
     let measureFrame = 0;
     let isDocked = false;
+    let dragPointerId = null;
+    let dragProgress = null;
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const documentY = (el) => el.getBoundingClientRect().top + window.scrollY;
+
+    function setPlayheadProgress(progress) {
+      const width = timelineRail ? timelineRail.clientWidth : 0;
+      const inset = 5;
+      const handleWidth = 20;
+      const center = width > inset * 2 ? inset + progress * (width - inset * 2) : inset;
+      if (timelinePlayhead) {
+        timelinePlayhead.style.setProperty("--playhead-x", `${(center - handleWidth / 2).toFixed(2)}px`);
+      }
+    }
 
     function updateTimeline() {
       timelineFrame = 0;
 
       const timelineHeight = pageTimeline.offsetHeight;
       const progress = clamp(window.scrollY / timelineEnd, 0, 1);
-      const percent = Math.round(progress * 100);
-      const progressCss = `${(progress * 100).toFixed(3)}%`;
+      const displayedProgress = dragProgress === null ? progress : dragProgress;
+      const percent = Math.round(displayedProgress * 100);
 
-      pageTimeline.style.setProperty("--timeline-progress", progressCss);
-      if (timelineMeter) timelineMeter.setAttribute("aria-valuenow", String(percent));
+      setPlayheadProgress(displayedProgress);
 
       let activeIndex = 0;
       for (let i = 0; i < markerStops.length; i++) {
@@ -72,6 +84,13 @@
         if (active) stop.link.setAttribute("aria-current", "location");
         else stop.link.removeAttribute("aria-current");
       });
+
+      if (timelinePlayhead) {
+        const activeStop = markerStops[activeIndex];
+        const chapter = activeStop && activeStop.link ? activeStop.link.getAttribute("aria-label") : "";
+        timelinePlayhead.setAttribute("aria-valuenow", String(percent));
+        timelinePlayhead.setAttribute("aria-valuetext", chapter ? `${percent}% — ${chapter}` : `${percent}%`);
+      }
 
       const shouldDock = timelineDock.getBoundingClientRect().top <= window.innerHeight - timelineHeight + 0.5;
       if (shouldDock !== isDocked) {
@@ -108,6 +127,82 @@
 
     function requestTimelineMeasure() {
       if (!measureFrame) measureFrame = requestAnimationFrame(measureTimeline);
+    }
+
+    function scrubToRatio(ratio) {
+      const nextProgress = clamp(ratio, 0, 1);
+      if (dragPointerId !== null) dragProgress = nextProgress;
+      setPlayheadProgress(nextProgress);
+      window.scrollTo({ top: nextProgress * timelineEnd, behavior: "instant" });
+      requestTimelineUpdate();
+    }
+
+    function scrubToPointer(clientX) {
+      if (!timelineRail) return;
+      const rect = timelineRail.getBoundingClientRect();
+      const inset = 5;
+      const usableWidth = Math.max(1, rect.width - inset * 2);
+      scrubToRatio((clientX - rect.left - inset) / usableWidth);
+    }
+
+    if (timelinePlayhead) {
+      timelinePlayhead.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        dragPointerId = event.pointerId;
+        dragProgress = clamp(window.scrollY / timelineEnd, 0, 1);
+        timelinePlayhead.classList.add("is-dragging");
+        document.documentElement.classList.add("is-scrubbing");
+        timelinePlayhead.setPointerCapture(event.pointerId);
+        scrubToPointer(event.clientX);
+      });
+
+      timelinePlayhead.addEventListener("pointermove", (event) => {
+        if (event.pointerId !== dragPointerId) return;
+        scrubToPointer(event.clientX);
+      });
+
+      const finishDrag = (event) => {
+        if (event.pointerId !== dragPointerId) return;
+        if (event.type === "pointerup") scrubToPointer(event.clientX);
+        dragPointerId = null;
+        dragProgress = null;
+        timelinePlayhead.classList.remove("is-dragging");
+        document.documentElement.classList.remove("is-scrubbing");
+        if (timelinePlayhead.hasPointerCapture(event.pointerId)) {
+          timelinePlayhead.releasePointerCapture(event.pointerId);
+        }
+        requestTimelineUpdate();
+      };
+
+      timelinePlayhead.addEventListener("pointerup", finishDrag);
+      timelinePlayhead.addEventListener("pointercancel", finishDrag);
+      timelinePlayhead.addEventListener("lostpointercapture", (event) => {
+        if (event.pointerId !== dragPointerId) return;
+        dragPointerId = null;
+        dragProgress = null;
+        timelinePlayhead.classList.remove("is-dragging");
+        document.documentElement.classList.remove("is-scrubbing");
+        requestTimelineUpdate();
+      });
+
+      timelinePlayhead.addEventListener("keydown", (event) => {
+        const current = clamp(window.scrollY / timelineEnd, 0, 1);
+        const fineStep = event.shiftKey ? 0.05 : 0.01;
+        const keys = {
+          ArrowLeft: current - fineStep,
+          ArrowDown: current - fineStep,
+          ArrowRight: current + fineStep,
+          ArrowUp: current + fineStep,
+          PageDown: current + 0.1,
+          PageUp: current - 0.1,
+          Home: 0,
+          End: 1,
+        };
+        if (!(event.key in keys)) return;
+        event.preventDefault();
+        scrubToRatio(keys[event.key]);
+      });
     }
 
     window.addEventListener("scroll", requestTimelineUpdate, { passive: true });
