@@ -191,11 +191,76 @@
     </div>
   </section>
 
-  <!-- ============ SCENE 02 — A COMPLETE EDITOR ============ -->
+  <!-- ============ SCENE 02 — MOTIFS ============ -->
+  <section class="reel motif-reel" id="motifs" aria-labelledby="motifs-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">Scene 02</span><span class="scene-no">Code as motion</span></p>
+        <h2 id="motifs-h">Your agent knows code. <em>With Motifs, it knows motion.</em></h2>
+        <p class="lede">Describe the title, lower third, callout, or kinetic text you want. Your
+        agent turns it into a Motif — a reusable visual you can preview in the canvas, tune to
+        this edit, and keep for the next one.</p>
+      </header>
+
+      <div class="motif-showcase">
+        <figure class="film motif-picker-shot rv">
+          <img src="/assets/shots/motifs.webp" width="1600" height="852" loading="lazy"
+               alt="WeftCut's Motif picker showing a live countdown preview, editable controls, and a catalog of reusable overlays" />
+          <figcaption>PICK A STARTING POINT — OR MAKE ONE OF YOUR OWN</figcaption>
+        </figure>
+
+        <div class="motif-export rv">
+          <div class="motif-output-head">
+            <span class="mono-dim">&ldquo;Give this scene a look that moves like our brand.&rdquo;</span>
+            <span class="motif-output-badge">ACTUAL EXPORT</span>
+          </div>
+          <figure class="motif-export-frame">
+            <video id="motifExportVideo" width="960" height="540" muted playsinline preload="metadata"
+                   poster="/assets/video/motif-showcase-poster.jpg"
+                   aria-label="A five-second WeftCut export combining animated Text FX, a lower third, and a countdown">
+              <source src="/assets/video/motif-showcase.mp4" type="video/mp4" />
+            </video>
+            <figcaption>
+              <span>WEFTCUT EXPORT · 5 SEC</span>
+              <span>PLAYS ONCE</span>
+            </figcaption>
+          </figure>
+          <div class="motif-export-legend" aria-hidden="true">
+            <span><i></i>Text FX</span>
+            <span><i></i>Lower third</span>
+            <span><i></i>Countdown</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="motif-benefits rv">
+        <article>
+          <span class="motif-benefit-no">01</span>
+          <h3>Ask for the look</h3>
+          <p>Start with plain language. Your agent can create the exact on-screen graphic the
+          story needs — not just pick from a preset list.</p>
+        </article>
+        <article>
+          <span class="motif-benefit-no">02</span>
+          <h3>Tune it like a template</h3>
+          <p>Text, colors, timing, alignment, and style become simple controls. Change the content
+          without rebuilding the design.</p>
+        </article>
+        <article>
+          <span class="motif-benefit-no">03</span>
+          <h3>Ship what you saw</h3>
+          <p>Scrub it on the timeline, review it in context, and export the same look you approved
+          — frame for frame.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENE 03 — A COMPLETE EDITOR ============ -->
   <section class="reel" id="editor" aria-labelledby="editor-h">
     <div class="wrap">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Scene 02</span><span class="scene-no">The human cut</span></p>
+        <p class="kicker"><span class="reel-no">Scene 03</span><span class="scene-no">The human cut</span></p>
         <h2 id="editor-h">Great for agents. <em>Great&nbsp;for&nbsp;humans.</em></h2>
         <p class="lede">Everything you can do, the agent can do — same tools, same timeline. Blade,
         trim, keyframe, caption and export with the precision you&rsquo;d expect from a serious editor.</p>
@@ -205,7 +270,7 @@
         <div class="bezel">
           <div class="bezel-bar">
             <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="bezel-label">SCENE 2 · THE HUMAN CUT</span>
+            <span class="bezel-label">SCENE 3 · THE HUMAN CUT</span>
             <span class="bezel-dim">53S</span>
           </div>
           <video id="nleVideo" width="1600" height="852" poster="/assets/video/nle-tour-poster.jpg"
@@ -266,12 +331,12 @@
 
         <article class="fcard rv">
           <figure class="film">
-            <img src="/assets/shots/motifs.webp" width="1600" height="852" loading="lazy"
-                 alt="The motif picker with animated overlays such as lower thirds and countdowns" />
+            <img src="/assets/shots/motif-text-fx.png" width="1920" height="1080" loading="lazy"
+                 alt="A blue kinetic title reading Code Becomes Video, rendered as a reusable Motif" />
           </figure>
           <div class="fcard-body">
-            <h3>Motifs</h3>
-            <p>Animated lower thirds and countdowns that render exactly the same in preview and export.</p>
+            <h3>Kinetic text</h3>
+            <p>Typewriter, karaoke, and color-shift looks you can restyle and reuse like any other Motif.</p>
           </div>
         </article>
 
@@ -309,11 +374,11 @@
     </div>
   </section>
 
-  <!-- ============ SCENE 03 — OPEN SOURCE ============ -->
+  <!-- ============ SCENE 04 — OPEN SOURCE ============ -->
   <section class="reel" id="oss" aria-labelledby="oss-h">
     <div class="wrap">
       <header class="sec-head rv">
-        <p class="kicker"><span class="reel-no">Scene 03</span><span class="scene-no">Open source</span></p>
+        <p class="kicker"><span class="reel-no">Scene 04</span><span class="scene-no">Open source</span></p>
         <h2 id="oss-h">Free. Open. <em>Yours to build on.</em></h2>
         <p class="lede">MIT licensed, free forever. FFmpeg comes bundled under its own LGPL/GPL terms.</p>
       </header>
@@ -399,18 +464,23 @@ npm run dev</code></pre>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 48%">
-          <a href="#editor" data-timeline-title="SCENE 02 · THE HUMAN CUT" aria-label="The editor">
-            <span class="marker-index">03</span><span class="marker-label" data-short="EDIT">Editor</span>
+          <a href="#motifs" data-timeline-title="SCENE 02 · CODE AS MOTION" aria-label="Motifs">
+            <span class="marker-index">03</span><span class="marker-label" data-short="FX">Motifs</span>
           </a>
         </li>
-        <li class="timeline-marker" data-timeline-marker style="--marker-position: 78%">
-          <a href="#oss" data-timeline-title="SCENE 03 · OPEN SOURCE" aria-label="Open source">
-            <span class="marker-index">04</span><span class="marker-label" data-short="OSS">Open Source</span>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 63%">
+          <a href="#editor" data-timeline-title="SCENE 03 · THE HUMAN CUT" aria-label="The editor">
+            <span class="marker-index">04</span><span class="marker-label" data-short="EDIT">Editor</span>
           </a>
         </li>
-        <li class="timeline-marker" data-timeline-marker style="--marker-position: 92%">
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 82%">
+          <a href="#oss" data-timeline-title="SCENE 04 · OPEN SOURCE" aria-label="Open source">
+            <span class="marker-index">05</span><span class="marker-label" data-short="OSS">Open Source</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 94%">
           <a href="#faq" data-timeline-title="EPILOGUE · QUESTIONS" aria-label="Frequently asked questions">
-            <span class="marker-index">05</span><span class="marker-label" data-short="FAQ">FAQ</span>
+            <span class="marker-index">06</span><span class="marker-label" data-short="FAQ">FAQ</span>
           </a>
         </li>
       </ol>

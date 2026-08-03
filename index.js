@@ -333,6 +333,45 @@
     if (!heroVideo.paused) start();
   }
 
+  /* ---------- one-shot Motif export playback ---------- */
+  const motifExportVideo = document.getElementById("motifExportVideo");
+  if (motifExportVideo) {
+    motifExportVideo.pause();
+    motifExportVideo.currentTime = 0;
+
+    if (!reduced) {
+      let motifHasPlayed = false;
+      const playMotifOnce = () => {
+        if (motifHasPlayed) return;
+        motifHasPlayed = true;
+        motifExportVideo.play().catch(() => {
+          // A transient autoplay rejection should not permanently consume the run.
+          motifHasPlayed = false;
+        });
+      };
+
+      if ("IntersectionObserver" in window) {
+        const motifVideoObserver = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            motifVideoObserver.disconnect();
+            playMotifOnce();
+          },
+          { threshold: 0.45 }
+        );
+        motifVideoObserver.observe(motifExportVideo);
+      } else {
+        playMotifOnce();
+      }
+
+      motifExportVideo.addEventListener(
+        "ended",
+        () => motifExportVideo.classList.add("motif-export-video-played"),
+        { once: true }
+      );
+    }
+  }
+
   /* ---------- synced MCP tool-call replay ---------- */
   const demoVideo = document.getElementById("demoVideo");
   const logBody = document.getElementById("logBody");

@@ -129,6 +129,11 @@ mediabunny containers · MCP over streamable HTTP.
 - assets/shots/*.webp: 1600w screenshots — editor-hero, timeline-closeup, curve-editor,
   effects, search-palette, connect-agent, export, captions, motifs, agent-mode,
   eyedropper, log-console.
+- assets/video/motif-showcase.mp4 (+ poster): real five-second product export
+  combining animated Text FX, a lower third, and a countdown; plays once in
+  Scene 02.
+- assets/shots/motif-text-fx.png: transparent frame from the real Motif capture
+  path, used by the compact Kinetic text feature card.
 - assets/icon.svg: the app icon (copy from repo).
 - assets/editor.png, assets/agent-edit.gif, assets/search-palette-doc.png: copies of
   the repo's docs/assets images (already public in the README).
@@ -140,5 +145,6 @@ romance: Georgia serif display headlines with letterspaced small-caps kickers,
 hairline film-ruler dividers, SCENE-numbered sections. Hero: centered copy, then
 the agent demo as one unit — bare frameless video (left) beside the synced
 action terminal (right), both at matched height in a fixed 2.66:1 unit.
-Opening Scene (agent demo) → Scene 01 agent-native → Scene 02 "the human cut"
-(nle-tour) → Scene 03 open source → FAQ (Epilogue).
+Opening Scene (agent demo) → Scene 01 agent-native → Scene 02 Motifs / code as
+motion → Scene 03 "the human cut" (nle-tour) → Scene 04 open source → FAQ
+(Epilogue).

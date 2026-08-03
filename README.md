@@ -9,7 +9,7 @@ HTML/CSS/JS, no frameworks, no external requests.
 ```
 index.html          THE product page — "Cinematic Timeline"
                     (hero = bare video + synced agent-action terminal side by side;
-                    Reel 01 agent-native → Reel 02 the human cut → Reel 03 open source → FAQ)
+                    Reel 01 agent-native → Reel 02 motifs → Reel 03 the human cut → Reel 04 open source → FAQ)
 index.css / index.js  the page's styles and interactions
 assets/             shared media: real screen recordings, screenshots, agent log
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
@@ -54,6 +54,11 @@ Everything on the page is a real capture of the shipping app, not a mockup:
   Cmd+K → export, log console) driven via CDP input with an in-page cursor.
 - `assets/shots/*.webp` — `page.screenshot` stills of the app's panels
   (agent mode, connect-agent snippet, export settings, eyedropper, …).
+- `assets/video/motif-showcase.mp4` (+ poster) — a real five-second WeftCut
+  export combining Text FX, a lower third, and a countdown. The page plays it
+  once when Scene 02 enters view.
+- `assets/shots/motif-text-fx.png` — a real transparent Text FX frame used by
+  the compact feature card later on the page.
 - The demo footage itself is ffmpeg-generated abstract clips (`gradients`
   lavfi source + sine beds) — see `.work/media/`.
 
