@@ -59,10 +59,9 @@
   <!-- ============ HERO ============ -->
   <section class="hero" aria-label="Introduction">
     <div class="wrap hero-in">
-      <p class="kicker rv">A cross-platform desktop video editor</p>
-      <h1 class="rv">Your agent can cut <em>here.</em></h1>
-      <p class="lede rv">WeftCut is a desktop video editor built for humans and AI agents alike.
-      Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live.</p>
+      <p class="kicker rv">The agent-native video editor</p>
+      <h1 class="rv">Cut with your <em class="accent-agent">agent</em> and <em class="accent-code">code</em></h1>
+      <p class="lede rv">Let the agent be the weft in your timeline—threading every cut, caption, and transition into place while you stay in control.</p>
       <p class="cta-row rv">
         <a class="btn btn-primary" href="https://github.com/UncleChair/WeftCut" rel="noopener">
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2l2.94 6.26 6.86.72-5.12 4.63 1.4 6.77L12 16.9l-6.08 3.48 1.4-6.77L2.2 8.98l6.86-.72z"/></svg>
@@ -71,8 +70,13 @@
         <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">Read the docs</a>
       </p>
       <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;free &amp; open source&ensp;—&ensp;works with the AI you already use</p>
+    </div>
+  </section>
 
-      <div class="hero-demo rv" id="demo">
+  <!-- ============ DEMO — THE CUT ============ -->
+  <section class="demo-section" id="demo" aria-label="WeftCut editing demonstration">
+    <div class="wrap">
+      <div class="demo-stage rv">
         <video id="demoVideo" width="1600" height="852" poster="/assets/video/agent-session-poster.jpg"
                autoplay muted playsinline loop controls preload="metadata"
                aria-label="Full recording of an AI agent editing a video in WeftCut — one take, unedited">
