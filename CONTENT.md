@@ -92,7 +92,10 @@ mediabunny containers · MCP over streamable HTTP.
    control (checkpoint + undo), it can look and listen (optional
    shot/silence/transcription). No JSON snippet, no tool counts.
 4. "A complete NLE" section: feature grid with real screenshots/clips.
-5. "Open source" section: MIT, clone/build commands, GitHub CTA.
+5. "At the speed of ideas" epilogue: an outcome-led product close built around
+   momentum, focus, and control. Close with a two-column product CTA and a
+   prominent "Open source · MIT" philosophy card; do not include install, build,
+   or usage instructions.
 6. Footer: GitHub, docs (link repo /docs), license note, copyright 2026 WeftCut contributors.
 
 ## SEO/GEO requirements (all variants)
@@ -146,5 +149,5 @@ hairline film-ruler dividers, SCENE-numbered sections. Hero: centered copy, then
 the agent demo as one unit — bare frameless video (left) beside the synced
 action terminal (right), both at matched height in a fixed 2.66:1 unit.
 Opening Scene (agent demo) → Scene 01 agent-native → Scene 02 Motifs / code as
-motion → Scene 03 "the human cut" (nle-tour) → Scene 04 open source → FAQ
-(Epilogue).
+motion → Scene 03 "the human cut" (nle-tour) → Epilogue "at the speed of ideas"
+product finale → Post-credits FAQ.

@@ -9,7 +9,7 @@ HTML/CSS/JS, no frameworks, no external requests.
 ```
 index.html          THE product page — "Cinematic Timeline"
                     (hero = bare video + synced agent-action terminal side by side;
-                    Reel 01 agent-native → Reel 02 motifs → Reel 03 the human cut → Reel 04 open source → FAQ)
+                    Reel 01 agent-native → Reel 02 motifs → Reel 03 the human cut → Epilogue product finale → Post-credits FAQ)
 index.css / index.js  the page's styles and interactions
 assets/             shared media: real screen recordings, screenshots, agent log
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
