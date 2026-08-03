@@ -566,15 +566,6 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   font: inherit;
   color: inherit;
 }
-.code-note {
-  margin: 0;
-  padding: 10px 16px;
-  border-top: 1px solid var(--border);
-  font: 500 10px var(--mono);
-  letter-spacing: 0.14em;
-  color: var(--faint);
-}
-
 .prompt-list {
   margin: 0;
   padding: 20px 22px;
@@ -586,6 +577,19 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 }
 .prompt-list li { display: grid; grid-template-columns: 14px 1fr; gap: 6px; }
 .prompt-list li::before { content: "›"; color: var(--accent); font: 600 13px/25px var(--mono); }
+.prompt-list li.typing .prompt-text::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 0.95em;
+  margin-left: 3px;
+  vertical-align: -2px;
+  background: var(--accent);
+  animation: rec-blink 0.9s steps(1) infinite;
+}
+.prompt-list.armed li { display: none; }
+.prompt-list.armed li.typing,
+.prompt-list.armed li.typed { display: grid; }
 
 .frame-pair {
   display: grid;

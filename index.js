@@ -23,6 +23,54 @@
     rvEls.forEach((el) => io.observe(el));
   }
 
+  /* ---------- prompt card typing ---------- */
+  const promptList = document.querySelector(".prompt-list");
+  if (promptList && !reduced && "IntersectionObserver" in window) {
+    const promptItems = [...promptList.querySelectorAll("li")];
+    const fullTexts = promptItems.map((li) => li.textContent.trim());
+
+    promptList.classList.add("armed");
+    promptItems.forEach((li, i) => {
+      const span = document.createElement("span");
+      span.className = "prompt-text";
+      li.textContent = "";
+      li.appendChild(span);
+      li.setAttribute("aria-label", fullTexts[i]);
+    });
+
+    const typeLine = (index) => {
+      if (index >= promptItems.length) return;
+      const li = promptItems[index];
+      const span = li.querySelector(".prompt-text");
+      const text = fullTexts[index];
+      li.classList.add("typing");
+      let i = 0;
+      // Fresh prompt line first, a beat, then typing — like hitting enter.
+      setTimeout(function step() {
+        i += 1;
+        span.textContent = text.slice(0, i);
+        if (i < text.length) setTimeout(step, 22);
+        else {
+          li.classList.replace("typing", "typed");
+          setTimeout(() => typeLine(index + 1), 220);
+        }
+      }, 400);
+    };
+
+    const pio = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            pio.disconnect();
+            typeLine(0);
+          }
+        }
+      },
+      { threshold: 0.4 }
+    );
+    pio.observe(promptList);
+  }
+
   /* ---------- platform-aware download ---------- */
   const downloadButton = document.getElementById("downloadButton");
   const downloadPlatformIcon = document.getElementById("downloadPlatformIcon");
