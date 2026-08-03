@@ -85,10 +85,12 @@ mediabunny containers · MCP over streamable HTTP.
 2. Hero: headline, subhead, primary CTA (GitHub), secondary CTA (Docs), hero
    media (agent demo video) — paired with the synced replay of the real
    `assets/agent-log.json` actions (labels, timestamps, ✓ ms).
-3. "Agent-native" section: the differentiator as product promises — connect in
-   a minute (Settings → Agent, copy, paste), it edits the real timeline live,
-   you're always in control (checkpoint + undo), it can look and listen
-   (optional shot/silence/transcription). No JSON snippet, no tool counts.
+3. "Agent-native" section: the differentiator as product promises — capability
+   first (example prompts, the editing vocabulary, live edits on the real
+   timeline), the connect-in-a-minute promise kept to one line (Settings →
+   Agent, copy, paste — never a step-by-step walkthrough), you're always in
+   control (checkpoint + undo), it can look and listen (optional
+   shot/silence/transcription). No JSON snippet, no tool counts.
 4. "A complete NLE" section: feature grid with real screenshots/clips.
 5. "Open source" section: MIT, clone/build commands, GitHub CTA.
 6. Footer: GitHub, docs (link repo /docs), license note, copyright 2026 WeftCut contributors.
