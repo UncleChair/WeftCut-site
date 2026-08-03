@@ -23,6 +23,41 @@
     rvEls.forEach((el) => io.observe(el));
   }
 
+  /* ---------- platform-aware download ---------- */
+  const downloadButton = document.getElementById("downloadButton");
+  const downloadPlatformIcon = document.getElementById("downloadPlatformIcon");
+  const downloadButtonLabel = document.getElementById("downloadButtonLabel");
+  if (downloadButton && downloadPlatformIcon && downloadButtonLabel) {
+    const hintedPlatform = navigator.userAgentData && navigator.userAgentData.platform;
+    const platformSource = [hintedPlatform, navigator.platform, navigator.userAgent]
+      .filter(Boolean)
+      .join(" ");
+    const isUnsupportedMobile = /Android|iPhone|iPad|iPod|CrOS/i.test(platformSource);
+
+    let platform = { key: "generic", name: "" };
+    if (!isUnsupportedMobile && /Windows|Win32|Win64/i.test(platformSource)) {
+      platform = { key: "windows", name: "Windows" };
+    } else if (!isUnsupportedMobile && /macOS|Macintosh|MacIntel|MacPPC|Mac68K/i.test(platformSource)) {
+      platform = { key: "macos", name: "macOS" };
+    } else if (!isUnsupportedMobile && /Linux|X11/i.test(platformSource)) {
+      platform = { key: "linux", name: "Linux" };
+    }
+
+    const platformIcons = {
+      generic: '<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>',
+      windows: '<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M3 5.1 10.3 4v7H3V5.1Zm8.3-1.25L21 2.4V11h-9.7V3.85ZM3 12h7.3v7L3 17.9V12Zm8.3 0H21v8.6l-9.7-1.45V12Z"/></svg>',
+      macos: '<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M16.6 12.5c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.7-1.7-3.3-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-3-.8-1.5 0-2.9.9-3.7 2.2-1.6 2.8-.4 7 1.1 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3.1-.7 1.4 0 1.9.7 3.1.7 1.3 0 2.1-1.1 2.8-2.2.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.8-1.1-2.8-4.1ZM14.3 5.9c.6-.8 1.1-2 1-3.1-1 .1-2.2.7-2.9 1.5-.6.7-1.1 1.9-1 3 1.1.1 2.2-.6 2.9-1.4Z"/></svg>',
+      linux: '<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M3 4h18v16H3V4Zm2 2v12h14V6H5Zm1.5 2.2L9.3 11l-2.8 2.8 1.4 1.4 4.2-4.2-4.2-4.2-1.4 1.4ZM12 14h5v2h-5v-2Z"/></svg>',
+    };
+
+    downloadPlatformIcon.innerHTML = platformIcons[platform.key];
+    downloadButton.dataset.platform = platform.key;
+    if (platform.name) {
+      downloadButtonLabel.textContent = `Download for ${platform.name}`;
+      downloadButton.setAttribute("aria-label", `Download WeftCut for ${platform.name} from GitHub Releases`);
+    }
+  }
+
   /* ---------- SMPTE helpers ---------- */
   const pad = (n) => String(n).padStart(2, "0");
   function smpte(t, fps) {

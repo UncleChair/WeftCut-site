@@ -40,15 +40,8 @@
       <img src="/assets/icon.svg" alt="" width="26" height="26" />
       <span class="brand-word">WeftCut</span>
     </a>
-    <nav class="nav-links" aria-label="Sections">
-      <a href="#agent">Agent</a>
-      <a href="#demo">The&nbsp;Cut</a>
-      <a href="#editor">Editor</a>
-      <a href="#oss">Open&nbsp;Source</a>
-      <a href="#faq">FAQ</a>
-    </nav>
     <a class="gh" href="https://github.com/UncleChair/WeftCut" rel="noopener">
-      <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2l2.94 6.26 6.86.72-5.12 4.63 1.4 6.77L12 16.9l-6.08 3.48 1.4-6.77L2.2 8.98l6.86-.72z"/></svg>
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.6-.18-3.29-.82-3.29-3.56 0-.79.28-1.43.74-1.93-.07-.18-.32-.91.07-1.9 0 0 .6-.19 1.97.74A6.8 6.8 0 0 1 8 3.8a6.8 6.8 0 0 1 1.79.24c1.37-.93 1.97-.74 1.97-.74.39.99.14 1.72.07 1.9.46.5.74 1.14.74 1.93 0 2.75-1.69 3.38-3.3 3.56.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
       <span>GitHub</span>
     </a>
   </div>
@@ -59,13 +52,15 @@
   <!-- ============ HERO ============ -->
   <section class="hero" aria-label="Introduction">
     <div class="wrap hero-in">
-      <p class="kicker rv">The agent-native video editor</p>
+      <p class="kicker rv">The agent native video editor</p>
       <h1 class="rv">Cut with your <em class="accent-agent">agent</em> and <em class="accent-code">code</em></h1>
       <p class="lede rv">Let the agent be the weft in your timeline—threading every cut, caption, and transition into place while you stay in control.</p>
       <p class="cta-row rv">
-        <a class="btn btn-primary" href="https://github.com/UncleChair/WeftCut" rel="noopener">
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2l2.94 6.26 6.86.72-5.12 4.63 1.4 6.77L12 16.9l-6.08 3.48 1.4-6.77L2.2 8.98l6.86-.72z"/></svg>
-          View on GitHub
+        <a class="btn btn-primary" id="downloadButton" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener" aria-label="Download WeftCut from GitHub Releases">
+          <span class="platform-icon" id="downloadPlatformIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>
+          </span>
+          <span id="downloadButtonLabel">Download</span>
         </a>
         <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">Read the docs</a>
       </p>
