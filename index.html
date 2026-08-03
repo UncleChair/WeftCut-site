@@ -17,6 +17,40 @@
 <meta name="twitter:description" content="A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit live." />
 <meta name="twitter:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+<script>
+(() => {
+  const navigationEntry = performance.getEntriesByType("navigation")[0];
+  const isReload = navigationEntry
+    ? navigationEntry.type === "reload"
+    : performance.navigation && performance.navigation.type === 1;
+  const isTopLocation = !window.location.hash || window.location.hash === "#top";
+  if (!isReload || !isTopLocation) return;
+
+  const root = document.documentElement;
+  const canControlRestoration = "scrollRestoration" in history;
+  const previousRestoration = canControlRestoration ? history.scrollRestoration : "auto";
+  root.classList.add("is-resetting-scroll");
+  if (canControlRestoration) history.scrollRestoration = "manual";
+
+  const resetScroll = () => window.scrollTo(0, 0);
+  resetScroll();
+  window.addEventListener(
+    "pageshow",
+    () => {
+      resetScroll();
+      requestAnimationFrame(() => {
+        resetScroll();
+        requestAnimationFrame(() => {
+          resetScroll();
+          root.classList.remove("is-resetting-scroll");
+          if (canControlRestoration) history.scrollRestoration = previousRestoration;
+        });
+      });
+    },
+    { once: true }
+  );
+})();
+</script>
 <link rel="stylesheet" href="index.css" />
 <script type="application/ld+json">
 {
