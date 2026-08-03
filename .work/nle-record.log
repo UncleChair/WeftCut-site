@@ -1,0 +1,29 @@
+content bounds: {"x":0,"y":30,"width":1280,"height":681}
+setup complete
+objc[48813]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+objc[48813]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+objc[48813]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+[in#0 @ 0xc0ec1c000] Selected pixel format (yuv420p) is not supported by the input device.
+[in#0 @ 0xc0ec1c000] Supported pixel formats:
+[in#0 @ 0xc0ec1c000]   uyvy422
+[in#0 @ 0xc0ec1c000]   yuyv422
+[in#0 @ 0xc0ec1c000]   nv12
+[in#0 @ 0xc0ec1c000]   0rgb
+[in#0 @ 0xc0ec1c000]   bgr0
+[51.954] establish
+[56.761] play/pause
+[59.221] scrub
+[01.085] zoom in
+clips: 3
+[03.066] select tide
+[06.044] blade split
+clips after split: 4
+[08.013] delete segment
+[10.424] trim tide out
+kf twirls: 1
+[14.027] keyframe lanes
+[21.780] effect blur 10
+[27.408] palette → export
+[32.385] log console
+[40.017] finale
+DONE

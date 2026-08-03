@@ -1,0 +1,369 @@
+[
+  {
+    "t": 1501,
+    "name": "import_media",
+    "args": {
+      "path": "~/footage/dawn.mp4"
+    },
+    "ms": 103,
+    "isError": false
+  },
+  {
+    "t": 2505,
+    "name": "import_media",
+    "args": {
+      "path": "~/footage/tide.mp4"
+    },
+    "ms": 62,
+    "isError": false
+  },
+  {
+    "t": 3468,
+    "name": "import_media",
+    "args": {
+      "path": "~/footage/ember.mp4"
+    },
+    "ms": 79,
+    "isError": false
+  },
+  {
+    "t": 4448,
+    "name": "import_media",
+    "args": {
+      "path": "~/footage/mono_silent.mp4"
+    },
+    "ms": 70,
+    "isError": false
+  },
+  {
+    "t": 6825,
+    "name": "add_video_layer",
+    "args": {
+      "track_id": "019fbef9-3e54-7bc4-a4da-41249c990772",
+      "media_id": "8f5777f4-fc84-4b57-b919-79a430065e24",
+      "t_start_us": 0,
+      "t_end_us": 6000000,
+      "src_in_us": 0,
+      "src_out_us": 6000000
+    },
+    "ms": 7,
+    "isError": false
+  },
+  {
+    "t": 8134,
+    "name": "add_video_layer",
+    "args": {
+      "track_id": "019fbef9-3e54-7bc4-a4da-41249c990772",
+      "media_id": "d4951c90-cc1e-4f06-acb4-f0ed0ce47fb5",
+      "t_start_us": 6000000,
+      "t_end_us": 12000000,
+      "src_in_us": 0,
+      "src_out_us": 6000000
+    },
+    "ms": 7,
+    "isError": false
+  },
+  {
+    "t": 9442,
+    "name": "add_video_layer",
+    "args": {
+      "track_id": "019fbef9-3e54-7bc4-a4da-41249c990772",
+      "media_id": "a254aa5e-ba40-41cc-81fd-78fc57ac24fa",
+      "t_start_us": 12000000,
+      "t_end_us": 18000000,
+      "src_in_us": 0,
+      "src_out_us": 6000000
+    },
+    "ms": 7,
+    "isError": false
+  },
+  {
+    "t": 10750,
+    "name": "add_track",
+    "args": {
+      "label": "B-roll"
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 10754,
+    "name": "add_video_layer",
+    "args": {
+      "track_id": "019fbef9-8d0f-7bdd-ad91-faaebde3ae9e",
+      "media_id": "a40c1cbb-3d81-4cc8-811d-5fef73248c89",
+      "t_start_us": 3000000,
+      "t_end_us": 9000000,
+      "src_in_us": 0,
+      "src_out_us": 6000000
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 12059,
+    "name": "split_layer",
+    "args": {
+      "layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "at_t_us": 9000000
+    },
+    "ms": 6,
+    "isError": false
+  },
+  {
+    "t": 13166,
+    "name": "delete_layer",
+    "args": {
+      "layer_id": "019fbef9-922c-71fc-bccf-0ec37e928264"
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 14074,
+    "name": "delete_layer",
+    "args": {
+      "layer_id": "019fbef9-922d-7ac4-879f-9691bd01a6b9"
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 14978,
+    "name": "move_layer",
+    "args": {
+      "layer_id": "019fbef9-87f3-78af-8d62-8ebcffb62510",
+      "new_track_id": "019fbef9-3e54-7bc4-a4da-41249c990772",
+      "new_t_start_us": 9000000
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 16283,
+    "name": "add_transition",
+    "args": {
+      "from_layer_id": "019fbef9-7dbb-7f4a-b71f-2bbe2847e8cf",
+      "to_layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "duration_us": 600000,
+      "kind": "Crossfade"
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 17487,
+    "name": "add_transition",
+    "args": {
+      "from_layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "to_layer_id": "019fbef9-87f3-78af-8d62-8ebcffb62510",
+      "duration_us": 600000,
+      "kind": "Wipe",
+      "direction": "left"
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 18692,
+    "name": "list_motifs",
+    "args": {},
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 18696,
+    "name": "add_motif",
+    "args": {
+      "motif_id": "lower-third",
+      "t_start_us": 800000,
+      "t_end_us": 5800000,
+      "props": {
+        "title": "The Coast at Dawn",
+        "subtitle": "Agent cut — v1",
+        "accent": "#6696E6"
+      }
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 21202,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-8d13-7ae4-a2b9-97a064a8b157",
+      "param_key": "opacity",
+      "t_us": 3000000,
+      "value": 0
+    },
+    "ms": 5,
+    "isError": false
+  },
+  {
+    "t": 21207,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-8d13-7ae4-a2b9-97a064a8b157",
+      "param_key": "opacity",
+      "t_us": 3800000,
+      "value": 1,
+      "interp": {
+        "kind": "EaseOut"
+      }
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 21211,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-8d13-7ae4-a2b9-97a064a8b157",
+      "param_key": "opacity",
+      "t_us": 8200000,
+      "value": 1
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 21215,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-8d13-7ae4-a2b9-97a064a8b157",
+      "param_key": "opacity",
+      "t_us": 9000000,
+      "value": 0,
+      "interp": {
+        "kind": "EaseOut"
+      }
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 22021,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "param_key": "scale_x",
+      "t_us": 6000000,
+      "value": 1
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 22024,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "param_key": "scale_y",
+      "t_us": 6000000,
+      "value": 1
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 22028,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "param_key": "scale_x",
+      "t_us": 9000000,
+      "value": 1.06,
+      "interp": {
+        "kind": "Linear"
+      }
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 22032,
+    "name": "set_keyframe",
+    "args": {
+      "layer_id": "019fbef9-82d8-75d3-9c22-76c2ae0a4fb4",
+      "param_key": "scale_y",
+      "t_us": 9000000,
+      "value": 1.06,
+      "interp": {
+        "kind": "Linear"
+      }
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 22937,
+    "name": "add_effect",
+    "args": {
+      "layer_id": "019fbef9-87f3-78af-8d62-8ebcffb62510",
+      "kind": "blur"
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 22941,
+    "name": "update_effect",
+    "args": {
+      "layer_id": "019fbef9-87f3-78af-8d62-8ebcffb62510",
+      "effect_id": "019fbef9-bcaa-7c73-bbd8-30a0c5ee7154",
+      "patch": {
+        "params": {
+          "strength": {
+            "mode": "Static",
+            "value": 4
+          }
+        }
+      }
+    },
+    "ms": 3,
+    "isError": false
+  },
+  {
+    "t": 23945,
+    "name": "apply_subtitles",
+    "args": {
+      "body": "1\n00:00:00,600 --> 00:00:03,200\nWeftCut — the agent-native editor\n\n2\n00:00:06,400 --> 00:00:09,000\nEvery edit lands on the timeline live\n\n3\n00:00:09,600 --> 00:00:13,000\nConnect Claude, Cursor, or any MCP client\n"
+    },
+    "ms": 5,
+    "isError": false
+  },
+  {
+    "t": 25350,
+    "name": "detect_silences",
+    "args": {
+      "layer_id": "019fbef9-7dbd-729f-8f0f-a2a6215792d7"
+    },
+    "ms": 6,
+    "isError": false
+  },
+  {
+    "t": 26157,
+    "name": "add_marker",
+    "args": {
+      "t_us": 0,
+      "label": "Agent cut v1",
+      "color": {
+        "r": 102,
+        "g": 150,
+        "b": 230,
+        "a": 255
+      }
+    },
+    "ms": 4,
+    "isError": false
+  },
+  {
+    "t": 26161,
+    "name": "checkpoint",
+    "args": {
+      "label": "Agent cut v1"
+    },
+    "ms": 4,
+    "isError": false
+  }
+]

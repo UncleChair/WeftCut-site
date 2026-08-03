@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /.work/
+
+Sitemap: https://weftcut.com/sitemap.xml

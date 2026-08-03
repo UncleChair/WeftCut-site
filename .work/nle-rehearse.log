@@ -1,0 +1,24 @@
+content bounds: {"x":0,"y":30,"width":1280,"height":681}
+track order: B-roll | A roll | B roll | Captions | Overlay
+timeline layers in DOM: 8
+setup complete
+[38.030] establish
+[43.238] play/pause
+[45.598] scrub
+[48.590] zoom in
+clips: 3
+ clip 0 -135,670 776x48
+ clip 1 641,670 776x48
+ clip 2 1416,670 646x48
+[50.723] select tide
+[53.871] blade split
+clips after split: 3
+[54.774] delete segment
+[25.778] trim ember head
+kf twirls: 3
+[28.485] keyframe lanes
+[31.204] effect blur 10
+[36.566] palette → export
+[41.722] log console
+[49.677] finale
+DONE

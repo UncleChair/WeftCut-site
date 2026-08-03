@@ -1,0 +1,10 @@
+{
+  "name": "weftcut-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Marketing homepage for WeftCut — static, zero-dependency",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs"
+  }
+}

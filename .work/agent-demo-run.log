@@ -1,0 +1,40 @@
+content bounds: {"x":0,"y":30,"width":1280,"height":681}
+objc[40638]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+objc[40638]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+objc[40638]: class `NSKVONotifying_AVCaptureScreenInput' not linked into application
+[in#0 @ 0x876c1c000] Selected pixel format (yuv420p) is not supported by the input device.
+[in#0 @ 0x876c1c000] Supported pixel formats:
+[in#0 @ 0x876c1c000]   uyvy422
+[in#0 @ 0x876c1c000]   yuyv422
+[in#0 @ 0x876c1c000]   nv12
+[in#0 @ 0x876c1c000]   0rgb
+[in#0 @ 0x876c1c000]   bgr0
+[1.5s] start
+[1.6s] import dawn
+[2.6s] import tide
+[3.5s] import ember
+[4.5s] import mono_silent
+A roll: 019fbef9-3e54-7bc4-a4da-41249c990772
+[6.8s] place dawn @0-6s
+[8.1s] place tide @6-12s
+[9.4s] place ember @12-18s
+overlay track: 019fbef9-8d0f-7bdd-ad91-faaebde3ae9e
+[10.8s] place mono @3-9s
+[12.1s] split tide @9s
+[13.2s] delete tail
+[14.1s] delete orphaned audio sliver
+[15.0s] move ember → 9s
+[16.3s] crossfade dawn→tide
+[17.5s] wipe tide→ember
+[18.7s] list_motifs → lower-third
+[18.7s] add lower third
+[21.2s] b-roll opacity fade
+[22.0s] tide slow push
+[22.9s] ember blur
+[23.9s] captions
+[25.4s] detect_silences → 1 ranges
+[26.2s] marker + checkpoint
+[28.3s] playback
+[44.7s] capture stopped
+log entries: 31
+DONE

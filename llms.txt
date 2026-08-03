@@ -1,0 +1,28 @@
+# WeftCut
+
+> WeftCut is a free, open-source (MIT) cross-platform desktop video editor where
+> AI agents are first-class citizens. Instead of bolting AI on as a feature, it
+> exposes the entire editor as an MCP (Model Context Protocol) tool surface on
+> localhost, so external agents — Claude, Cursor, or any MCP client — can perform
+> real editing operations (place/trim/split clips, keyframes, effects, captions,
+> markers, checkpoints, undo) that land in the UI in real time. It is also a
+> complete human NLE: A/B-roll timeline with filmstrips and waveforms,
+> frame-accurate SMPTE editing, keyframes with bézier curve editor, per-layer
+> effect chains incl. chroma key, captions (SRT/VTT/ASS), animated Motif
+> overlays, role-based audio mixing, and H.264/HEVC/AV1/ProRes export up to
+> 10-bit. No bundled models; the intelligence lives in the agent you connect.
+
+## Key facts
+
+- Type: desktop NLE (non-linear editor), Electron + React + Rust (napi-rs) core
+- Agent protocol: MCP over streamable HTTP (127.0.0.1), bearer-token auth
+- Tool surface: ~66 tools/resources/prompts covering the full editing vocabulary
+- Rendering: PixiJS v8 + WebCodecs preview, streamed muxing export
+- License: MIT (bundles FFmpeg under LGPL/GPL lanes)
+- Platforms: macOS, Windows, Linux
+
+## Links
+
+- Repository: https://github.com/UncleChair/WeftCut
+- Documentation: https://github.com/UncleChair/WeftCut/tree/main/docs
+- MCP server docs: https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md

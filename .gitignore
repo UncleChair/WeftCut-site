@@ -1,0 +1,11 @@
+# dependencies (harness symlinks to the WeftCut repo's node_modules)
+node_modules
+
+# macOS
+.DS_Store
+
+# scratch, regenerated on demand:
+# - design-review screenshots from verification runs
+.work/review*/
+# - WeftCut project files; every harness script recreates them at run start
+.work/projects/
