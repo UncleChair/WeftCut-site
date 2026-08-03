@@ -82,7 +82,6 @@ code {
   margin: 0 auto;
   padding: 0 clamp(20px, 4vw, 40px);
 }
-.wrap-narrow { max-width: 860px; }
 
 .mono-dim { font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: 0.04em; }
 
@@ -993,33 +992,23 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 .oss-card .btn { margin-top: 24px; }
 
 /* ============ FAQ ============ */
-.faq-list { border-top: 1px solid var(--border); }
-.faq-list details { border-bottom: 1px solid var(--border); }
-.faq-list summary {
+.faq-list {
   list-style: none;
-  cursor: pointer;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 4px;
-  font-family: var(--serif);
-  font-size: clamp(17px, 1.8vw, 21px);
-  color: var(--text);
-  transition: color 160ms ease;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(36px, 6vw, 76px);
+  row-gap: clamp(28px, 4vw, 44px);
 }
-.faq-list summary::-webkit-details-marker { display: none; }
-.faq-list summary::after {
-  content: "+";
-  font: 400 22px var(--serif);
-  color: var(--slate);
-  transition: transform 220ms ease;
-  flex-shrink: 0;
+.faq-list li {
+  padding-top: clamp(20px, 2.5vw, 28px);
+  border-top: 1px solid rgba(54, 62, 75, 0.48);
 }
-.faq-list details[open] summary::after { transform: rotate(45deg); color: var(--accent); }
-.faq-list summary:hover { color: var(--accent); }
-.faq-list details p {
-  padding: 0 4px 24px;
+.faq-list h3 {
+  margin-bottom: 10px;
+  font: 400 clamp(19px, 2vw, 24px)/1.35 var(--serif);
+  letter-spacing: -0.01em;
+}
+.faq-list p {
   color: var(--dim);
   font-size: 14.5px;
   line-height: 1.75;
@@ -1074,6 +1063,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   .finale-values article + article { border-left: 0; border-top: 1px solid var(--border); }
   .finale-closing { grid-template-columns: minmax(0, 1fr); }
   .oss-card { border-top: 1px solid var(--border2); border-left: 0; }
+  .faq-list { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 560px) {
