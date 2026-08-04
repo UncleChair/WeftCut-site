@@ -314,34 +314,6 @@
     measureTimeline();
   }
 
-  /* ---------- hero program-monitor timecode ---------- */
-  const heroVideo = document.getElementById("heroVideo");
-  const heroTc = document.getElementById("heroTc");
-  if (heroVideo && heroTc) {
-    if (reduced) {
-      heroVideo.pause();
-      heroVideo.removeAttribute("autoplay");
-    }
-    let ticking = false;
-    const tick = () => {
-      heroTc.textContent = "TC " + smpte(heroVideo.currentTime, 30);
-      if (!heroVideo.paused && !heroVideo.ended) {
-        requestAnimationFrame(tick);
-      } else {
-        ticking = false;
-      }
-    };
-    const start = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(tick);
-      }
-    };
-    heroVideo.addEventListener("play", start);
-    heroVideo.addEventListener("playing", start);
-    if (!heroVideo.paused) start();
-  }
-
   /* ---------- one-shot Motif export playback ---------- */
   const motifExportVideo = document.getElementById("motifExportVideo");
   if (motifExportVideo) {
