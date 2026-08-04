@@ -17,7 +17,8 @@
     "switchHref": "/",
     "switchLang": "en",
     "switchAria": "Switch to English",
-    "switchTitle": "English"
+    "switchTitle": "English",
+    "preload": ["/assets/fonts/wenkai-gb-medium.woff2"]
   },
 
   "html": {

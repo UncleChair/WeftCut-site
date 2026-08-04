@@ -104,6 +104,19 @@ function buildLocale(locale) {
     `$1\n  "inLanguage": "${cfg.lang}",`
   )
 
+  // --- per-locale preloads --------------------------------------------------
+  // The heading webfont only exists for languages that need one, so the hint
+  // is injected here rather than sitting in index.html where English would
+  // fetch a font it never uses.
+  if (cfg.preload && cfg.preload.length) {
+    const anchor = '<link rel="icon"'
+    if (!doc.includes(anchor)) fail(`${locale}: no <link rel="icon"> to anchor preloads to`)
+    const tags = cfg.preload
+      .map((href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin />`)
+      .join('\n')
+    doc = doc.replace(anchor, `${tags}\n${anchor}`)
+  }
+
   // --- language switcher ---------------------------------------------------
   // Flip every marked anchor to point back at the language it came from. Only
   // attributes are rewritten, so the nav's globe icon survives untouched; the

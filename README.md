@@ -15,6 +15,7 @@ build-i18n.mjs      generates the localized pages from index.html + i18n/*.json
 i18n/zh.json        Simplified Chinese copy (English source text as the key)
 zh/                 GENERATED — do not hand-edit; run `npm run build`
 assets/             shared media: real screen recordings, screenshots, agent log
+assets/fonts/       GENERATED — the Chinese heading face, see Fonts below
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
 package.json        npm start
 robots.txt
@@ -71,6 +72,37 @@ Notes:
 - `html[lang^="zh"]` rules at the end of `index.css` supply CJK font fallbacks
   (the mono stack has no Han glyphs at all), drop the synthesized italic Han
   characters don't have, and halve the wide Latin letter-spacing.
+
+## Fonts
+
+The page uses system fonts everywhere except one: the Chinese headings.
+
+Georgia is the Latin display face and carries no Han glyphs, so without help the
+Chinese headings resolve to whatever the OS supplies — Songti SC on macOS,
+SimSun on Windows, a coin toss on Linux. One self-hosted subset makes the
+headline look the same everywhere.
+
+```sh
+python .work/harness/fonts.py           # rebuild assets/fonts/ (needs zh/ built first)
+python .work/harness/fonts.py --check   # CI guard: fail if the font is stale
+```
+
+The face is **霞鹜文楷 GB Medium** (LXGW WenKai GB, OFL-1.1). Three choices worth
+recording:
+
+- **GB, not the original.** LXGW WenKai derives from FONTWORKS' Klee One and
+  carries Japanese glyph forms for most shared characters — 46 of the 71 hanzi
+  in this page's h1/h2 are drawn differently. The GB edition uses mainland forms.
+- **Medium, mapped to weight 400.** Every `var(--serif)` consumer is weight 400.
+  The heavier cut is there because Georgia is a sturdy low-contrast serif and the
+  Regular cut reads thin beside it on a dark ground — not to serve `font-weight: 500`.
+- **CJK-only subset.** Latin inside a heading still falls through to Georgia,
+  which is the pairing the design wants.
+
+The subset is exact — built from the Chinese headings actually on the page, so
+161 glyphs and **33 KB**, preloaded on `/zh/` and never requested by `/`. It must
+be rebuilt whenever those headings change; `--check` is the guard. Upstream's
+25 MB TTF caches in `.work/fonts/` (gitignored) and re-downloads on demand.
 
 ## How the media was made (the honest part)
 

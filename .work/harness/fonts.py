@@ -1,20 +1,28 @@
 #!/usr/bin/env python
-"""Build the site's self-hosted Maple Mono CN web fonts.
+"""Build the one web font the site ships: the Chinese heading face.
 
-Maple Mono ships no CN woff2 and no CN variable font — the CN builds are
-17 MB static TTFs. So we subset them ourselves, and split each weight into two
-faces by unicode-range: a latin face every visitor pays for, and a CJK face only
-the Chinese page ever downloads.
+The Latin display face is Georgia, a system font. It carries no Han glyphs, so
+without this the Chinese page's headings resolve to whatever the OS supplies —
+Songti SC on macOS, SimSun on Windows, a coin toss on Linux. Self-hosting one
+subset makes the headline look the same everywhere.
 
-The CJK charset is exact — built from the Chinese copy actually on the page. A
-full common-hanzi subset costs ~900 KB per weight; the exact set costs ~240 KB.
-That means the fonts MUST be rebuilt whenever the Chinese copy changes; the
-script fails loudly rather than shipping a font with holes in it.
+The face is 霞鹜文楷 GB Medium (LXGW WenKai GB, OFL-1.1). GB, not the original:
+the original derives from FONTWORKS' Klee One and carries Japanese glyph forms
+for most shared characters — 46 of the 71 in this page's h1/h2 differ. Medium
+because Georgia is a sturdy low-contrast serif, and the Regular cut reads thin
+beside it on a dark background.
+
+The subset is CJK-only, so Latin inside a heading still falls through to
+Georgia. It is also exact — built from the Chinese copy actually on the page —
+so the font MUST be rebuilt when that copy changes. --check is the CI guard.
 
     python .work/harness/fonts.py           # build
-    python .work/harness/fonts.py --check   # verify committed fonts are current
+    python .work/harness/fonts.py --check   # verify the committed font is current
 
 Requires fontTools + brotli:  python -m pip install fonttools brotli
+
+The reverted Maple Mono CN whole-page pipeline lives in git history, should it
+ever come back: `git show f467d9c:.work/harness/fonts.py`.
 """
 import argparse
 import io
@@ -26,91 +34,37 @@ import sys
 import urllib.request
 import zipfile
 
-VERSION = "v7.9"
-ARCHIVE = "MapleMono-CN-unhinted.zip"
-RELEASE = "https://github.com/subframe7536/maple-font/releases/download/%s/%s" % (VERSION, ARCHIVE)
+VERSION = "v1.522"
+TTF = "LXGWWenKaiGB-Medium.ttf"
+RELEASE = "https://github.com/lxgw/LxgwWenkaiGB/releases/download/%s/%s" % (VERSION, TTF)
+LICENSE_URL = "https://raw.githubusercontent.com/lxgw/LxgwWenkaiGB/main/OFL.txt"
 
 SITE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-SRC = os.path.join(SITE, ".work", "fonts", VERSION)
+SRC = os.path.join(SITE, ".work", "fonts", "lxgw-" + VERSION)
 OUT = os.path.join(SITE, "assets", "fonts")
+FACE = "wenkai-gb-medium.woff2"
 
-# (output suffix, source face). h1/h2 are weight 400 with italic <em>; h3 is 600;
-# the mono labels run 500/600; one rule uses 700.
-FACES = [
-    ("400", "Regular"),
-    ("400i", "Italic"),
-    ("500", "Medium"),
-    ("600", "SemiBold"),
-    ("700", "Bold"),
+# Every element that resolves to var(--serif) is weight 400, so one face covers
+# the lot: h1/h2, .finale-line, .oss-card h3 and .faq-list h3. Matching all
+# h1/h2/h3 plus .finale-line is a deliberate superset — it costs a few KB and
+# means moving a heading between --serif and --sans can't punch a hole in the
+# subset.
+SERIF_PATTERNS = [
+    r"<h[123][^>]*>(.*?)</h[123]>",
+    r'<p class="finale-line"[^>]*>(.*?)</p>',
 ]
 
-# Only these weights get a CJK face — at ~240 KB each, five would be absurd.
-# CSS weight matching folds 500 into 400 and 600/650 into 700 for CJK runs.
-CJK_FACES = ["400", "700"]
-
-# Anything that can put a latin glyph on screen: the markup, the script's string
-# literals, and the transcript the log panel fetches at runtime.
-LATIN_SOURCES = ["index.html", "index.js", "assets/agent-session.json"]
-# Anything carrying Chinese copy. Missing files are skipped — the zh page is
-# generated, so a clean checkout may not have it yet.
-CJK_SOURCES = ["zh/index.html", "i18n/zh.json"]
-
 CJK_RANGE = (
-    "U+2E80-2EFF,U+3000-303F,U+3200-33FF,U+3400-4DBF,U+4E00-9FFF,"
-    "U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF"
+    "U+2E80-303F, U+3200-33FF, U+3400-4DBF, U+4E00-9FFF, "
+    "U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF"
 )
+
+# Punctuation the copy could plausibly gain without anyone thinking to rebuild.
+PUNCT = "，。、；：？！「」『』（）《》〈〉【】——…·　"
 
 
 def log(msg):
     print(msg, flush=True)
-
-
-def ensure_sources():
-    """Download + extract the CN TTFs we need. ~88 MB, cached, never committed."""
-    needed = [os.path.join(SRC, "MapleMono-CN-%s.ttf" % face) for _, face in FACES]
-    if all(os.path.exists(p) for p in needed):
-        return
-    os.makedirs(SRC, exist_ok=True)
-    log("fetching %s (~140 MB, one time)…" % ARCHIVE)
-    with urllib.request.urlopen(RELEASE) as resp:
-        blob = resp.read()
-    z = zipfile.ZipFile(io.BytesIO(blob))
-    for _, face in FACES:
-        member = "MapleMono-CN-%s.ttf" % face
-        with z.open(member) as src, open(os.path.join(SRC, member), "wb") as fh:
-            fh.write(src.read())
-        log("  extracted %s" % member)
-    with z.open("LICENSE.txt") as src:
-        license_text = src.read()
-    os.makedirs(OUT, exist_ok=True)
-    # OFL-1.1 requires the licence travel with the font files.
-    with open(os.path.join(OUT, "LICENSE-MapleMono.txt"), "wb") as fh:
-        fh.write(license_text)
-
-
-def read_sources(rels):
-    text = ""
-    seen = []
-    for rel in rels:
-        path = os.path.join(SITE, rel.replace("/", os.sep))
-        if not os.path.exists(path):
-            continue
-        with open(path, encoding="utf-8") as fh:
-            text += fh.read()
-        seen.append(rel)
-    return text, seen
-
-
-def latin_charset():
-    text, seen = read_sources(LATIN_SOURCES)
-    chars = set(text)
-    # Keep the printable ASCII + Latin-1 baseline whatever the copy says, so an
-    # ordinary copy edit can never punch a hole in the shipped subset.
-    chars |= {chr(c) for c in range(0x20, 0x7F)}
-    chars |= {chr(c) for c in range(0xA0, 0x100)}
-    chars -= set("\r\n\t")
-    chars = {c for c in chars if not is_cjk(c)}
-    return "".join(sorted(chars)), seen
 
 
 def is_cjk(ch):
@@ -122,78 +76,89 @@ def is_cjk(ch):
     )
 
 
-def cjk_charset():
-    text, seen = read_sources(CJK_SOURCES)
-    # Strip tags and entities so markup can't drag glyphs into the subset.
-    text = re.sub(r"<[^>]*>", " ", text)
-    chars = {c for c in text if is_cjk(c)}
-    return "".join(sorted(chars)), seen
+def ensure_source():
+    path = os.path.join(SRC, TTF)
+    if os.path.exists(path):
+        return path
+    os.makedirs(SRC, exist_ok=True)
+    log("fetching %s (~25 MB, one time)…" % TTF)
+    with urllib.request.urlopen(RELEASE) as resp:
+        blob = resp.read()
+    # The release serves the bare TTF, but tolerate a zipped asset too.
+    if blob[:2] == b"PK":
+        z = zipfile.ZipFile(io.BytesIO(blob))
+        blob = z.read(next(n for n in z.namelist() if n.endswith(TTF)))
+    with open(path, "wb") as fh:
+        fh.write(blob)
+    return path
 
 
-def subset(src, dest, text):
-    cmd = [
-        sys.executable, "-m", "fontTools.subset", src,
-        "--output-file=" + dest,
-        "--flavor=woff2",
-        # No ligatures: Maple's calt/liga lookups cost +24 KB per face, and code
-        # ligatures in marketing prose are a liability. ccmp/mark keep diacritics
-        # composing correctly.
-        "--layout-features=ccmp,mark,mkmk",
-        "--desubroutinize",
-        "--no-hinting",
-        "--drop-tables+=DSIG",
-        "--name-IDs=1,2,3,4,6",
-        "--text=" + text,
-    ]
-    subprocess.run(cmd, check=True, capture_output=True)
-    return os.path.getsize(dest)
+def ensure_license():
+    # OFL-1.1 requires the licence travel with the font.
+    dest = os.path.join(OUT, "LICENSE-LXGWWenKaiGB.txt")
+    if os.path.exists(dest):
+        return
+    os.makedirs(OUT, exist_ok=True)
+    with urllib.request.urlopen(LICENSE_URL) as resp:
+        text = resp.read()
+    with open(dest, "wb") as fh:
+        fh.write(text)
+
+
+def charset():
+    path = os.path.join(SITE, "zh", "index.html")
+    if not os.path.exists(path):
+        log("zh/index.html is missing — run `npm run build` first")
+        sys.exit(1)
+    html = open(path, encoding="utf-8").read()
+    text = ""
+    for pattern in SERIF_PATTERNS:
+        for match in re.findall(pattern, html, re.S):
+            text += re.sub(r"<[^>]*>", " ", match) + " "
+    chars = {c for c in text if is_cjk(c)} | set(PUNCT)
+    return "".join(sorted(chars))
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true",
-                    help="fail if the committed fonts don't match current copy")
+                    help="fail if the committed font doesn't match current copy")
     args = ap.parse_args()
 
-    ensure_sources()
+    src = ensure_source()
+    ensure_license()
     os.makedirs(OUT, exist_ok=True)
 
-    latin, latin_seen = latin_charset()
-    cjk, cjk_seen = cjk_charset()
-    log("latin charset: %d glyphs  from %s" % (len(latin), ", ".join(latin_seen)))
-    if cjk:
-        log("cjk charset  : %d glyphs  from %s" % (len(cjk), ", ".join(cjk_seen)))
-    else:
-        log("cjk charset  : 0 glyphs - no Chinese copy found, skipping CJK faces")
+    text = charset()
+    log("heading charset: %d CJK glyphs" % len(text))
 
-    manifest = {"version": VERSION, "latin": len(latin), "cjk": len(cjk), "files": {}}
-    total = 0
-    for suffix, face in FACES:
-        src = os.path.join(SRC, "MapleMono-CN-%s.ttf" % face)
+    dest = os.path.join(OUT, FACE)
+    subprocess.run(
+        [
+            sys.executable, "-m", "fontTools.subset", src,
+            "--output-file=" + dest,
+            "--flavor=woff2",
+            "--layout-features=ccmp,mark,mkmk",
+            "--desubroutinize",
+            "--no-hinting",
+            "--drop-tables+=DSIG",
+            "--name-IDs=1,2,3,4,6",
+            "--text=" + text,
+        ],
+        check=True,
+        capture_output=True,
+    )
+    size = os.path.getsize(dest)
+    log("  %-24s %6.1f KB" % (FACE, size / 1024))
 
-        name = "maple-latin-%s.woff2" % suffix
-        size = subset(src, os.path.join(OUT, name), latin)
-        manifest["files"][name] = size
-        total += size
-        log("  %-24s %7.1f KB" % (name, size / 1024))
-
-        if cjk and suffix in CJK_FACES:
-            name = "maple-cjk-%s.woff2" % suffix
-            size = subset(src, os.path.join(OUT, name), cjk)
-            manifest["files"][name] = size
-            total += size
-            log("  %-24s %7.1f KB" % (name, size / 1024))
-
-    log("total %.1f KB  (latin-only pages download %.1f KB)"
-        % (total / 1024, sum(v for k, v in manifest["files"].items() if "latin" in k) / 1024))
-
+    manifest = {"source": TTF, "version": VERSION, "glyphs": len(text), FACE: size}
     path = os.path.join(OUT, "manifest.json")
     if args.check:
         with open(path, encoding="utf-8") as fh:
             if json.load(fh) != manifest:
-                log("FAIL: committed fonts are stale — run `python .work/harness/fonts.py`")
+                log("FAIL: committed font is stale — run `python .work/harness/fonts.py`")
                 return 1
-        log("OK: committed fonts match current copy")
+        log("OK: committed font matches current copy")
         return 0
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(manifest, fh, indent=2, sort_keys=True)
