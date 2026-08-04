@@ -847,7 +847,8 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 .log-body::-webkit-scrollbar { width: 8px; }
 .log-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 .log-foot {
-  padding: 10px 14px;
+  padding: 8px 14px;
+  line-height: 1.5;
   border-top: 1px solid var(--border);
   background: var(--card);
 }
