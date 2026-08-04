@@ -1,0 +1,540 @@
+{
+ "fps": 30,
+ "duration": 56.8,
+ "prompt": "Cut “Aurora Ridge” — a 15-second night-sky teaser — from the four clips in ~/Videos: three acts on the A roll, an embers B-roll with an eased fade and a gentle blur, a crossfade and a wipe, a lower third, three captions, a marker and a checkpoint. One of the clips has dead air — find it.",
+ "final": "\"Aurora Ridge\" is cut and checkpointed at 15.0s on a 1920×1080@30 timeline. Three acts run back to back on the A roll: **Night sky** (aurora, src 3.0–8.0s, deliberately windowed so the shooting star lands ~3.6s into the teaser), **First light** (ridgeline, src 2.0–7.0s), and **Still water** (lakeside, src 2.5–7.5s) — joined by an 0.8s crossfade at 5s and an 0.7s leftward wipe at 10s, each transition auto-extending the outgoing clip into its available tail. Act two carries a slow push-in, scale 1 → 1.06 keyframed on both axes across 5.0–10.7s and eased with smoothed tangents. Embers sits on the B roll from 1.0s under a four-point eased opacity ramp (0 → 0.35 → 0.35 → 0) plus a blur effect; `detect_silences` reported dead air from 5.01s to 6.5s, so I trimmed the out edge back to 5.0s, keeping only the live-crackle first 4s of source. The `lower-third` motif runs 0.8–4.5s with title \"Aurora Ridge\", subtitle \"Cut by an agent over MCP\" and accent `#6696E6`, three marketing captions land at 1.2s, 6.0s and 11.2s, and a `#6696E6` marker named \"Agent cut v1\" sits at 0.\n\nTwo things to flag. First, embers' paired audio was rejected with \"layer overlap\" — the auto-pairing puts every clip's audio on the *B roll* track, which was already occupied at that span by the aurora and ridgeline audio; the embers **video** layer committed fine, so rather than re-place it I left it silent (fitting for a B-roll texture) and ran `detect_silences` against the video layer id as your notes allow. There is no orphaned audio sliver. Second, I could not set the blur's strength: `update_effect` carries its whole payload in the untyped `patch` field, which this client force-serializes to a string — the server then leniently ignores it and returns success, leaving `params: {}` (verified via `project://layers/...`). The `set_param_track` fallback failed explicitly with `\"invalid track: not an object\"`, confirming the cause. Since your notes ruled out keyframing effect params, the blur is added and enabled but running at its catalog default rather than ~4; that same stringification quirk affects any tool whose payload lives entirely in an untyped field.",
+ "events": [
+  {
+   "t": 1.9,
+   "type": "call",
+   "aux": true,
+   "name": "ReadMcpResourceTool",
+   "args": {
+    "uri": "project://tracks"
+   },
+   "ms": 8
+  },
+  {
+   "t": 1.9,
+   "type": "call",
+   "name": "list_motifs",
+   "args": {},
+   "ms": 9
+  },
+  {
+   "t": 3.07,
+   "type": "call",
+   "name": "import_media",
+   "args": {
+    "path": "~/Videos/WeftCut-demo/footage/aurora.mp4"
+   },
+   "ms": 70
+  },
+  {
+   "t": 3.2,
+   "type": "call",
+   "name": "import_media",
+   "args": {
+    "path": "~/Videos/WeftCut-demo/footage/ridgeline.mp4"
+   },
+   "ms": 97
+  },
+  {
+   "t": 4.07,
+   "type": "call",
+   "name": "import_media",
+   "args": {
+    "path": "~/Videos/WeftCut-demo/footage/lakeside.mp4"
+   },
+   "ms": 130
+  },
+  {
+   "t": 4.21,
+   "type": "call",
+   "name": "import_media",
+   "args": {
+    "path": "~/Videos/WeftCut-demo/footage/embers.mp4"
+   },
+   "ms": 244
+  },
+  {
+   "t": 4.98,
+   "type": "say",
+   "text": "Tracks: A roll `019fc88f-37dd-7d35...`, B roll `019fc88f-37dd-79d2...`. Motif `lower-third` takes `{title, subtitle, accent, align}`. Placing the three acts:"
+  },
+  {
+   "t": 5.38,
+   "type": "call",
+   "name": "add_video_layer",
+   "args": {
+    "media_id": "7dc15341-318d-46d0-a6d2-c2af73bb7213",
+    "track_id": "019fc88f-37dd-7d35-a33f-c39b8fd0980b",
+    "src_in_us": 3000000,
+    "src_out_us": 8000000,
+    "t_start_us": 0,
+    "t_end_us": 5000000
+   },
+   "ms": 10
+  },
+  {
+   "t": 6.55,
+   "type": "call",
+   "name": "add_video_layer",
+   "args": {
+    "media_id": "69974eb3-65c3-4e69-9906-e59412f653a7",
+    "track_id": "019fc88f-37dd-7d35-a33f-c39b8fd0980b",
+    "src_in_us": 2000000,
+    "src_out_us": 7000000,
+    "t_start_us": 5000000,
+    "t_end_us": 10000000
+   },
+   "ms": 11
+  },
+  {
+   "t": 7.71,
+   "type": "call",
+   "name": "add_video_layer",
+   "args": {
+    "media_id": "b3d76708-e033-4ca9-9185-4a3cc241f853",
+    "track_id": "019fc88f-37dd-7d35-a33f-c39b8fd0980b",
+    "src_in_us": 2500000,
+    "src_out_us": 7500000,
+    "t_start_us": 10000000,
+    "t_end_us": 15000000
+   },
+   "ms": 8
+  },
+  {
+   "t": 8.88,
+   "type": "call",
+   "name": "add_video_layer",
+   "args": {
+    "media_id": "24b43a8f-4cc2-4d85-ba44-69cb710e71d7",
+    "track_id": "019fc88f-37dd-79d2-89f7-bea96d11eb94",
+    "src_in_us": 0,
+    "src_out_us": 5500000,
+    "t_start_us": 1000000,
+    "t_end_us": 6500000
+   },
+   "ms": 17,
+   "error": true,
+   "result_hint": "\"MCP error -32602: layer overlap\""
+  },
+  {
+   "t": 10.05,
+   "type": "call",
+   "name": "update_layer",
+   "args": {
+    "layer_id": "019fc890-a93e-712a-8a31-4fc216aeda9d",
+    "patch": {
+     "label": "Night sky"
+    }
+   },
+   "ms": 264
+  },
+  {
+   "t": 10.4,
+   "type": "call",
+   "name": "update_layer",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "patch": {
+     "label": "First light"
+    }
+   },
+   "ms": 7
+  },
+  {
+   "t": 10.87,
+   "type": "call",
+   "name": "update_layer",
+   "args": {
+    "layer_id": "019fc890-b522-7ead-a41b-205db8565cfa",
+    "patch": {
+     "label": "Still water"
+    }
+   },
+   "ms": 8
+  },
+  {
+   "t": 11.74,
+   "type": "call",
+   "name": "add_motif",
+   "args": {
+    "motif_id": "lower-third",
+    "t_start_us": 800000,
+    "t_end_us": 4500000
+   },
+   "ms": 8
+  },
+  {
+   "t": 12.51,
+   "type": "say",
+   "text": "Embers placement hit an overlap on an empty B roll — I need to see where the paired audio landed before re-planning."
+  },
+  {
+   "t": 12.51,
+   "type": "say",
+   "text": "Diagnosed: the paired audio all landed on the B roll track, so embers' **video** did place (1.0–6.5s) — only its audio pairing was rejected. No orphan, and no re-place needed. Continuing:"
+  },
+  {
+   "t": 12.56,
+   "type": "call",
+   "aux": true,
+   "name": "ReadMcpResourceTool",
+   "args": {
+    "uri": "project://tracks"
+   },
+   "ms": 6
+  },
+  {
+   "t": 12.91,
+   "type": "call",
+   "name": "update_layer_params",
+   "args": {
+    "layer_id": "019fc890-e827-729d-95ba-c00fa1dbda04",
+    "patch": {
+     "kind": "Motif",
+     "props": {
+      "title": "Aurora Ridge",
+      "subtitle": "Cut by an agent over MCP",
+      "accent": "#6696E6",
+      "align": "left"
+     }
+    }
+   },
+   "ms": 7
+  },
+  {
+   "t": 13.38,
+   "type": "call",
+   "name": "update_layer",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "patch": {
+     "label": "Embers"
+    }
+   },
+   "ms": 8
+  },
+  {
+   "t": 14.55,
+   "type": "call",
+   "name": "add_transition",
+   "args": {
+    "from_layer_id": "019fc890-a93e-712a-8a31-4fc216aeda9d",
+    "to_layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "kind": "Crossfade",
+    "duration_us": 800000
+   },
+   "ms": 17
+  },
+  {
+   "t": 15.72,
+   "type": "call",
+   "name": "add_transition",
+   "args": {
+    "from_layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "to_layer_id": "019fc890-b522-7ead-a41b-205db8565cfa",
+    "kind": "Wipe",
+    "direction": "left",
+    "duration_us": 700000
+   },
+   "ms": 5
+  },
+  {
+   "t": 16.28,
+   "type": "call",
+   "name": "detect_silences",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e"
+   },
+   "ms": 7
+  },
+  {
+   "t": 17.05,
+   "type": "say",
+   "text": "Dead air found at 5.01s–6.5s on the timeline (source ~4.0s onward). Trimming the embers slice back to the live-audio portion:"
+  },
+  {
+   "t": 17.45,
+   "type": "call",
+   "name": "trim_layer",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "edge": "out",
+    "new_t_us": 5000000
+   },
+   "ms": 15
+  },
+  {
+   "t": 18.19,
+   "type": "call",
+   "name": "add_effect",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "kind": "blur"
+   },
+   "ms": 9
+  },
+  {
+   "t": 19.15,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_x",
+    "t_us": 5000000,
+    "value": 1
+   },
+   "ms": 8
+  },
+  {
+   "t": 20.32,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_x",
+    "t_us": 10700000,
+    "value": 1.06
+   },
+   "ms": 11
+  },
+  {
+   "t": 21.47,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_y",
+    "t_us": 5000000,
+    "value": 1
+   },
+   "ms": 7
+  },
+  {
+   "t": 22.19,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_y",
+    "t_us": 10700000,
+    "value": 1.06
+   },
+   "ms": 8
+  },
+  {
+   "t": 23.36,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "opacity",
+    "t_us": 1000000,
+    "value": 0
+   },
+   "ms": 8
+  },
+  {
+   "t": 24.53,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "opacity",
+    "t_us": 1800000,
+    "value": 0.35
+   },
+   "ms": 7
+  },
+  {
+   "t": 25.41,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "opacity",
+    "t_us": 4200000,
+    "value": 0.35
+   },
+   "ms": 45
+  },
+  {
+   "t": 26.34,
+   "type": "call",
+   "name": "set_keyframe",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "opacity",
+    "t_us": 4999000,
+    "value": 0
+   },
+   "ms": 9
+  },
+  {
+   "t": 27.36,
+   "type": "call",
+   "name": "update_effect",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "effect_id": "019fc891-c343-7210-bb7b-80dce41c24d3",
+    "patch": "{\"params\": {\"strength\": {\"mode\": \"Static\", \"value\": 4}}}"
+   },
+   "ms": 8
+  },
+  {
+   "t": 28.53,
+   "type": "call",
+   "name": "smooth_keyframes",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "opacity"
+   },
+   "ms": 8
+  },
+  {
+   "t": 29.47,
+   "type": "call",
+   "name": "smooth_keyframes",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_x"
+   },
+   "ms": 9
+  },
+  {
+   "t": 30.41,
+   "type": "call",
+   "name": "smooth_keyframes",
+   "args": {
+    "layer_id": "019fc890-b09b-7e2f-8e35-cb7d5b78d4a6",
+    "param_key": "scale_y"
+   },
+   "ms": 6
+  },
+  {
+   "t": 31.58,
+   "type": "call",
+   "name": "apply_subtitles",
+   "args": {
+    "format": "srt",
+    "t_end_us": 15000000,
+    "body": "1\n00:00:01,200 --> 00:00:04,200\nAurora Ridge — cut by an agent\n\n2\n00:00:06,000 --> 00:00:09,200\nEvery move lands on the timeline live\n\n3\n00:00:11,200 --> 00:00:14,600\nWeftCut — the agent-native editor\n"
+   },
+   "ms": 10
+  },
+  {
+   "t": 32.49,
+   "type": "call",
+   "name": "add_marker",
+   "args": {
+    "label": "Agent cut v1",
+    "t_us": 0,
+    "color": {
+     "r": 102,
+     "g": 150,
+     "b": 230,
+     "a": 255
+    }
+   },
+   "ms": 9
+  },
+  {
+   "t": 33.26,
+   "type": "say",
+   "text": "Now the sanity-check read before the checkpoint:"
+  },
+  {
+   "t": 33.26,
+   "type": "say",
+   "text": "Everything landed except the blur strength — `params` is still `{}`. Fixing that:"
+  },
+  {
+   "t": 33.31,
+   "type": "call",
+   "aux": true,
+   "name": "ReadMcpResourceTool",
+   "args": {
+    "uri": "project://current"
+   },
+   "ms": 9
+  },
+  {
+   "t": 33.66,
+   "type": "call",
+   "name": "update_effect",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "effect_id": "019fc891-c343-7210-bb7b-80dce41c24d3",
+    "patch": "{\"enabled\": true, \"params\": {\"strength\": {\"mode\": \"Static\", \"value\": 4.0}}}"
+   },
+   "ms": 14
+  },
+  {
+   "t": 34.83,
+   "type": "call",
+   "name": "get_param_track",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "effects[019fc891-c343-7210-bb7b-80dce41c24d3].params[strength]"
+   },
+   "ms": 10,
+   "error": true,
+   "result_hint": "\"MCP error -32602: UnknownKeyframeParam\""
+  },
+  {
+   "t": 35.6,
+   "type": "say",
+   "text": "`update_effect`'s payload rides entirely in the untyped `patch` field — this client stringifies it and the server silently ignores it (returns success, `params` stays `{}`). Trying the alternate route:"
+  },
+  {
+   "t": 35.65,
+   "type": "call",
+   "aux": true,
+   "name": "ListMcpResourcesTool",
+   "args": {
+    "uri": "weftcut"
+   },
+   "ms": 4
+  },
+  {
+   "t": 35.65,
+   "type": "call",
+   "aux": true,
+   "name": "ReadMcpResourceTool",
+   "args": {
+    "uri": "project://layers/019fc890-db8d-7b26-aaee-d4646617686e"
+   },
+   "ms": 5
+  },
+  {
+   "t": 36,
+   "type": "call",
+   "name": "set_param_track",
+   "args": {
+    "layer_id": "019fc890-db8d-7b26-aaee-d4646617686e",
+    "param_key": "effects[019fc891-c343-7210-bb7b-80dce41c24d3].params[strength]",
+    "track": "{\"mode\": \"Static\", \"value\": 4}"
+   },
+   "ms": 7,
+   "error": true,
+   "result_hint": "\"MCP error -32602: invalid track: not an object\""
+  },
+  {
+   "t": 36.77,
+   "type": "say",
+   "text": "Confirmed — `\"invalid track: not an object\"` proves the untyped fields arrive as strings. Blur strength isn't reachable from this client; the effect stays added and enabled at its catalog default. Finishing with the checkpoint:"
+  },
+  {
+   "t": 37.17,
+   "type": "call",
+   "name": "checkpoint",
+   "args": {
+    "label": "Agent cut v1"
+   },
+   "ms": 6
+  }
+ ]
+}

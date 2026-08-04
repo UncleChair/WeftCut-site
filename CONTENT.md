@@ -86,9 +86,10 @@ mediabunny containers · MCP over streamable HTTP.
 
 1. Nav: wordmark + anchor links + GitHub link w/ star icon.
 2. Hero: headline, subhead, primary CTA (GitHub), secondary CTA (Docs), hero
-   media (agent demo video) — paired with the synced agent-CLI replay of the
-   real `assets/agent-session.json` trace (prompt, narration, tool calls,
-   ✓/✗ + latency; click any call to seek).
+   media (agent demo video) — paired with the synced replay of the real
+   `assets/agent-session.json` transcript, drawn the way Claude Code's terminal
+   draws it (`>` brief, `⏺` messages and tool calls, `⎿` results, errors and
+   the closing summary; click any line to seek).
 3. "Agent-native" section: the differentiator as product promises — capability
    first (example prompts, the editing vocabulary, live edits on the real
    timeline), the connect-in-a-minute promise kept to one line (Settings →
@@ -134,9 +135,10 @@ mediabunny containers · MCP over streamable HTTP.
   footage aurora/ridgeline/lakeside/embers), CDP screen capture of the live
   app, idle time between calls cut; ends with the finished cut playing back.
 - assets/video/nle-tour.mp4 (+ .webm, poster): human NLE interactions (~53s).
-- assets/agent-session.json: the real session trace (prompt, agent narration,
-  every tool call with args/latency/errors) with timestamps remapped to the
-  compressed video timeline.
+- assets/agent-session.json: the real session transcript in terminal shape
+  (prompt, agent messages, every tool call with its MCP display name, raw
+  params and clipped `⎿` result, errors, closing summary) with timestamps
+  remapped to the compressed video timeline.
 - assets/shots/*.webp: 1600w screenshots — editor-hero, timeline-closeup, curve-editor,
   effects, search-palette, connect-agent, export, captions, motifs, agent-mode,
   eyedropper, log-console.

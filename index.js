@@ -376,6 +376,7 @@
   const demoVideo = document.getElementById("demoVideo");
   const logBody = document.getElementById("logBody");
   const logStat = document.getElementById("logStat");
+  const logMeta = document.getElementById("logMeta");
   if (!demoVideo || !logBody) return;
 
   // The demo sits below the fold, where autoplay doesn't always engage —
@@ -395,37 +396,63 @@
     demoVideo.play().catch(() => {});
   }
 
-  // Compact one-line rendering of a call's arguments: drop opaque ids,
-  // convert µs to seconds, shorten paths and long strings.
-  function fmtArgs(name, args) {
-    if (!args || typeof args !== "object") return "()";
-    if (name === "apply_subtitles" && typeof args.body === "string") {
-      const cues = (args.body.match(/ --> /g) || []).length;
-      return `(srt: ${cues} cue${cues === 1 ? "" : "s"})`;
+  // The agent's prose arrives as markdown. Render the two inline forms the
+  // terminal itself renders — bold and code — as nodes, never as innerHTML.
+  function mdInline(text) {
+    const frag = document.createDocumentFragment();
+    const re = /\*\*([^*]+)\*\*|`([^`]+)`/g;
+    let last = 0;
+    let m;
+    while ((m = re.exec(text))) {
+      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      const node = document.createElement(m[1] ? "strong" : "code");
+      node.textContent = m[1] || m[2];
+      frag.appendChild(node);
+      last = re.lastIndex;
     }
-    const parts = [];
-    for (const [k, v] of Object.entries(args)) {
-      if (v === null || v === undefined) continue;
-      if (/_id$/.test(k) && k !== "motif_id") continue;
-      let key = k;
-      let val;
-      if (/_us$/.test(k) && typeof v === "number") {
-        key = k.replace(/_us$/, "");
-        val = `${(v / 1e6).toFixed(v % 1e6 === 0 ? 0 : 1)}s`;
-      } else if (typeof v === "string") {
-        const s = v.includes("/") ? v.split("/").pop() : v;
-        val = `"${s.length > 24 ? s.slice(0, 22) + "…" : s}"`;
-      } else if (typeof v === "object") {
-        const inner = JSON.stringify(v);
-        val = inner.length > 42 ? inner.slice(0, 40) + "…}" : inner;
-      } else {
-        val = String(v);
-      }
-      parts.push(`${key}: ${val}`);
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    return frag;
+  }
+
+  // One transcript row: the ⏺/> gutter mark plus everything to the right of it.
+  function tuiRow(cls, mark) {
+    const el = document.createElement("div");
+    el.className = "tui " + cls;
+    const gutter = document.createElement("span");
+    gutter.className = "tui-mark";
+    gutter.textContent = mark;
+    gutter.setAttribute("aria-hidden", "true");
+    const body = document.createElement("div");
+    body.className = "tui-text";
+    el.append(gutter, body);
+    return { el, body };
+  }
+
+  // The ⎿ block under a call: the result as the terminal prints it, clipped to
+  // the first few lines with a "+N lines" tail.
+  function tuiResult(ev) {
+    const out = document.createElement("div");
+    out.className = "tui-out";
+    const elbow = document.createElement("span");
+    elbow.className = "tui-elbow";
+    elbow.textContent = "⎿";
+    elbow.setAttribute("aria-hidden", "true");
+    const lines = document.createElement("div");
+    lines.className = "tui-lines";
+    for (const l of ev.out) {
+      const s = document.createElement("span");
+      s.className = "tui-outline";
+      s.textContent = l;
+      lines.appendChild(s);
     }
-    let out = parts.join(", ");
-    if (out.length > 92) out = out.slice(0, 90) + "…";
-    return `(${out})`;
+    if (ev.more) {
+      const s = document.createElement("span");
+      s.className = "tui-more";
+      s.textContent = `… +${ev.more} lines (ctrl+o to expand)`;
+      lines.appendChild(s);
+    }
+    out.append(elbow, lines);
+    return out;
   }
 
   function makeSeekable(el, t) {
@@ -449,71 +476,53 @@
   let lastCur = -2;
 
   function buildLines(session) {
-    for (const el of logBody.querySelectorAll(".tl, .log-empty")) el.remove();
+    for (const el of logBody.querySelectorAll(".tui, .log-empty")) el.remove();
     entries = [];
     callCount = 0;
 
     if (session.prompt) {
-      const el = document.createElement("div");
-      el.className = "tl tl-user";
-      const caret = document.createElement("span");
-      caret.className = "tl-caret";
-      caret.textContent = "❯";
-      const body = document.createElement("span");
-      body.className = "tl-body";
-      const args = document.createElement("span");
-      args.className = "tl-args";
-      args.textContent = session.prompt;
-      body.appendChild(args);
-      el.append(caret, body, document.createElement("span"));
+      const { el, body } = tuiRow("tui-user", ">");
+      body.textContent = session.prompt;
       el.setAttribute("aria-label", "The brief handed to the agent");
       makeSeekable(el, 0);
       logBody.appendChild(el);
     }
 
     for (const ev of session.events) {
-      if (ev.type === "say") {
-        const el = document.createElement("div");
-        el.className = "tl tl-say";
-        const dot = document.createElement("i");
-        dot.className = "tl-dot";
-        const body = document.createElement("span");
-        body.className = "tl-body";
-        body.textContent = ev.text;
-        el.append(dot, body, document.createElement("span"));
-        el.title = ev.text;
-        el.setAttribute("aria-label", "Agent narration — seek video");
-        makeSeekable(el, ev.t);
-        logBody.appendChild(el);
-        entries.push({ t: ev.t, el, call: false });
-      } else if (ev.type === "call") {
-        const el = document.createElement("div");
-        el.className = "tl" + (ev.error ? " tl-err" : "") + (ev.aux ? " tl-aux" : "");
-        const dot = document.createElement("i");
-        dot.className = "tl-dot";
-        const body = document.createElement("span");
-        body.className = "tl-body";
-        const name = document.createElement("span");
-        name.className = "tl-name";
-        name.textContent = ev.name;
-        const args = document.createElement("span");
-        args.className = "tl-args";
-        args.textContent = " " + fmtArgs(ev.name, ev.args);
-        body.append(name, args);
-        const ms = document.createElement("span");
-        ms.className = "tl-ms";
-        ms.textContent = ev.error ? "✗ rejected" : `✓ ${ev.ms >= 1000 ? (ev.ms / 1000).toFixed(1) + "s" : ev.ms + "ms"}`;
-        el.append(dot, body, ms);
-        el.title = JSON.stringify(ev.args);
-        el.setAttribute("aria-label", `${ev.name} — seek video`);
-        makeSeekable(el, ev.t);
-        logBody.appendChild(el);
-        entries.push({ t: ev.t, el, call: !ev.aux });
+      let row;
+      if (ev.kind === "call") {
+        row = tuiRow("tui-call" + (ev.aux ? " tui-aux" : "") + (ev.error ? " tui-err" : ""), "⏺");
+        const head = document.createElement("div");
+        head.className = "tui-head";
+        const tool = document.createElement("span");
+        tool.className = "tui-tool";
+        tool.textContent = ev.display;
+        const params = document.createElement("span");
+        params.className = "tui-params";
+        params.textContent = `(${ev.params})`;
+        head.append(tool, params);
+        row.body.appendChild(head);
+        if (ev.out && ev.out.length) row.body.appendChild(tuiResult(ev));
+        row.el.title = `${ev.display}(${ev.params})\n${ev.error ? "rejected" : "ok"} in ${ev.ms}ms`;
+        row.el.setAttribute("aria-label", `${ev.display} — seek video`);
         if (!ev.aux) callCount++;
+      } else {
+        row = tuiRow(ev.kind === "final" ? "tui-say tui-final" : "tui-say", "⏺");
+        row.body.appendChild(mdInline(ev.text));
+        row.el.setAttribute("aria-label", "Agent message — seek video");
       }
+      makeSeekable(row.el, ev.t);
+      logBody.appendChild(row.el);
+      entries.push({ t: ev.t, el: row.el, call: ev.kind === "call" && !ev.aux });
     }
+
     lastCur = -2;
     if (logStat) logStat.textContent = `${callCount} REAL CALLS · IN SYNC`;
+    if (logMeta) {
+      const lat = session.events.filter((e) => e.kind === "call" && !e.aux).map((e) => e.ms).sort((a, b) => a - b);
+      const median = lat.length ? lat[lat.length >> 1] : null;
+      logMeta.textContent = `${callCount} calls` + (median !== null ? ` · median ${median}ms` : "");
+    }
   }
 
   function sync() {
@@ -529,7 +538,10 @@
     if (cur >= 0) {
       const el = entries[cur].el;
       el.classList.add("cur");
-      const target = Math.max(0, el.offsetTop - logBody.clientHeight * 0.35);
+      // Short rows sit a third of the way down; a block taller than that (the
+      // closing summary) goes to the top instead, so its tail stays on screen.
+      const lead = el.offsetHeight > logBody.clientHeight * 0.45 ? 10 : logBody.clientHeight * 0.35;
+      const target = Math.max(0, el.offsetTop - lead);
       logBody.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
     } else {
       logBody.scrollTo({ top: 0, behavior: "auto" });

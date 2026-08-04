@@ -49,10 +49,12 @@ Everything on the page is a real capture of the shipping app, not a mockup:
   via CDP screencast while the calls landed; think-time between calls is cut
   out of the video (`compose.mjs`), nothing else is altered. It ends with the
   finished cut playing back in the app.
-- `assets/agent-session.json` — that session's actual trace: the condensed
-  brief, the agent's narration lines, and every tool call (args, latency,
-  errors and recoveries included) with timestamps remapped to the compressed
-  video timeline. The page replays it as a terminal, synced to the video.
+- `assets/agent-session.json` — that session's actual transcript, in the shape
+  Claude Code's terminal prints it: the brief, the agent's messages, every tool
+  call with its MCP display name and raw params, the `⎿` result block (clipped
+  with a "+N lines" tail, errors and recoveries included), and the closing
+  summary — timestamps remapped to the compressed video timeline. The page
+  replays it as a terminal, synced to the video.
 - `assets/video/nle-tour.mp4` — human-style interactions (playback, ruler
   scrub, zoom, blade split, delete, trim, keyframe lanes, effect add,
   Cmd+K → export, log console) driven via CDP input with an in-page cursor.
@@ -84,7 +86,17 @@ Hero-session re-run order (`.work/harness/agent-session/`): generate footage
 `VITE_WEFTCUT_E2E=1 REMOTE_DEBUGGING_PORT=9222`, start `recorder.mjs`, run
 `run-agent.sh <run> <model>` (headless Claude Code with the app's MCP snippet),
 `outro.sh` to record the finished cut playing, then `compose.mjs` to cut idle
-time and emit the final frames plus `agent-session.json`.
+time and emit the final frames plus the timing trace. `tui-trace.mjs` then turns
+the raw `run<N>-trace.jsonl` stream into the shipped `agent-session.json`,
+taking content from the stream and timestamps from `compose.mjs`'s output
+(`shipped-trace.json`) so the panel stays in sync without re-rendering frames:
+
+```sh
+node .work/harness/agent-session/tui-trace.mjs \
+  .work/harness/agent-session/runs/run4-trace.jsonl \
+  .work/harness/agent-session/shipped-trace.json \
+  assets/agent-session.json
+```
 
 ### Asset-lab configuration
 
