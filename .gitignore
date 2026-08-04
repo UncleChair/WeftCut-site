@@ -9,3 +9,5 @@ node_modules
 .work/review*/
 # - WeftCut project files; every harness script recreates them at run start
 .work/projects/
+# - upstream Maple Mono CN TTFs (~88 MB); fonts.py re-downloads them on demand
+.work/fonts/
