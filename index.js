@@ -167,14 +167,20 @@
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const documentY = (el) => el.getBoundingClientRect().top + window.scrollY;
+    const timelineInset = 5;
+    const playheadWidth = 20;
+
+    function progressToRailX(progress, width = timelineRail ? timelineRail.clientWidth : 0) {
+      return width > timelineInset * 2
+        ? timelineInset + progress * (width - timelineInset * 2)
+        : timelineInset;
+    }
 
     function setPlayheadProgress(progress) {
       const width = timelineRail ? timelineRail.clientWidth : 0;
-      const inset = 5;
-      const handleWidth = 20;
-      const center = width > inset * 2 ? inset + progress * (width - inset * 2) : inset;
+      const center = progressToRailX(progress, width);
       if (timelinePlayhead) {
-        timelinePlayhead.style.setProperty("--playhead-x", `${(center - handleWidth / 2).toFixed(2)}px`);
+        timelinePlayhead.style.setProperty("--playhead-x", `${(center - playheadWidth / 2).toFixed(2)}px`);
       }
     }
 
@@ -221,18 +227,34 @@
     function measureTimeline() {
       measureFrame = 0;
       const navHeight = siteNav ? siteNav.offsetHeight : 0;
+      const rootStyles = getComputedStyle(document.documentElement);
+      const measuredScrollPaddingTop = Number.parseFloat(rootStyles.scrollPaddingTop);
+      const scrollPaddingTop = Number.isFinite(measuredScrollPaddingTop)
+        ? measuredScrollPaddingTop
+        : navHeight;
       const timelineHeight = pageTimeline.offsetHeight;
       const dockTop = documentY(timelineDock);
+      const railWidth = timelineRail ? timelineRail.clientWidth : 0;
       timelineEnd = Math.max(1, dockTop - window.innerHeight + timelineHeight);
 
       markerStops = markerEls.map((marker, index) => {
         const link = marker.querySelector("a");
         const target = link ? document.querySelector(link.hash) : null;
-        const rawTargetY = index === 0 || !target ? 0 : documentY(target) - navHeight - 16;
+        const measuredScrollMarginTop = target
+          ? Number.parseFloat(getComputedStyle(target).scrollMarginTop)
+          : 0;
+        const scrollMarginTop = Number.isFinite(measuredScrollMarginTop)
+          ? measuredScrollMarginTop
+          : 0;
+        const rawTargetY = index === 0 || !target
+          ? 0
+          : documentY(target) - scrollPaddingTop - scrollMarginTop;
         const scrollY = clamp(rawTargetY, 0, timelineEnd);
         const ratio = scrollY / timelineEnd;
+        const markerX = progressToRailX(ratio, railWidth);
 
         marker.style.setProperty("--marker-position", `${(ratio * 100).toFixed(3)}%`);
+        marker.style.setProperty("--marker-x", `${markerX.toFixed(2)}px`);
 
         return { marker, link, scrollY, ratio };
       });
@@ -255,9 +277,8 @@
     function scrubToPointer(clientX) {
       if (!timelineRail) return;
       const rect = timelineRail.getBoundingClientRect();
-      const inset = 5;
-      const usableWidth = Math.max(1, rect.width - inset * 2);
-      scrubToRatio((clientX - rect.left - inset) / usableWidth);
+      const usableWidth = Math.max(1, rect.width - timelineInset * 2);
+      scrubToRatio((clientX - rect.left - timelineInset) / usableWidth);
     }
 
     if (timelinePlayhead) {

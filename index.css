@@ -72,7 +72,7 @@ html[lang^="zh"] {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--nav-h) + 16px);
+  scroll-padding-top: var(--nav-h);
   scroll-padding-bottom: var(--timeline-h);
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -82,6 +82,12 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar { display: none; }
 html.is-scrubbing,
 html.is-resetting-scroll { scroll-behavior: auto; }
+
+/* Tuck each chapter boundary under the sticky nav so the previous section
+   cannot remain visible above the destination. */
+main > section[id] {
+  scroll-margin-top: -1px;
+}
 
 body {
   background: var(--bg);
@@ -500,7 +506,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--marker-position);
+  left: var(--marker-x, var(--marker-position));
   display: flex;
   align-items: flex-end;
   padding-bottom: 4px;
