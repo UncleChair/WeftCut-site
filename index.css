@@ -588,9 +588,14 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   background: var(--accent);
   animation: rec-blink 0.9s steps(1) infinite;
 }
-.prompt-list.armed li { display: none; }
-.prompt-list.armed li.typing,
-.prompt-list.armed li.typed { display: grid; }
+/* While armed, every line keeps its final footprint (the hidden ghost sizes it)
+   so the typewriter never reflows the sections below — only the ink appears. */
+.prompt-line { position: relative; display: block; min-width: 0; }
+.prompt-ghost { visibility: hidden; }
+.prompt-line .prompt-text { position: absolute; inset: 0; }
+.prompt-list.armed li::before { opacity: 0; transition: opacity 200ms ease; }
+.prompt-list.armed li.typing::before,
+.prompt-list.armed li.typed::before { opacity: 1; }
 
 .frame-pair {
   display: grid;

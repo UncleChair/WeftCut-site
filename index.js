@@ -31,10 +31,19 @@
 
     promptList.classList.add("armed");
     promptItems.forEach((li, i) => {
+      // A hidden ghost of the full line holds its final size, so typing never
+      // reflows the page (anchor jumps below this section rely on that).
+      const line = document.createElement("span");
+      line.className = "prompt-line";
+      const ghost = document.createElement("span");
+      ghost.className = "prompt-ghost";
+      ghost.textContent = fullTexts[i];
+      ghost.setAttribute("aria-hidden", "true");
       const span = document.createElement("span");
       span.className = "prompt-text";
+      line.append(ghost, span);
       li.textContent = "";
-      li.appendChild(span);
+      li.appendChild(line);
       li.setAttribute("aria-label", fullTexts[i]);
     });
 
