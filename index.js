@@ -395,59 +395,125 @@
     demoVideo.play().catch(() => {});
   }
 
-  // The mocked prompt that precedes the real trace.
-  const userLine = document.createElement("div");
-  userLine.className = "tl tl-user";
-  userLine.innerHTML =
-    '<span class="tl-tc">PROMPT</span>' +
-    '<span class="tl-body"><span class="tl-args">“Cut a 15s brand teaser from these clips — tighten it, add a lower third, captions, and a fade on the B-roll.”</span></span>' +
-    '<span class="tl-ms"></span>';
-  logBody.appendChild(userLine);
+  // Compact one-line rendering of a call's arguments: drop opaque ids,
+  // convert µs to seconds, shorten paths and long strings.
+  function fmtArgs(name, args) {
+    if (!args || typeof args !== "object") return "()";
+    if (name === "apply_subtitles" && typeof args.body === "string") {
+      const cues = (args.body.match(/ --> /g) || []).length;
+      return `(srt: ${cues} cue${cues === 1 ? "" : "s"})`;
+    }
+    const parts = [];
+    for (const [k, v] of Object.entries(args)) {
+      if (v === null || v === undefined) continue;
+      if (/_id$/.test(k) && k !== "motif_id") continue;
+      let key = k;
+      let val;
+      if (/_us$/.test(k) && typeof v === "number") {
+        key = k.replace(/_us$/, "");
+        val = `${(v / 1e6).toFixed(v % 1e6 === 0 ? 0 : 1)}s`;
+      } else if (typeof v === "string") {
+        const s = v.includes("/") ? v.split("/").pop() : v;
+        val = `"${s.length > 24 ? s.slice(0, 22) + "…" : s}"`;
+      } else if (typeof v === "object") {
+        const inner = JSON.stringify(v);
+        val = inner.length > 42 ? inner.slice(0, 40) + "…}" : inner;
+      } else {
+        val = String(v);
+      }
+      parts.push(`${key}: ${val}`);
+    }
+    let out = parts.join(", ");
+    if (out.length > 92) out = out.slice(0, 90) + "…";
+    return `(${out})`;
+  }
 
-  let entries = [];
+  function makeSeekable(el, t) {
+    el.tabIndex = 0;
+    el.setAttribute("role", "button");
+    const seek = () => {
+      demoVideo.currentTime = t + 0.01;
+      demoVideo.play().catch(() => {});
+    };
+    el.addEventListener("click", seek);
+    el.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        seek();
+      }
+    });
+  }
+
+  let entries = []; // every timed line — calls and narration alike
+  let callCount = 0;
   let lastCur = -2;
 
-  function buildLines(calls) {
-    for (const el of logBody.querySelectorAll(".tl:not(.tl-user)")) el.remove();
-    entries = calls.map((c) => {
+  function buildLines(session) {
+    for (const el of logBody.querySelectorAll(".tl, .log-empty")) el.remove();
+    entries = [];
+    callCount = 0;
+
+    if (session.prompt) {
       const el = document.createElement("div");
-      el.className = "tl";
-
-      const tc = document.createElement("span");
-      tc.className = "tl-tc";
-      tc.textContent = smpte(c.t, 30).slice(3); // MM:SS:FF
-
+      el.className = "tl tl-user";
+      const caret = document.createElement("span");
+      caret.className = "tl-caret";
+      caret.textContent = "❯";
       const body = document.createElement("span");
       body.className = "tl-body";
-      const name = document.createElement("span");
-      name.className = "tl-name";
-      name.textContent = c.label || c.name;
-      body.appendChild(name);
-
-      const ms = document.createElement("span");
-      ms.className = "tl-ms";
-      ms.textContent = `✓ ${c.ms}ms`;
-
-      el.append(tc, body, ms);
-      el.tabIndex = 0;
-      el.setAttribute("role", "button");
-      el.setAttribute("aria-label", `${c.label || c.name} — seek video`);
-      const seek = () => {
-        demoVideo.currentTime = c.t + 0.01;
-        demoVideo.play().catch(() => {});
-      };
-      el.addEventListener("click", seek);
-      el.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          seek();
-        }
-      });
+      const args = document.createElement("span");
+      args.className = "tl-args";
+      args.textContent = session.prompt;
+      body.appendChild(args);
+      el.append(caret, body, document.createElement("span"));
+      el.setAttribute("aria-label", "The brief handed to the agent");
+      makeSeekable(el, 0);
       logBody.appendChild(el);
-      return { t: c.t, el };
-    });
+    }
+
+    for (const ev of session.events) {
+      if (ev.type === "say") {
+        const el = document.createElement("div");
+        el.className = "tl tl-say";
+        const dot = document.createElement("i");
+        dot.className = "tl-dot";
+        const body = document.createElement("span");
+        body.className = "tl-body";
+        body.textContent = ev.text;
+        el.append(dot, body, document.createElement("span"));
+        el.title = ev.text;
+        el.setAttribute("aria-label", "Agent narration — seek video");
+        makeSeekable(el, ev.t);
+        logBody.appendChild(el);
+        entries.push({ t: ev.t, el, call: false });
+      } else if (ev.type === "call") {
+        const el = document.createElement("div");
+        el.className = "tl" + (ev.error ? " tl-err" : "") + (ev.aux ? " tl-aux" : "");
+        const dot = document.createElement("i");
+        dot.className = "tl-dot";
+        const body = document.createElement("span");
+        body.className = "tl-body";
+        const name = document.createElement("span");
+        name.className = "tl-name";
+        name.textContent = ev.name;
+        const args = document.createElement("span");
+        args.className = "tl-args";
+        args.textContent = " " + fmtArgs(ev.name, ev.args);
+        body.append(name, args);
+        const ms = document.createElement("span");
+        ms.className = "tl-ms";
+        ms.textContent = ev.error ? "✗ rejected" : `✓ ${ev.ms >= 1000 ? (ev.ms / 1000).toFixed(1) + "s" : ev.ms + "ms"}`;
+        el.append(dot, body, ms);
+        el.title = JSON.stringify(ev.args);
+        el.setAttribute("aria-label", `${ev.name} — seek video`);
+        makeSeekable(el, ev.t);
+        logBody.appendChild(el);
+        entries.push({ t: ev.t, el, call: !ev.aux });
+        if (!ev.aux) callCount++;
+      }
+    }
     lastCur = -2;
-    if (logStat) logStat.textContent = `${calls.length} REAL MOVES · IN SYNC`;
+    if (logStat) logStat.textContent = `${callCount} REAL CALLS · IN SYNC`;
   }
 
   function sync() {
@@ -469,21 +535,23 @@
       logBody.scrollTo({ top: 0, behavior: "auto" });
     }
     if (logStat && entries.length) {
+      let moveNo = 0;
+      for (let i = 0; i <= cur; i++) if (entries[i].call) moveNo++;
       logStat.textContent =
         cur >= 0
-          ? `MOVE ${cur + 1}/${entries.length} · T+${smpte(ct, 30).slice(3)}`
-          : `${entries.length} REAL MOVES · IN SYNC`;
+          ? `${moveNo}/${callCount} · T+${smpte(ct, 30).slice(3)}`
+          : `${callCount} REAL CALLS · IN SYNC`;
     }
     lastCur = cur;
   }
 
-  fetch("/assets/agent-log.json")
+  fetch("/assets/agent-session.json")
     .then((r) => {
       if (!r.ok) throw new Error(String(r.status));
       return r.json();
     })
-    .then((calls) => {
-      buildLines(calls);
+    .then((session) => {
+      buildLines(session);
       sync();
       demoVideo.addEventListener("timeupdate", sync);
       demoVideo.addEventListener("seeked", sync);
@@ -492,7 +560,7 @@
     .catch(() => {
       const p = document.createElement("p");
       p.className = "log-empty";
-      p.textContent = "call trace unavailable — see /assets/agent-log.json";
+      p.textContent = "session trace unavailable — see /assets/agent-session.json";
       logBody.appendChild(p);
     });
 })();

@@ -807,7 +807,25 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   background: var(--card);
   border-bottom: 1px solid var(--border);
 }
-.log-title { font: 600 11px var(--mono); letter-spacing: 0.14em; color: var(--dim); }
+.log-title {
+  font: 600 10.5px var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--dim);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.term-dots { display: inline-flex; gap: 5px; align-items: center; }
+.term-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.55);
+}
+.term-dots i:nth-child(2) { background: rgba(240, 160, 32, 0.55); }
+.term-dots i:nth-child(3) { background: rgba(70, 196, 106, 0.55); }
 .log-stat {
   font: 600 9.5px var(--mono);
   letter-spacing: 0.14em;
@@ -834,10 +852,10 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 
 .tl {
   display: grid;
-  grid-template-columns: 78px 1fr auto;
-  gap: 10px;
+  grid-template-columns: 13px 1fr auto;
+  gap: 9px;
   align-items: baseline;
-  padding: 4px 14px 4px 12px;
+  padding: 3.5px 14px 3.5px 12px;
   border-left: 2px solid transparent;
   font: 11.5px/1.55 var(--mono);
   color: var(--faint);
@@ -853,20 +871,45 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   border-left-color: var(--accent);
   color: var(--text);
 }
-.tl-tc { color: var(--slate); font-variant-numeric: tabular-nums; font-size: 10.5px; }
+.tl-dot {
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.85;
+}
+.tl.tl-err .tl-dot { background: var(--red, #f87171); }
 .tl-name { color: var(--accent); font-weight: 600; }
 .tl-args { color: inherit; overflow-wrap: anywhere; }
+.tl.on .tl-args { color: var(--faint); }
+.tl.cur .tl-args { color: var(--dim); }
 .tl-ms { color: var(--green); font-size: 10.5px; white-space: nowrap; }
+.tl.tl-err .tl-ms { color: var(--red, #f87171); }
+.tl-say .tl-dot { background: transparent; border: 1px solid var(--border2); }
+.tl-aux .tl-dot { background: var(--slate); opacity: 0.5; }
+.tl-aux .tl-name { color: var(--slate); font-weight: 500; }
+.tl-say {
+  font-style: italic;
+  color: var(--faint);
+}
+.tl-say .tl-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .tl-user {
   border-left-color: var(--yellow);
   opacity: 1;
   color: var(--dim);
-  font-style: italic;
   padding-top: 8px;
   padding-bottom: 8px;
   border-bottom: 1px dashed var(--border);
   margin-bottom: 6px;
 }
+.tl-user .tl-caret { color: var(--yellow); font-weight: 700; align-self: baseline; }
+.tl-user .tl-args { font-style: italic; }
 .log-empty { padding: 18px 14px; font: 11.5px var(--mono); color: var(--faint); }
 
 /* ============ REEL 03 — FEATURES ============ */
@@ -1083,8 +1126,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   .motif-export-legend { gap: 5px; }
   .motif-export-legend span { gap: 5px; font-size: 8px; letter-spacing: 0.04em; }
   .motif-benefits { grid-template-columns: minmax(0, 1fr); }
-  .tl { grid-template-columns: 54px minmax(0, 1fr) auto; gap: 8px; font-size: 10.5px; }
-  .tl-tc { font-size: 9px; }
+  .tl { grid-template-columns: 11px minmax(0, 1fr) auto; gap: 7px; font-size: 10.5px; }
   .tl-ms { font-size: 9.5px; }
   .bezel { padding: 0 6px 6px; border-radius: 9px; }
   .bezel-bar { height: 30px; gap: 10px; }

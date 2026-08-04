@@ -40,15 +40,19 @@ npm start 3000       # custom port
 
 Everything on the page is a real capture of the shipping app, not a mockup:
 
-- `assets/video/agent-session.mp4` — an external agent (a Node script) driving
-  WeftCut over its real MCP server (`import_media` → `add_video_layer` →
-  `split_layer`/`delete_layer` → `add_transition` → `add_motif` →
-  `set_keyframe` → `add_effect` → `apply_subtitles` → `detect_silences` →
-  `checkpoint` → playback). The UI was recorded from the macOS screen while
-  the tool calls landed live.
-- `assets/agent-log.json` — the 31 tool calls of that exact recording, with
-  their real wall-clock timestamps plus plain-English `label`s; the page
-  replays them synced to the video.
+- `assets/video/agent-session.mp4` — one real agent session, end to end: a
+  headless Claude Code agent (`claude -p` + the app's MCP server over
+  streamable HTTP) was handed a creative brief and four clips, and built the
+  "Aurora Ridge" teaser on its own — imports, placement, split/trim, two
+  transitions, a lower third, keyframed fades and a push-in, blur,
+  silence-detection, captions, marker, checkpoint. The UI was captured live
+  via CDP screencast while the calls landed; think-time between calls is cut
+  out of the video (`compose.mjs`), nothing else is altered. It ends with the
+  finished cut playing back in the app.
+- `assets/agent-session.json` — that session's actual trace: the condensed
+  brief, the agent's narration lines, and every tool call (args, latency,
+  errors and recoveries included) with timestamps remapped to the compressed
+  video timeline. The page replays it as a terminal, synced to the video.
 - `assets/video/nle-tour.mp4` — human-style interactions (playback, ruler
   scrub, zoom, blade split, delete, trim, keyframe lanes, effect add,
   Cmd+K → export, log console) driven via CDP input with an in-page cursor.
@@ -59,15 +63,28 @@ Everything on the page is a real capture of the shipping app, not a mockup:
   once when Scene 02 enters view.
 - `assets/shots/motif-text-fx.png` — a real transparent Text FX frame retained
   from the Motif capture.
-- The demo footage itself is ffmpeg-generated abstract clips (`gradients`
-  lavfi source + sine beds) — see `.work/media/`.
+- The demo footage (`aurora` / `ridgeline` / `lakeside` / `embers`) is
+  deterministic canvas art: each scene is a `renderFrame(t)` painting
+  (aurora curtains over a ridge, a layered-ridge sunrise, a mirror lake, rising
+  embers) rendered frame-by-frame in a browser and assembled with ffmpeg over
+  synthesized pads — the embers bed carries a deliberate 3.2 s dead-air gap for
+  the agent's silence detector to find. See `.work/harness/scenes.html`.
 
 The harness that produced all of this lives in `.work/harness/` (Playwright
-`_electron` + a minimal MCP client + ffmpeg screen capture). Re-run order:
+`_electron` + a minimal MCP client + ffmpeg screen capture; the hero session
+uses the newer `.work/harness/agent-session/` kit instead — CDP screencast
+recorder + `claude -p` runner + idle-cut composer). Legacy re-run order:
 `agent-demo.mjs` → `nle-tour.mjs` → `screenshots.mjs` → `addendum.mjs` →
 `postprocess.mjs`. It requires a WeftCut checkout built with
 `npm run build:e2e`. By default the checkout is discovered as a sibling named
 `WeftCut`; no workstation-specific paths are required.
+
+Hero-session re-run order (`.work/harness/agent-session/`): generate footage
+(`scenes.html` + Playwright frame dump + ffmpeg), launch the app dev build with
+`VITE_WEFTCUT_E2E=1 REMOTE_DEBUGGING_PORT=9222`, start `recorder.mjs`, run
+`run-agent.sh <run> <model>` (headless Claude Code with the app's MCP snippet),
+`outro.sh` to record the finished cut playing, then `compose.mjs` to cut idle
+time and emit the final frames plus `agent-session.json`.
 
 ### Asset-lab configuration
 

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:#000;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+"use strict";
+const W = 1920, H = 1080;
+const cv = document.getElementById("c");
+const cx = cv.getContext("2d");
+
+/* ---------- deterministic helpers ---------- */
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+// 1D value noise with cosine interpolation over a seeded lattice
+function makeNoise1d(seed, cells) {
+  const rnd = mulberry32(seed);
+  const v = Array.from({ length: cells + 2 }, () => rnd());
+  return (x) => {
+    const xi = Math.floor(x), f = x - xi;
+    const a = v[((xi % cells) + cells) % cells];
+    const b = v[(((xi + 1) % cells) + cells) % cells];
+    const u = (1 - Math.cos(f * Math.PI)) / 2;
+    return a * (1 - u) + b * u;
+  };
+}
+function ridgePath(noise, baseY, amp, freq, yScaleFn) {
+  cx.beginPath();
+  cx.moveTo(-4, H + 4);
+  for (let x = -4; x <= W + 4; x += 8) {
+    let y = baseY - amp * (0.62 * noise(x * freq) + 0.30 * noise(x * freq * 2.7 + 40) + 0.08 * noise(x * freq * 7.1 + 90));
+    if (yScaleFn) y = yScaleFn(x, y);
+    cx.lineTo(x, y);
+  }
+  cx.lineTo(W + 4, H + 4);
+  cx.closePath();
+}
+function stars(seed, count, maxY, t, baseAlpha) {
+  const rnd = mulberry32(seed);
+  for (let i = 0; i < count; i++) {
+    const x = rnd() * W, y = rnd() * maxY;
+    const r = 0.5 + rnd() * 1.5;
+    const ph = rnd() * Math.PI * 2, sp = 0.4 + rnd() * 1.4;
+    const a = baseAlpha * (0.45 + 0.55 * Math.max(0, Math.sin(ph + t * sp)));
+    cx.fillStyle = `rgba(228,238,255,${a.toFixed(3)})`;
+    cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.fill();
+    if (r > 1.72) { // glare cross on the brightest few
+      cx.strokeStyle = `rgba(228,238,255,${(a * 0.5).toFixed(3)})`;
+      cx.lineWidth = 1;
+      cx.beginPath();
+      cx.moveTo(x - r * 4, y); cx.lineTo(x + r * 4, y);
+      cx.moveTo(x, y - r * 4); cx.lineTo(x, y + r * 4);
+      cx.stroke();
+    }
+  }
+}
+function vignette(strength) {
+  const g = cx.createRadialGradient(W / 2, H / 2, H * 0.42, W / 2, H / 2, H * 0.95);
+  g.addColorStop(0, "rgba(0,0,0,0)");
+  g.addColorStop(1, `rgba(0,0,0,${strength})`);
+  cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+}
+
+/* =============== SCENE: aurora =============== */
+const auroraRidgeFar = makeNoise1d(11, 64);
+const auroraRidgeNear = makeNoise1d(23, 64);
+function drawAurora(t) {
+  const sky = cx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, "#040a18");
+  sky.addColorStop(0.55, "#081527");
+  sky.addColorStop(1, "#0d1f33");
+  cx.fillStyle = sky; cx.fillRect(0, 0, W, H);
+
+  stars(77, 170, H * 0.72, t, 0.9);
+
+  // aurora curtains — additive translucent strips along sine-warped bands
+  cx.save();
+  cx.globalCompositeOperation = "lighter";
+  const bands = [
+    { baseY: 320, amp1: 85, amp2: 48, f1: 0.0042, f2: 0.0105, sp: 0.55, hshift: 0, alpha: 0.14, hgt: 300 },
+    { baseY: 430, amp1: 70, amp2: 60, f1: 0.0033, f2: 0.0125, sp: -0.42, hshift: 1.8, alpha: 0.11, hgt: 360 },
+    { baseY: 250, amp1: 100, amp2: 40, f1: 0.0051, f2: 0.0088, sp: 0.31, hshift: 3.9, alpha: 0.09, hgt: 250 },
+  ];
+  for (const b of bands) {
+    for (let x = -40; x <= W + 40; x += 14) {
+      const topY = b.baseY
+        + b.amp1 * Math.sin(x * b.f1 + t * b.sp + b.hshift)
+        + b.amp2 * Math.sin(x * b.f2 - t * b.sp * 1.7 + b.hshift * 2);
+      const hgt = b.hgt + 110 * Math.sin(x * 0.006 + t * 0.7 + b.hshift);
+      const wob = 0.75 + 0.25 * Math.sin(x * 0.021 + t * 2.1 + b.hshift);
+      const a = b.alpha * wob;
+      const g = cx.createLinearGradient(0, topY, 0, topY + hgt);
+      g.addColorStop(0.0, "rgba(150,110,255,0)");
+      g.addColorStop(0.22, `rgba(112,120,255,${(a * 0.55).toFixed(3)})`);
+      g.addColorStop(0.55, `rgba(64,235,190,${a.toFixed(3)})`);
+      g.addColorStop(0.85, `rgba(96,255,170,${(a * 0.8).toFixed(3)})`);
+      g.addColorStop(1.0, "rgba(120,255,190,0)");
+      cx.fillStyle = g;
+      cx.fillRect(x - 8, topY, 16, hgt);
+    }
+  }
+  cx.restore();
+
+  // one shooting star, t = 6.2s → 7.0s
+  if (t > 6.2 && t < 7.0) {
+    const p = (t - 6.2) / 0.8;
+    const sx = W * 0.18 + p * W * 0.34, sy = H * 0.12 + p * H * 0.16;
+    const tail = 120 * (1 - Math.abs(p - 0.5) * 1.2);
+    const g = cx.createLinearGradient(sx - tail, sy - tail * 0.47, sx, sy);
+    g.addColorStop(0, "rgba(255,255,255,0)");
+    g.addColorStop(1, `rgba(255,250,235,${(0.9 * Math.sin(p * Math.PI)).toFixed(3)})`);
+    cx.strokeStyle = g; cx.lineWidth = 2.2;
+    cx.beginPath(); cx.moveTo(sx - tail, sy - tail * 0.47); cx.lineTo(sx, sy); cx.stroke();
+  }
+
+  // ridges
+  cx.fillStyle = "#0a1424";
+  ridgePath(auroraRidgeFar, H * 0.94, 300, 1 / 340);
+  cx.fill();
+  cx.fillStyle = "#050b15";
+  ridgePath(auroraRidgeNear, H * 1.0, 230, 1 / 210);
+  cx.fill();
+
+  vignette(0.42);
+}
+
+/* =============== SCENE: ridgeline (dawn) =============== */
+const dawnRidges = [makeNoise1d(31, 64), makeNoise1d(47, 64), makeNoise1d(59, 64), makeNoise1d(71, 64)];
+const mistSeeds = mulberry32(101);
+const mistBlobs = Array.from({ length: 16 }, () => ({
+  x: mistSeeds() * (W + 600) - 300, y: 0.52 + mistSeeds() * 0.34,
+  rx: 260 + mistSeeds() * 420, ry: 26 + mistSeeds() * 34,
+  sp: 12 + mistSeeds() * 26, a: 0.05 + mistSeeds() * 0.08, layer: Math.floor(mistSeeds() * 3),
+}));
+function drawBird(x, y, size, flap) {
+  cx.strokeStyle = "rgba(30,20,35,0.85)";
+  cx.lineWidth = Math.max(1.6, size * 0.16);
+  cx.lineCap = "round";
+  const w = size, dy = Math.sin(flap) * size * 0.55;
+  cx.beginPath();
+  cx.moveTo(x - w, y - dy);
+  cx.quadraticCurveTo(x - w * 0.35, y + size * 0.18, x, y);
+  cx.quadraticCurveTo(x + w * 0.35, y + size * 0.18, x + w, y - dy);
+  cx.stroke();
+}
+function drawRidgeline(t) {
+  const p = t / 10; // sunrise progress over the clip
+  const sky = cx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, "#171a38");
+  sky.addColorStop(0.42, "#4a2c55");
+  sky.addColorStop(0.72, `rgba(${205 + 30 * p | 0},${96 + 32 * p | 0},80,1)`);
+  sky.addColorStop(1, "#ffb36b");
+  cx.fillStyle = sky; cx.fillRect(0, 0, W, H);
+
+  // sun rising
+  const sunX = W * 0.58, sunY = H * (0.68 - 0.15 * p);
+  const glow = cx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 420);
+  glow.addColorStop(0, "rgba(255,214,150,0.85)");
+  glow.addColorStop(0.25, "rgba(255,170,95,0.38)");
+  glow.addColorStop(1, "rgba(255,150,80,0)");
+  cx.fillStyle = glow; cx.fillRect(0, 0, W, H);
+  cx.fillStyle = "#fff3d6";
+  cx.beginPath(); cx.arc(sunX, sunY, 46, 0, 7); cx.fill();
+
+  // layered ridges, far → near, with mist between
+  const cols = ["#a05f74", "#71455f", "#472e4c", "#221a35"];
+  const bases = [0.64, 0.74, 0.85, 1.02];
+  const amps = [130, 170, 210, 240];
+  for (let i = 0; i < 4; i++) {
+    cx.fillStyle = cols[i];
+    ridgePath(dawnRidges[i], H * bases[i], amps[i], 1 / (300 - i * 40));
+    cx.fill();
+    // drifting mist band in front of this layer
+    for (const m of mistBlobs) {
+      if (m.layer !== Math.min(i, 2)) continue;
+      const mx = ((m.x + t * m.sp) % (W + 600)) - 300;
+      const g = cx.createRadialGradient(mx, H * m.y, 8, mx, H * m.y, m.rx);
+      g.addColorStop(0, `rgba(255,214,190,${m.a.toFixed(3)})`);
+      g.addColorStop(1, "rgba(255,214,190,0)");
+      cx.save();
+      cx.translate(mx, H * m.y); cx.scale(1, m.ry / m.rx); cx.translate(-mx, -H * m.y);
+      cx.fillStyle = g;
+      cx.beginPath(); cx.arc(mx, H * m.y, m.rx, 0, 7); cx.fill();
+      cx.restore();
+    }
+  }
+
+  // birds crossing
+  for (let i = 0; i < 3; i++) {
+    const bp = ((t + i * 2.6) % 16) / 16;
+    const bx = -60 + bp * (W + 140);
+    const by = H * (0.24 + 0.05 * i) + Math.sin(t * 0.9 + i * 2) * 18;
+    drawBird(bx, by, 13 - i * 2.4, t * 9 + i * 1.7);
+  }
+
+  vignette(0.34);
+}
+
+/* =============== SCENE: lakeside (dusk mirror lake) =============== */
+const HZN = H * 0.58;
+const lakeCloudSeeds = mulberry32(211);
+const lakeClouds = Array.from({ length: 5 }, (_, i) => ({
+  x: lakeCloudSeeds() * W, y: H * (0.10 + 0.075 * i),
+  rx: 220 + lakeCloudSeeds() * 260, ry: 18 + lakeCloudSeeds() * 16,
+  sp: 4 + lakeCloudSeeds() * 8, a: 0.16 + lakeCloudSeeds() * 0.12,
+}));
+const shimmerNoise = makeNoise1d(97, 128);
+const reedSeeds = mulberry32(139);
+const reeds = Array.from({ length: 14 }, () => ({
+  x: W * (0.04 + reedSeeds() * 0.17), h: 120 + reedSeeds() * 150,
+  lean: (reedSeeds() - 0.35) * 40, ph: reedSeeds() * Math.PI * 2, w: 2.4 + reedSeeds() * 2.4,
+}));
+const pineNoise = makeNoise1d(163, 32);
+function drawLakeside(t) {
+  const sky = cx.createLinearGradient(0, 0, 0, HZN);
+  sky.addColorStop(0, "#1c1342");
+  sky.addColorStop(0.55, "#5c2f63");
+  sky.addColorStop(0.9, "#c96f83");
+  sky.addColorStop(1, "#e8927c");
+  cx.fillStyle = sky; cx.fillRect(0, 0, W, HZN + 1);
+
+  stars(311, 80, H * 0.3, t, 0.55);
+
+  // moon + glow
+  const moonX = W * 0.67, moonY = H * 0.20;
+  const mg = cx.createRadialGradient(moonX, moonY, 6, moonX, moonY, 230);
+  mg.addColorStop(0, "rgba(255,241,214,0.75)");
+  mg.addColorStop(0.3, "rgba(250,225,195,0.22)");
+  mg.addColorStop(1, "rgba(250,225,195,0)");
+  cx.fillStyle = mg; cx.fillRect(moonX - 240, moonY - 240, 480, 480);
+  cx.fillStyle = "#f7eed8";
+  cx.beginPath(); cx.arc(moonX, moonY, 38, 0, 7); cx.fill();
+  cx.fillStyle = "rgba(214,190,160,0.55)"; // two soft craters
+  cx.beginPath(); cx.arc(moonX - 12, moonY - 6, 7, 0, 7); cx.fill();
+  cx.beginPath(); cx.arc(moonX + 10, moonY + 12, 5, 0, 7); cx.fill();
+
+  // drifting dusk clouds
+  for (const c of lakeClouds) {
+    const cxr = ((c.x + t * c.sp) % (W + 700)) - 350;
+    const g = cx.createRadialGradient(cxr, c.y, 4, cxr, c.y, c.rx);
+    g.addColorStop(0, `rgba(66,38,84,${c.a.toFixed(3)})`);
+    g.addColorStop(0.8, `rgba(66,38,84,${(c.a * 0.5).toFixed(3)})`);
+    g.addColorStop(1, "rgba(66,38,84,0)");
+    cx.save();
+    cx.translate(cxr, c.y); cx.scale(1, c.ry / c.rx); cx.translate(-cxr, -c.y);
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(cxr, c.y, c.rx, 0, 7); cx.fill();
+    cx.restore();
+    // warm underside
+    cx.fillStyle = "rgba(240,150,120,0.10)";
+    cx.fillRect(cxr - c.rx * 0.5, c.y + c.ry * 0.4, c.rx, 3);
+  }
+
+  // water — mirrored, darker
+  const water = cx.createLinearGradient(0, HZN, 0, H);
+  water.addColorStop(0, "#a05c6d");
+  water.addColorStop(0.25, "#5e3455");
+  water.addColorStop(1, "#160f30");
+  cx.fillStyle = water; cx.fillRect(0, HZN, W, H - HZN);
+
+  // moon shimmer path
+  for (let y = HZN + 8; y < H - 30; y += 9) {
+    const depth = (y - HZN) / (H - HZN);
+    const n = shimmerNoise(y * 0.11 + t * 2.2);
+    const n2 = shimmerNoise(y * 0.23 - t * 1.4 + 50);
+    const wdt = (14 + 130 * depth) * (0.35 + 0.65 * n);
+    const off = (n2 - 0.5) * 60 * depth;
+    const a = 0.34 * (1 - depth * 0.55) * (0.4 + 0.6 * n2);
+    cx.fillStyle = `rgba(255,228,190,${a.toFixed(3)})`;
+    cx.fillRect(moonX + off - wdt / 2, y, wdt, 2.4);
+  }
+  // faint drifting ripple strokes
+  for (let i = 0; i < 26; i++) {
+    const rr = mulberry32(500 + i);
+    const y = HZN + 20 + rr() * (H - HZN - 60);
+    const depth = (y - HZN) / (H - HZN);
+    const len = 60 + rr() * 260 * (0.4 + depth);
+    const x = ((rr() * (W + 400) + t * (6 + 26 * depth)) % (W + 400)) - 200;
+    cx.fillStyle = `rgba(236,200,190,${(0.05 + 0.05 * depth).toFixed(3)})`;
+    cx.fillRect(x, y, len, 1.6);
+  }
+
+  // pine shore, left of horizon
+  cx.fillStyle = "#120c26";
+  cx.beginPath();
+  cx.moveTo(0, HZN + 1);
+  for (let x = 0; x <= W * 0.30; x += 6) {
+    const envelope = Math.max(0, 1 - x / (W * 0.30));
+    const spike = Math.abs(((x / 26) % 2) - 1); // triangle wave — pine tips
+    const ht = envelope * (52 + 88 * pineNoise(x * 0.02)) * (0.35 + 0.65 * spike);
+    cx.lineTo(x, HZN + 1 - ht);
+  }
+  cx.lineTo(W * 0.30, HZN + 1);
+  cx.closePath(); cx.fill();
+  // its reflection
+  cx.save();
+  cx.globalAlpha = 0.30;
+  cx.translate(0, 2 * (HZN + 1)); cx.scale(1, -1);
+  cx.fillStyle = "#120c26";
+  cx.beginPath();
+  cx.moveTo(0, HZN + 1);
+  for (let x = 0; x <= W * 0.30; x += 6) {
+    const envelope = Math.max(0, 1 - x / (W * 0.30));
+    const spike = Math.abs(((x / 26) % 2) - 1);
+    const ht = envelope * (52 + 88 * pineNoise(x * 0.02)) * (0.35 + 0.65 * spike);
+    cx.lineTo(x, HZN + 1 - ht * 0.8);
+  }
+  cx.lineTo(W * 0.30, HZN + 1);
+  cx.closePath(); cx.fill();
+  cx.restore();
+
+  // foreground reeds, bottom-left, swaying
+  for (const r of reeds) {
+    const sway = Math.sin(t * 0.8 + r.ph) * 10 + r.lean;
+    cx.strokeStyle = "#0b0820";
+    cx.lineWidth = r.w; cx.lineCap = "round";
+    cx.beginPath();
+    cx.moveTo(r.x, H + 4);
+    cx.quadraticCurveTo(r.x + sway * 0.3, H - r.h * 0.6, r.x + sway, H - r.h);
+    cx.stroke();
+    cx.fillStyle = "#0b0820"; // seed head
+    cx.beginPath();
+    cx.ellipse(r.x + sway, H - r.h - 12, r.w * 1.1, 15, sway * 0.01, 0, 7);
+    cx.fill();
+  }
+
+  vignette(0.4);
+}
+
+/* =============== SCENE: embers (B-roll) =============== */
+const emberSeeds = mulberry32(401);
+const embers = Array.from({ length: 95 }, () => ({
+  x: W * (0.18 + emberSeeds() * 0.64), drift: (emberSeeds() - 0.5) * 130,
+  sp: 55 + emberSeeds() * 130, off: emberSeeds() * (H + 240),
+  r: 1.4 + emberSeeds() * 3.1, ph: emberSeeds() * Math.PI * 2,
+  wob: 20 + emberSeeds() * 46, wsp: 0.6 + emberSeeds() * 1.6,
+  warm: emberSeeds(),
+}));
+const bokehSeeds = mulberry32(431);
+const bokeh = Array.from({ length: 12 }, () => ({
+  x: bokehSeeds() * W, y: H * (0.15 + bokehSeeds() * 0.7),
+  r: 42 + bokehSeeds() * 66, sp: 3 + bokehSeeds() * 9,
+  a: 0.03 + bokehSeeds() * 0.05, ph: bokehSeeds() * Math.PI * 2,
+}));
+function drawEmbers(t) {
+  const bg = cx.createRadialGradient(W * 0.5, H * 1.18, 60, W * 0.5, H * 1.18, H * 1.5);
+  bg.addColorStop(0, "#3a1a08");
+  bg.addColorStop(0.28, "#20100a");
+  bg.addColorStop(0.7, "#0b0605");
+  bg.addColorStop(1, "#050302");
+  cx.fillStyle = bg; cx.fillRect(0, 0, W, H);
+
+  // breathing warm base glow — the fire below frame
+  const breathe = 0.72 + 0.28 * Math.sin(t * 1.9) * Math.sin(t * 0.63 + 1);
+  const glow = cx.createRadialGradient(W * 0.5, H * 1.12, 20, W * 0.5, H * 1.12, H * 0.85);
+  glow.addColorStop(0, `rgba(255,140,50,${(0.34 * breathe).toFixed(3)})`);
+  glow.addColorStop(0.5, `rgba(255,100,30,${(0.12 * breathe).toFixed(3)})`);
+  glow.addColorStop(1, "rgba(255,90,25,0)");
+  cx.fillStyle = glow; cx.fillRect(0, 0, W, H);
+
+  // big soft bokeh discs
+  for (const b of bokeh) {
+    const bx = b.x + Math.sin(t * 0.22 + b.ph) * 40;
+    const by = b.y - ((t * b.sp) % (H * 0.25));
+    const g = cx.createRadialGradient(bx, by, 2, bx, by, b.r);
+    g.addColorStop(0, `rgba(255,170,100,${(b.a * 1.4).toFixed(3)})`);
+    g.addColorStop(0.75, `rgba(255,150,80,${b.a.toFixed(3)})`);
+    g.addColorStop(1, "rgba(255,150,80,0)");
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(bx, by, b.r, 0, 7); cx.fill();
+  }
+
+  // rising embers
+  cx.save();
+  for (const e of embers) {
+    const total = H + 240;
+    const yy = (H + 90) - ((t * e.sp + e.off) % total);
+    const prog = 1 - ((yy + 150) / total); // 0 at bottom → 1 at top
+    const xx = e.x + e.drift * prog + Math.sin(t * e.wsp + e.ph) * e.wob * (0.3 + prog);
+    const flick = 0.7 + 0.3 * Math.sin(t * 7.5 + e.ph * 3);
+    const a = Math.max(0, (1 - prog * 0.7)) * flick;
+    const rCol = 255, gCol = 120 + e.warm * 90 | 0, bCol = 40 + e.warm * 50 | 0;
+    cx.shadowColor = `rgba(${rCol},${gCol},${bCol},0.8)`;
+    cx.shadowBlur = 9;
+    cx.fillStyle = `rgba(${rCol},${gCol},${bCol},${a.toFixed(3)})`;
+    cx.beginPath(); cx.arc(xx, yy, e.r * (0.7 + 0.3 * flick), 0, 7); cx.fill();
+  }
+  cx.restore();
+
+  vignette(0.5);
+}
+
+/* ---------- dispatch ---------- */
+const SCENES = { aurora: drawAurora, ridgeline: drawRidgeline, lakeside: drawLakeside, embers: drawEmbers };
+window.draw = function (t) {
+  const name = (location.hash || "#aurora").slice(1);
+  (SCENES[name] || drawAurora)(t);
+  return name;
+};
+window.draw(0);
+</script>
+</body>
+</html>

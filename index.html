@@ -108,7 +108,7 @@
       <header class="sec-head rv">
         <p class="kicker"><span class="reel-no">Opening Scene</span><span class="scene-no">One shot. All agent.</span></p>
         <h2 id="demo-h">The cut you&rsquo;re watching <em>is the agent&rsquo;s own work.</em></h2>
-        <p class="lede">Not a reconstruction — the agent planned and placed every edit in this session, and the finished video is exactly what it produced. The terminal replays each move in sync; click any line to jump to that moment.</p>
+        <p class="lede">One real session, recorded end to end — an agent connected over MCP, imported the footage, and built this cut on its own. The terminal beside it replays the session&rsquo;s actual tool calls in sync — errors, recoveries and all. Click any call to jump to that moment.</p>
       </header>
       <div class="demo-stage rv">
         <video id="demoVideo" width="1600" height="852" poster="/assets/video/agent-session-poster.jpg"
@@ -118,13 +118,14 @@
           <source src="/assets/video/agent-session.webm" type="video/webm" />
         </video>
 
-        <div class="logpanel" aria-label="The agent's moves, replayed in sync with the video">
+        <div class="logpanel" aria-label="The real agent session, replayed in sync with the video">
           <div class="log-head">
-            <span class="log-title">the agent&rsquo;s moves</span>
-            <span class="log-stat" id="logStat">31 REAL MOVES · IN SYNC</span>
+            <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="log-title">weftcut agent</span>
+            <span class="log-stat" id="logStat">REAL SESSION · IN SYNC</span>
           </div>
-          <div class="log-body" id="logBody" tabindex="0" role="log" aria-label="The agent's actions, revealed in sync with the video. Activate a line to jump the video to that moment."></div>
-          <div class="log-foot mono-dim">synced to playback — click any action to seek · the real trace: <a href="/assets/agent-log.json">agent-log.json</a></div>
+          <div class="log-body" id="logBody" tabindex="0" role="log" aria-label="The agent's terminal, revealed in sync with the video. Activate a call to jump the video to that moment."></div>
+          <div class="log-foot mono-dim">in sync · click to seek · trace: <a href="/assets/agent-session.json">agent-session.json</a></div>
         </div>
       </div>
     </div>
@@ -505,7 +506,7 @@
     <nav class="foot-links" aria-label="Footer">
       <a href="https://github.com/UncleChair/WeftCut" rel="noopener">GitHub</a>
       <a href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">Docs</a>
-      <a href="/assets/agent-log.json">Agent log</a>
+      <a href="/assets/agent-session.json">Agent session</a>
     </nav>
     <p class="foot-copy">© 2026 WeftCut contributors</p>
   </div>
