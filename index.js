@@ -337,11 +337,25 @@
     measureTimeline();
   }
 
-  /* ---------- one-shot Motif export playback ---------- */
+  /* ---------- one-shot Motif autoplay with manual replay ---------- */
   const motifExportVideo = document.getElementById("motifExportVideo");
+  const motifReplayButton = document.getElementById("motifReplayButton");
   if (motifExportVideo) {
     motifExportVideo.pause();
     motifExportVideo.currentTime = 0;
+
+    motifExportVideo.addEventListener("ended", () => {
+      motifExportVideo.classList.add("motif-export-video-played");
+    });
+
+    if (motifReplayButton) {
+      motifReplayButton.addEventListener("click", () => {
+        motifExportVideo.pause();
+        motifExportVideo.currentTime = 0;
+        motifExportVideo.classList.remove("motif-export-video-played");
+        motifExportVideo.play().catch(() => {});
+      });
+    }
 
     if (!reduced) {
       let motifHasPlayed = false;
@@ -368,11 +382,6 @@
         playMotifOnce();
       }
 
-      motifExportVideo.addEventListener(
-        "ended",
-        () => motifExportVideo.classList.add("motif-export-video-played"),
-        { once: true }
-      );
     }
   }
 

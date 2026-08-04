@@ -395,59 +395,13 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 /* ---------- program monitor ---------- */
 .monitor { width: min(1020px, 100%); margin: clamp(48px, 6vw, 72px) auto 0; }
 
-.bezel {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 0 10px 10px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 2px 0 rgba(255, 255, 255, 0.03) inset;
-}
-.bezel-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  height: 38px;
-  padding: 0 6px;
-}
-.bezel-foot { border-top: 1px solid var(--border); margin-top: 10px; height: 40px; }
-.dots { display: inline-flex; gap: 6px; }
-.dots i {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: var(--border2);
-}
-.dots i:nth-child(1) { background: rgba(248, 113, 113, 0.55); }
-.dots i:nth-child(2) { background: rgba(250, 204, 21, 0.5); }
-.dots i:nth-child(3) { background: rgba(70, 196, 106, 0.5); }
-.bezel-label {
-  font: 600 10.5px var(--mono);
-  letter-spacing: 0.22em;
-  color: var(--faint);
-}
-.bezel-rec {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font: 600 10.5px var(--mono);
-  letter-spacing: 0.18em;
-  color: var(--dim);
-}
-.bezel-rec i {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--red);
-  animation: rec-blink 1.6s ease-in-out infinite;
-}
-@keyframes rec-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-.bezel-dim {
-  margin-left: auto;
-  font: 500 10.5px var(--mono);
-  letter-spacing: 0.16em;
-  color: var(--faint);
-}
-.bezel video {
+.monitor > video {
+  --video-corner: clamp(6px, 1.2vw, 13px);
   width: 100%;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  border-radius: var(--video-corner);
   background: var(--ink);
+  clip-path: inset(0 round var(--video-corner));
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.48);
 }
 .tc {
   font: 600 13px var(--mono);
@@ -757,19 +711,38 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
-.motif-export-frame figcaption {
+.motif-replay-button {
   position: absolute;
   z-index: 2;
   right: 9px;
   bottom: 9px;
-  left: 9px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  color: rgba(230, 233, 239, 0.7);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid rgba(230, 233, 239, 0.3);
+  border-radius: 999px;
+  color: rgba(230, 233, 239, 0.82);
+  background: rgba(8, 9, 11, 0.62);
   font: 600 8px var(--mono);
-  letter-spacing: 0.14em;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: inherit;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.motif-replay-button:hover {
+  color: var(--text);
+  border-color: rgba(155, 143, 232, 0.72);
+  background: rgba(28, 32, 40, 0.86);
+}
+.motif-replay-button:focus-visible { outline-offset: 2px; }
+.motif-replay-button svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .motif-export-legend {
   display: grid;
@@ -1092,6 +1065,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   font: 400 clamp(25px, 3.4vw, 40px)/1.2 var(--serif);
   letter-spacing: -0.01em;
 }
+.finale-phrase { white-space: nowrap; }
 .finale-cta .cta-row { justify-content: flex-start; margin-top: 28px; }
 .finale-meta {
   margin-top: 20px;
@@ -1226,9 +1200,6 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   .motif-benefits { grid-template-columns: minmax(0, 1fr); }
   .tui { grid-template-columns: 11px minmax(0, 1fr); gap: 7px; font-size: 10.5px; }
   .tui-out { grid-template-columns: 10px minmax(0, 1fr); gap: 5px; }
-  .bezel { padding: 0 6px 6px; border-radius: 9px; }
-  .bezel-bar { height: 30px; gap: 10px; }
-  .bezel-foot { margin-top: 6px; height: 32px; }
   .tc { font-size: 11px; }
   .btn { width: 100%; justify-content: center; }
   .cta-row { width: 100%; }
@@ -1243,7 +1214,6 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
     transition-duration: 0.001ms !important;
   }
   .rv { opacity: 1; transform: none; }
-  .bezel-rec i { animation: none; }
 }
 
 /* ============ SIMPLIFIED CHINESE ============
@@ -1263,7 +1233,6 @@ html[lang^="zh"] h2 em[lang="en"] { font-style: italic; }
       characters apart into disconnected glyphs — they already carry their own
       side bearings. Roughly halved, keeping the relative hierarchy. */
 html[lang^="zh"] .kicker,
-html[lang^="zh"] .bezel-label,
 html[lang^="zh"] .timeline-marker a,
 html[lang^="zh"] .cue-tag,
 html[lang^="zh"] .film figcaption,
@@ -1272,11 +1241,8 @@ html[lang^="zh"] .finale-value-tag,
 html[lang^="zh"] .oss-eyebrow { letter-spacing: 0.1em; }
 
 html[lang^="zh"] .hero-meta,
-html[lang^="zh"] .bezel-rec,
-html[lang^="zh"] .bezel-dim,
 html[lang^="zh"] .tc,
 html[lang^="zh"] .motif-output-badge,
-html[lang^="zh"] .motif-export-frame figcaption,
 html[lang^="zh"] .motif-benefit-no,
 html[lang^="zh"] .log-stat,
 html[lang^="zh"] .foot-copy { letter-spacing: 0.06em; }

@@ -165,7 +165,7 @@
         </a>
         <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">Read the docs</a>
       </p>
-      <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;free &amp; open source&ensp;—&ensp;works with the AI you already use</p>
+      <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;free &amp; open source&ensp;—&ensp;works with the agent you already use</p>
     </div>
   </section>
 
@@ -175,8 +175,7 @@
       <header class="sec-head rv">
         <p class="kicker"><span class="reel-no">Opening Scene</span><span class="scene-no">One shot. All agent.</span></p>
         <h2 id="demo-h">Not a mockup. <em>A recording.</em></h2>
-        <p class="lede">An agent cut this over MCP, unassisted. The terminal beside it is that
-        same session, replayed line for line.</p>
+        <p class="lede">This is the full process of an agent editing the video independently over MCP, with no human intervention. On the right, the log from that same session replays line by line.</p>
       </header>
       <div class="demo-stage rv">
         <video id="demoVideo" width="1600" height="852" poster="/assets/video/agent-session-poster.jpg"
@@ -288,10 +287,13 @@
                    aria-label="A five-second WeftCut export combining animated Text FX, a lower third, and a countdown">
               <source src="/assets/video/motif-showcase.mp4" type="video/mp4" />
             </video>
-            <figcaption>
-              <span>WEFTCUT EXPORT · 5 SEC</span>
-              <span>PLAYS ONCE</span>
-            </figcaption>
+            <button id="motifReplayButton" class="motif-replay-button" type="button" aria-label="Replay Motif export">
+              <svg viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" focusable="false">
+                <path d="M13.25 5.25A6 6 0 1 0 14 8" />
+                <path d="M13.25 1.75v3.5h-3.5" />
+              </svg>
+              <span>Replay</span>
+            </button>
           </figure>
           <div class="motif-export-legend" aria-hidden="true">
             <span><i></i>Text FX</span>
@@ -304,17 +306,17 @@
       <div class="motif-benefits rv">
         <article>
           <span class="motif-benefit-no">01</span>
-          <h3>Say what you need</h3>
-          <p>Describe a title, lower third, callout, or something entirely your own.</p>
+          <h3>Describe</h3>
+          <p>Whether it&rsquo;s a title, lower third, callout, or an entirely new design, tell your agent what you want.</p>
         </article>
         <article>
           <span class="motif-benefit-no">02</span>
-          <h3>See it move</h3>
+          <h3>Preview</h3>
           <p>Your agent turns the idea into a Motif you can play on the timeline.</p>
         </article>
         <article>
           <span class="motif-benefit-no">03</span>
-          <h3>Make it yours</h3>
+          <h3>Polish</h3>
           <p>Refine it in context and reuse the finished look in your next edit.</p>
         </article>
       </div>
@@ -326,25 +328,18 @@
     <div class="wrap">
       <header class="sec-head rv">
         <p class="kicker"><span class="reel-no">Scene 03</span><span class="scene-no">The human cut</span></p>
-        <h2 id="editor-h">Full control for humans. <em>Full&nbsp;access&nbsp;for&nbsp;agents.</em></h2>
+        <h2 id="editor-h">Full control for humans.<br /><em>Full&nbsp;access&nbsp;for&nbsp;agents.</em></h2>
         <p class="lede">You keep the precision and control of a serious desktop editor. Your agent
         gets access to the same tools, while every change remains visible on your timeline.</p>
       </header>
 
       <figure class="monitor rv">
-        <div class="bezel">
-          <div class="bezel-bar">
-            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="bezel-label">SCENE 3 · THE HUMAN CUT</span>
-            <span class="bezel-dim">53S</span>
-          </div>
-          <video id="nleVideo" width="1600" height="852" poster="/assets/video/nle-tour-poster.jpg"
-                 controls muted playsinline preload="metadata"
-                 aria-label="A tour of editing by hand in WeftCut: playback, scrubbing, splitting, trimming, keyframes, effects and export">
-            <source src="/assets/video/nle-tour.mp4" type="video/mp4" />
-            <source src="/assets/video/nle-tour.webm" type="video/webm" />
-          </video>
-        </div>
+        <video id="nleVideo" width="1600" height="852" poster="/assets/video/nle-tour-poster.jpg"
+               controls muted playsinline preload="metadata"
+               aria-label="A tour of editing by hand in WeftCut: playback, scrubbing, splitting, trimming, keyframes, effects and export">
+          <source src="/assets/video/nle-tour.mp4" type="video/mp4" />
+          <source src="/assets/video/nle-tour.webm" type="video/webm" />
+        </video>
         <figcaption>PLAYBACK · SCRUB · BLADE · TRIM · KEYFRAMES · EFFECTS · ⌘K → EXPORT</figcaption>
       </figure>
 
@@ -461,7 +456,7 @@
 
       <div class="finale-closing rv">
         <div class="finale-cta">
-          <p class="finale-line">The timeline should keep up with your imagination.</p>
+          <p class="finale-line">Let the timeline keep up with <span class="finale-phrase">every idea.</span></p>
           <p class="cta-row">
             <a class="btn btn-primary" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener">Get WeftCut</a>
           </p>
@@ -486,7 +481,7 @@
     <div class="wrap">
       <header class="sec-head rv">
         <p class="kicker"><span class="reel-no">Post-credits</span><span class="scene-no">A few details</span></p>
-        <h2 id="faq-h">Frequently asked.</h2>
+        <h2 id="faq-h">Frequently asked</h2>
       </header>
 
       <ul class="faq-list rv">
@@ -534,7 +529,7 @@
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 27%">
           <a href="#agent" data-timeline-title="SCENE 01 · AGENT-NATIVE" aria-label="Agent-native editing">
-            <span class="marker-index">02</span><span class="marker-label" data-short="AI">Agent</span>
+            <span class="marker-index">02</span><span class="marker-label" data-short="AI">Agent Native</span>
           </a>
         </li>
         <li class="timeline-marker" data-timeline-marker style="--marker-position: 48%">
