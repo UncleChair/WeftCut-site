@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WeftCut — 面向 Agent 的视频剪辑器</title>
+<meta name="description" content="WeftCut 是一款同时为人与 AI Agent 打造的桌面视频剪辑器。接入 Claude、Cursor 或任意 MCP 客户端——每一次剪辑落到时间线上，你都能实时审阅。" />
+<link rel="canonical" href="https://weftcut.com/zh/" />
+<!-- Each language self-canonicalises and declares the full set, itself included.
+     x-default points at English. Mirrored in sitemap.xml. -->
+<link rel="alternate" hreflang="en" href="https://weftcut.com/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://weftcut.com/zh/" />
+<link rel="alternate" hreflang="x-default" href="https://weftcut.com/" />
+<meta name="theme-color" content="#0c0e12" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:title" content="WeftCut — 面向 Agent 的视频剪辑器" />
+<meta property="og:description" content="一款同时为人与 AI Agent 打造的桌面视频剪辑器。接入 Claude、Cursor 或任意 MCP 客户端——每一次剪辑落到时间线上，你都能实时审阅。" />
+<meta property="og:url" content="https://weftcut.com/zh/" />
+<meta property="og:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="WeftCut — 面向 Agent 的视频剪辑器" />
+<meta name="twitter:description" content="一款同时为人与 AI Agent 打造的桌面视频剪辑器。接入 Claude、Cursor 或任意 MCP 客户端——每一次剪辑都能实时审阅。" />
+<meta name="twitter:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+<script>
+(() => {
+  const navigationEntry = performance.getEntriesByType("navigation")[0];
+  const isReload = navigationEntry
+    ? navigationEntry.type === "reload"
+    : performance.navigation && performance.navigation.type === 1;
+  const isTopLocation = !window.location.hash || window.location.hash === "#top";
+  if (!isReload || !isTopLocation) return;
+
+  const root = document.documentElement;
+  const canControlRestoration = "scrollRestoration" in history;
+  const previousRestoration = canControlRestoration ? history.scrollRestoration : "auto";
+  root.classList.add("is-resetting-scroll");
+  if (canControlRestoration) history.scrollRestoration = "manual";
+
+  const resetScroll = () => window.scrollTo(0, 0);
+  resetScroll();
+  window.addEventListener(
+    "pageshow",
+    () => {
+      resetScroll();
+      requestAnimationFrame(() => {
+        resetScroll();
+        requestAnimationFrame(() => {
+          resetScroll();
+          root.classList.remove("is-resetting-scroll");
+          if (canControlRestoration) history.scrollRestoration = previousRestoration;
+        });
+      });
+    },
+    { once: true }
+  );
+})();
+</script>
+<link rel="stylesheet" href="/index.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "inLanguage": "zh-Hans",
+  "name": "WeftCut",
+  "description": "一款把 AI Agent 视为一等公民的跨平台桌面视频剪辑器。接入 Claude、Cursor 或任意 MCP 客户端——并实时审计它对时间线的每一次改动。",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "macOS, Windows, Linux",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "license": "MIT",
+  "url": "https://github.com/UncleChair/WeftCut"
+}
+</script>
+<!-- The FAQ section, structured. Both languages emit their own copy of this, so
+     an assistant answering "is WeftCut free" has a citable source either way. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "WeftCut 免费吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "免费——基于 MIT 许可开源。随附的 FFmpeg 遵循其自身的 LGPL/GPL 条款。" }
+    },
+    {
+      "@type": "Question",
+      "name": "我可以接入哪些 agent？",
+      "acceptedAnswer": { "@type": "Answer", "text": "任意 MCP 客户端——Claude Desktop、Cursor、Codex，或你自己写的。从「设置 → Agent」复制一段配置，粘进你的客户端，agent 就能和你并肩剪辑。WeftCut 不内置任何 AI 模型——智能来自你接入的 agent。" }
+    },
+    {
+      "@type": "Question",
+      "name": "不接 agent 也能用吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能——它本身就是一台完整的剪辑器：A/B 卷时间线、关键帧、特效、字幕、Motif、音频混音，以及最高 10-bit AV1 与 ProRes 的导出。" }
+    },
+    {
+      "@type": "Question",
+      "name": "AI 在哪里运行？",
+      "acceptedAnswer": { "@type": "Answer", "text": "在你的 agent 里，不在应用里——WeftCut 不附带任何模型。转写、画面描述这类可选分析在你本机上运行。" }
+    },
+    {
+      "@type": "Question",
+      "name": "支持哪些平台？",
+      "acceptedAnswer": { "@type": "Answer", "text": "macOS、Windows 和 Linux——同一个桌面应用，各平台功能一致。" }
+    }
+  ]
+}
+</script>
+<!-- Every user-visible string index.js assembles at runtime. Kept here, static
+     and per-page, so index.js itself stays language-agnostic and the localized
+     build needs no second request to dress its own UI. {braces} are filled in
+     by the t() helper in index.js. -->
+<script type="application/json" id="ui-strings">
+{
+  "downloadFor": "下载 {platform} 版",
+  "downloadAria": "从 GitHub Releases 下载 WeftCut {platform} 版",
+  "logStatIdle": "{count} 次真实调用 · 已同步",
+  "logStatProgress": "{done}/{count} · T+{time}",
+  "logMeta": "{count} 次调用",
+  "logMetaMedian": "{count} 次调用 · 中位 {median}ms",
+  "moreLines": "… 还有 {n} 行（ctrl+o 展开）",
+  "briefAria": "交给 agent 的任务简报",
+  "callTitle": "{tool}({params})\n{status}，耗时 {ms}ms",
+  "callOk": "成功",
+  "callRejected": "被拒绝",
+  "callAria": "{tool} —— 跳转视频",
+  "messageAria": "agent 消息 —— 跳转视频",
+  "traceUnavailable": "会话轨迹不可用 —— 见 /assets/agent-session.json"
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="WeftCut — 回到顶部">
+      <img src="/assets/icon.svg" alt="" width="26" height="26" />
+      <span class="brand-word">WeftCut</span>
+    </a>
+    <a class="lang-switch" data-lang-switch href="/" hreflang="en" lang="en" aria-label="Switch to English" title="English">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.15"><circle cx="8" cy="8" r="6.2"/><ellipse cx="8" cy="8" rx="2.65" ry="6.2"/><path d="M2.2 5.9h11.6M2.2 10.1h11.6"/></svg>
+    </a>
+    <a class="gh" href="https://github.com/UncleChair/WeftCut" rel="noopener">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.6-.18-3.29-.82-3.29-3.56 0-.79.28-1.43.74-1.93-.07-.18-.32-.91.07-1.9 0 0 .6-.19 1.97.74A6.8 6.8 0 0 1 8 3.8a6.8 6.8 0 0 1 1.79.24c1.37-.93 1.97-.74 1.97-.74.39.99.14 1.72.07 1.9.46.5.74 1.14.74 1.93 0 2.75-1.69 3.38-3.3 3.56.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+      <span>GitHub</span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-label="简介">
+    <div class="wrap hero-in">
+      <p class="kicker rv">面向 agent 的视频剪辑器</p>
+      <h1 class="rv">用 <em class="accent-agent" lang="en">agent</em> 和 <em class="accent-code">代码</em> 剪辑</h1>
+      <p class="lede rv">让 agent 成为你时间线上的纬线——把每一次剪切、每一条字幕、每一个转场编织到位，而掌控权始终在你手里。</p>
+      <p class="cta-row rv">
+        <a class="btn btn-primary" id="downloadButton" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener" aria-label="从 GitHub Releases 下载 WeftCut">
+          <span class="platform-icon" id="downloadPlatformIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>
+          </span>
+          <span id="downloadButtonLabel">下载</span>
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">阅读文档</a>
+      </p>
+      <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;免费开源&ensp;—&ensp;适配你已在用的 AI</p>
+    </div>
+  </section>
+
+  <!-- ============ DEMO — THE CUT ============ -->
+  <section class="demo-section" id="demo" aria-labelledby="demo-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">开场</span><span class="scene-no">一镜到底，全程 agent。</span></p>
+        <h2 id="demo-h">不是演示稿，<em>是实录。</em></h2>
+        <p class="lede">这段片子由 agent 通过 MCP 独立剪成，无人接手。旁边那个终端就是同一次会话，逐行重放。</p>
+      </header>
+      <div class="demo-stage rv">
+        <video id="demoVideo" width="1600" height="852" poster="/assets/video/agent-session-poster.jpg"
+               autoplay muted playsinline loop controls preload="metadata"
+               aria-label="AI agent 在 WeftCut 中剪辑视频的完整录像——一镜到底，全程 agent">
+          <source src="/assets/video/agent-session.mp4" type="video/mp4" />
+          <source src="/assets/video/agent-session.webm" type="video/webm" />
+        </video>
+
+        <div class="logpanel" aria-label="真实的 agent 会话，与视频同步重放">
+          <div class="log-head">
+            <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="log-title">claude &middot; weftcut</span>
+            <span class="log-stat" id="logStat">真实会话 · 已同步</span>
+          </div>
+          <div class="log-body" id="logBody" tabindex="0" role="log" aria-label="agent 的终端，与视频同步展开。激活某次调用可将视频跳到那一刻。"></div>
+          <div class="log-foot mono-dim"><span id="logMeta">真实会话</span> · 点击任意行跳转<br />轨迹：<a href="/assets/agent-session.json">agent-session.json</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENE 01 — AGENT-NATIVE ============ -->
+  <section class="reel" id="agent" aria-labelledby="agent-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">第 01 场</span><span class="scene-no">真正的分野</span></p>
+        <h2 id="agent-h">不是外挂，<em>是内建。</em></h2>
+        <p class="lede">多数剪辑器把 AI 当作一个附加功能。WeftCut 通过标准 MCP 把整个编辑器开放给你的 agent——你能做的，它都能做。</p>
+      </header>
+
+      <div class="agent-grid">
+        <ul class="cue-list rv" role="list">
+          <li>
+            <span class="cue-tag">接入</span>
+            <p>设置 → Agent，复制，粘贴——Claude、Cursor 或任意 MCP 客户端一分钟接入。全程本地，不上传任何内容。</p>
+          </li>
+          <li>
+            <span class="cue-tag">手艺</span>
+            <p>完整的剪辑词汇都摆在桌面上：修剪、切分、转场、关键帧、特效、字幕、标记、撤销。</p>
+          </li>
+          <li>
+            <span class="cue-tag">掌控</span>
+            <p>改动实时落地，并置于检查点之下——随时查看变更流，或撤销并重新接管。</p>
+          </li>
+          <li>
+            <span class="cue-tag">洞察</span>
+            <p>可选的本地分析让 agent 先看清再下刀：镜头、静音段、转写、画面描述。</p>
+          </li>
+        </ul>
+
+        <div class="agent-side">
+          <figure class="code-frame rv" aria-label="你可以交给 agent 的示例提示">
+            <figcaption><span class="mono-dim">你可以这样说</span><span class="mono-dim">一句白话 → 一次真实剪辑</span></figcaption>
+            <ul class="prompt-list">
+              <li>&ldquo;把这段采访里的静音删掉，停顿收紧一点。&rdquo;</li>
+              <li>&ldquo;在每个镜头切换处把这条素材切开，并标注场次。&rdquo;</li>
+              <li>&ldquo;把所有字幕重新做一遍样式——再大些，加一层柔和阴影。&rdquo;</li>
+            </ul>
+          </figure>
+        </div>
+      </div>
+
+      <div class="frame-pair">
+        <figure class="film rv">
+          <img src="/assets/shots/log-console.webp" width="1600" height="852" loading="lazy"
+               alt="WeftCut 的实时变更流，逐条列出 agent 落到时间线上的每个动作" />
+          <figcaption>变更流 —— AGENT 的每一步都在案</figcaption>
+        </figure>
+        <figure class="film rv">
+          <img src="/assets/shots/agent-mode.webp" width="1600" height="852" loading="lazy"
+               alt="WeftCut 的 agent 模式：外部 agent 处理项目时，界面精简而专注" />
+          <figcaption>AGENT 模式 —— AGENT 工作时的专注界面</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENE 02 — MOTIFS ============ -->
+  <section class="reel motif-reel" id="motifs" aria-labelledby="motifs-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">第 02 场</span><span class="scene-no">代码即动效</span></p>
+        <h2 id="motifs-h">你的 agent 懂代码。<em>有了 Motif，它也懂动效。</em></h2>
+        <p class="lede">描述你的想法，让 agent 把它变成一个 Motif——代码在这里化为动效，每一种风格都可复用。</p>
+      </header>
+
+      <div class="motif-showcase">
+        <figure class="film motif-picker-shot rv">
+          <img src="/assets/shots/motifs.webp" width="1600" height="852" loading="lazy"
+               alt="WeftCut 的 Motif 选择器，展示实时倒计时预览、可编辑控件与可复用叠加层目录" />
+          <figcaption>选一个起点 —— 或者做一个属于你自己的</figcaption>
+        </figure>
+
+        <div class="motif-export rv">
+          <div class="motif-output-head">
+            <span class="mono-dim">&ldquo;给这一场加一个标题、一条下三分之一字幕和一个倒计时。&rdquo;</span>
+            <span class="motif-output-badge">真实导出</span>
+          </div>
+          <figure class="motif-export-frame">
+            <video id="motifExportVideo" width="960" height="540" muted playsinline preload="metadata"
+                   poster="/assets/video/motif-showcase-poster.jpg"
+                   aria-label="一段五秒的 WeftCut 导出，结合了动态文字特效、下三分之一字幕与倒计时">
+              <source src="/assets/video/motif-showcase.mp4" type="video/mp4" />
+            </video>
+            <figcaption>
+              <span>WEFTCUT 导出 · 5 秒</span>
+              <span>只播一次</span>
+            </figcaption>
+          </figure>
+          <div class="motif-export-legend" aria-hidden="true">
+            <span><i></i>文字特效</span>
+            <span><i></i>下三分之一</span>
+            <span><i></i>倒计时</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="motif-benefits rv">
+        <article>
+          <span class="motif-benefit-no">01</span>
+          <h3>说出你要什么</h3>
+          <p>描述一个标题、一条下三分之一字幕、一处标注，或者完全属于你的东西。</p>
+        </article>
+        <article>
+          <span class="motif-benefit-no">02</span>
+          <h3>看它动起来</h3>
+          <p>agent 把这个想法变成可以在时间线上播放的 Motif。</p>
+        </article>
+        <article>
+          <span class="motif-benefit-no">03</span>
+          <h3>把它变成你的</h3>
+          <p>在上下文里打磨，再把成型的风格用到下一次剪辑。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENE 03 — A COMPLETE EDITOR ============ -->
+  <section class="reel" id="editor" aria-labelledby="editor-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">第 03 场</span><span class="scene-no">属于人的那一刀</span></p>
+        <h2 id="editor-h">人拥有完整控制。<em>agent&nbsp;拥有完整权限。</em></h2>
+        <p class="lede">你保有一台专业桌面剪辑器该有的精度与控制。你的 agent 拿到同一套工具，而每一次改动都清晰地留在时间线上。</p>
+      </header>
+
+      <figure class="monitor rv">
+        <div class="bezel">
+          <div class="bezel-bar">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="bezel-label">第 3 场 · 属于人的那一刀</span>
+            <span class="bezel-dim">53S</span>
+          </div>
+          <video id="nleVideo" width="1600" height="852" poster="/assets/video/nle-tour-poster.jpg"
+                 controls muted playsinline preload="metadata"
+                 aria-label="WeftCut 手动剪辑一览：播放、拖拽、切分、修剪、关键帧、特效与导出">
+            <source src="/assets/video/nle-tour.mp4" type="video/mp4" />
+            <source src="/assets/video/nle-tour.webm" type="video/webm" />
+          </video>
+        </div>
+        <figcaption>播放 · 拖拽 · 切刀 · 修剪 · 关键帧 · 特效 · ⌘K → 导出</figcaption>
+      </figure>
+
+      <div class="feature-grid">
+        <article class="fcard fcard-wide rv">
+          <figure class="film">
+            <img class="timeline-closeup" src="/assets/shots/timeline-closeup.webp" width="1600" height="151" loading="lazy"
+                 alt="WeftCut 时间线特写：片段缩略帧、音频波形与关键帧曲线轨" />
+          </figure>
+          <div class="fcard-body">
+            <h3>一条读起来像胶片的时间线</h3>
+            <p>A/B 卷轨道，每个片段都带缩略帧与波形。逐帧精确的修剪，可信赖的时间码，音频始终与画面成对。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/curve-editor.webp" width="1600" height="852" loading="lazy"
+                 alt="时间线内的曲线编辑器，关键帧由平滑缓动曲线相连" />
+          </figure>
+          <div class="fcard-body">
+            <h3>关键帧与曲线</h3>
+            <p>平滑的贝塞尔运动，直接在时间线上编辑——没有弹窗。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/effects.webp" width="1600" height="852" loading="lazy"
+                 alt="所选片段的特效链上叠加了模糊与色度键" />
+          </figure>
+          <div class="fcard-body">
+            <h3>逐片段的特效链</h3>
+            <p>叠加、开关、重排特效，控件始终留在预览旁边。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/captions.webp" width="1600" height="852" loading="lazy"
+                 alt="节目监视器上的样式化字幕，及其在时间线上的可编辑文字层" />
+          </figure>
+          <div class="fcard-body">
+            <h3>标题与字幕</h3>
+            <p>导入 SRT、VTT 或 ASS 成为可编辑字幕——再一步换掉整片的样式。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/eyedropper.webp" width="1600" height="852" loading="lazy"
+                 alt="用实时吸管直接从预览画面拾取色度键颜色" />
+          </figure>
+          <div class="fcard-body">
+            <h3>实时取色的抠像</h3>
+            <p>直接从画面取键控色，然后就地调整平衡、去溢色与羽化。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/search-palette.webp" width="1600" height="852" loading="lazy"
+                 alt="Ctrl-K 面板同时搜索命令、素材、片段、字幕与标记" />
+          </figure>
+          <div class="fcard-body">
+            <h3>找到任何东西</h3>
+            <p>一个 Ctrl-K 面板搜遍命令、素材、片段、字幕与标记——支持拼音。</p>
+          </div>
+        </article>
+
+        <article class="fcard rv">
+          <figure class="film">
+            <img src="/assets/shots/export.webp" width="1600" height="852" loading="lazy"
+                 alt="导出对话框及编码设置：H.264、HEVC、AV1、ProRes 与 DNxHR" />
+          </figure>
+          <div class="fcard-body">
+            <h3>导出</h3>
+            <p>H.264、HEVC 与 10-bit AV1，或母版级的 ProRes 与 DNxHR——支持导出范围。</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EPILOGUE — AT THE SPEED OF IDEAS ============ -->
+  <section class="reel" id="oss" aria-labelledby="oss-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">尾声</span><span class="scene-no">跟上想法的速度</span></p>
+        <h2 id="oss-h">从第一个念头到最终成片——<em>中途不掉速。</em></h2>
+        <p class="lede">把创作意图变成真实剪辑，在完全掌控下打磨每个细节，把更多时间留给「让故事对味」这件事。</p>
+      </header>
+
+      <div class="finale-values rv" role="list" aria-label="WeftCut 如何让剪辑保持推进">
+        <article role="listitem">
+          <span class="finale-value-tag">势头</span>
+          <h3>让想法持续推进</h3>
+          <p>把一个创作方向变成时间线上的改动，而不必埋进重复劳动里。</p>
+        </article>
+        <article role="listitem">
+          <span class="finale-value-tag">专注</span>
+          <h3>守着故事本身</h3>
+          <p>让 agent 扛下机械活儿，你专注节奏、调性与感觉。</p>
+        </article>
+        <article role="listitem">
+          <span class="finale-value-tag">掌控</span>
+          <h3>按你的方式收尾</h3>
+          <p>每一次改动都可见、可撤销，等着你的判断与最后一笔。</p>
+        </article>
+      </div>
+
+      <div class="finale-closing rv">
+        <div class="finale-cta">
+          <p class="finale-line">时间线，应该跟得上你的想象力。</p>
+          <p class="cta-row">
+            <a class="btn btn-primary" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener">获取 WeftCut</a>
+          </p>
+          <p class="finale-meta">macOS · Windows · Linux</p>
+        </div>
+
+        <aside class="oss-card" aria-labelledby="oss-card-h">
+          <p class="oss-eyebrow">开源 · MIT</p>
+          <h3 id="oss-card-h">生而开放。</h3>
+          <p>WeftCut 在公开处构建，可自由使用、审阅与扩展。你的剪辑器，始终属于你。</p>
+          <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut" rel="noopener">
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.6-.18-3.29-.82-3.29-3.56 0-.79.28-1.43.74-1.93-.07-.18-.32-.91.07-1.9 0 0 .6-.19 1.97.74A6.8 6.8 0 0 1 8 3.8a6.8 6.8 0 0 1 1.79.24c1.37-.93 1.97-.74 1.97-.74.39.99.14 1.72.07 1.9.46.5.74 1.14.74 1.93 0 2.75-1.69 3.38-3.3 3.56.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            查看源码
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POST-CREDITS — FAQ ============ -->
+  <section class="reel" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <header class="sec-head rv">
+        <p class="kicker"><span class="reel-no">彩蛋</span><span class="scene-no">一些细节</span></p>
+        <h2 id="faq-h">常见问题。</h2>
+      </header>
+
+      <ul class="faq-list rv">
+        <li>
+          <h3>WeftCut 免费吗？</h3>
+          <p>免费——基于 MIT 许可开源。随附的 FFmpeg 遵循其自身的 LGPL/GPL 条款。</p>
+        </li>
+        <li>
+          <h3>我可以接入哪些 agent？</h3>
+          <p>任意 MCP 客户端——Claude Desktop、Cursor、Codex，或你自己写的。从「设置 → Agent」复制一段配置，粘进你的客户端，agent 就能和你并肩剪辑。WeftCut 不内置任何 AI 模型——智能来自你接入的 agent。</p>
+        </li>
+        <li>
+          <h3>不接 agent 也能用吗？</h3>
+          <p>能——它本身就是一台完整的剪辑器：A/B 卷时间线、关键帧、特效、字幕、Motif、音频混音，以及最高 10-bit AV1 与 ProRes 的导出。</p>
+        </li>
+        <li>
+          <h3>AI 在哪里运行？</h3>
+          <p>在你的 agent 里，不在应用里——WeftCut 不附带任何模型。转写、画面描述这类可选分析在你本机上运行。</p>
+        </li>
+        <li>
+          <h3>支持哪些平台？</h3>
+          <p>macOS、Windows 和 Linux——同一个桌面应用，各平台功能一致。</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<div class="timeline-dock" id="timelineDock">
+  <nav class="scroll-timeline" id="pageTimeline" aria-label="页面时间线">
+    <div class="timeline-rail">
+      <span class="timeline-playhead" role="slider" tabindex="0" aria-label="页面位置" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%"></span>
+
+      <ol class="timeline-markers">
+        <li class="timeline-marker is-active" data-timeline-marker style="--marker-position: 0%">
+          <a href="#top" data-timeline-title="片头 · 简介" aria-label="简介" aria-current="location">
+            <span class="marker-index">00</span><span class="marker-label" data-short="IN">开场</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 13%">
+          <a href="#demo" data-timeline-title="开场 · AGENT 会话" aria-label="实录演示">
+            <span class="marker-index">01</span><span class="marker-label" data-short="CUT">实录</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 27%">
+          <a href="#agent" data-timeline-title="第 01 场 · 原生 AGENT" aria-label="原生 agent 剪辑">
+            <span class="marker-index">02</span><span class="marker-label" data-short="AI">Agent</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 48%">
+          <a href="#motifs" data-timeline-title="第 02 场 · 代码即动效" aria-label="Motif">
+            <span class="marker-index">03</span><span class="marker-label" data-short="FX">Motif</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 63%">
+          <a href="#editor" data-timeline-title="第 03 场 · 属于人的那一刀" aria-label="编辑器">
+            <span class="marker-index">04</span><span class="marker-label" data-short="EDIT">编辑器</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 82%">
+          <a href="#oss" data-timeline-title="尾声 · 跟上想法的速度" aria-label="跟上想法的速度">
+            <span class="marker-index">05</span><span class="marker-label" data-short="END">终章</span>
+          </a>
+        </li>
+        <li class="timeline-marker" data-timeline-marker style="--marker-position: 94%">
+          <a href="#faq" data-timeline-title="彩蛋 · 一些细节" aria-label="常见问题">
+            <span class="marker-index">06</span><span class="marker-label" data-short="FAQ">彩蛋</span>
+          </a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<footer class="footer">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="#top" aria-label="WeftCut — 回到顶部">
+        <img src="/assets/icon.svg" alt="" width="24" height="24" />
+        <span class="brand-word">WeftCut</span>
+      </a>
+      <p>应用以 MIT 授权。随附 FFmpeg（LGPL 解码库 / GPL 命令行组件）。</p>
+    </div>
+    <nav class="foot-links" aria-label="页脚">
+      <a href="https://github.com/UncleChair/WeftCut" rel="noopener">GitHub</a>
+      <a href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">文档</a>
+      <a href="/assets/agent-session.json">Agent 会话</a>
+      <a data-lang-switch href="/" hreflang="en" lang="en">English</a>
+    </nav>
+    <p class="foot-copy">© 2026 WeftCut 贡献者</p>
+  </div>
+</footer>
+
+<script src="/index.js" defer></script>
+</body>
+</html>

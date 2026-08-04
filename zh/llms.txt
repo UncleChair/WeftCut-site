@@ -1,0 +1,30 @@
+# WeftCut
+
+> WeftCut 是一款免费、开源（MIT）的跨平台桌面视频剪辑器，把 AI Agent 当作一等公民。
+> 它不是把 AI 作为附加功能挂上去，而是通过 MCP（Model Context Protocol）在 localhost
+> 上把整个编辑器暴露为工具面，让外部 agent —— Claude、Cursor 或任意 MCP 客户端 ——
+> 执行真实的剪辑操作（放置/修剪/切分片段、关键帧、特效、字幕、标记、检查点、撤销），
+> 并实时落到界面上。它同时也是一台完整的人用 NLE：带缩略帧与波形的 A/B 卷时间线、
+> 逐帧精确的 SMPTE 编辑、带贝塞尔曲线编辑器的关键帧、含色度键的分层特效链、
+> 字幕（SRT/VTT/ASS）、动态 Motif 叠加层、基于角色的音频混音，以及最高 10-bit 的
+> H.264/HEVC/AV1/ProRes 导出。不内置任何模型；智能来自你接入的 agent。
+
+## 关键事实
+
+- 类型：桌面 NLE（非线性剪辑器），Electron + React + Rust（napi-rs）内核
+- Agent 协议：MCP over streamable HTTP（127.0.0.1），bearer token 鉴权
+- 工具面：约 66 个 tools/resources/prompts，覆盖完整剪辑词汇
+- 渲染：PixiJS v8 + WebCodecs 预览，流式封装导出
+- 许可：MIT（随附 FFmpeg，遵循 LGPL/GPL 双轨）
+- 平台：macOS、Windows、Linux
+
+## 语言
+
+- 英文主页：https://weftcut.com/ （llms.txt: https://weftcut.com/llms.txt）
+- 简体中文主页：https://weftcut.com/zh/
+
+## 链接
+
+- 代码仓库：https://github.com/UncleChair/WeftCut
+- 文档：https://github.com/UncleChair/WeftCut/tree/main/docs
+- MCP 服务端文档：https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md

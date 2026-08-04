@@ -11,6 +11,9 @@ index.html          THE product page — "Cinematic Timeline"
                     (hero = bare video + synced agent-action terminal side by side;
                     Reel 01 agent-native → Reel 02 motifs → Reel 03 the human cut → Epilogue product finale → Post-credits FAQ)
 index.css / index.js  the page's styles and interactions
+build-i18n.mjs      generates the localized pages from index.html + i18n/*.json
+i18n/zh.json        Simplified Chinese copy (English source text as the key)
+zh/                 GENERATED — do not hand-edit; run `npm run build`
 assets/             shared media: real screen recordings, screenshots, agent log
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
 package.json        npm start
@@ -35,6 +38,39 @@ npm start 3000       # custom port
    URLs in `index.html`, plus `sitemap.xml` and `robots.txt`) with the real
    domain.
 2. Ship the directory as-is — the page is already the site root.
+
+## Languages
+
+English lives at `/`, Simplified Chinese at `/zh/`. Both are plain static HTML —
+there is no client-side i18n, because most LLM crawlers don't run JS and would
+see an untranslated page.
+
+```sh
+npm run build     # regenerate zh/index.html
+npm run check     # CI guard: fail if zh/index.html is stale
+```
+
+`index.html` is the single source of both structure and English copy.
+`i18n/zh.json` keys its translations on **the English source text itself**, so
+the markup needs no `data-i18n` annotation, and editing an English string
+invalidates its key and fails the build naming the string that went stale.
+Replacements anchor on tag boundaries (`>text<`, `="value"`), which is why no
+HTML parser — and no dependency — is needed.
+
+To add a language: copy `i18n/zh.json`, translate the values, set the `locale`
+block, and add the code to `LOCALES` in `build-i18n.mjs`. Then extend the
+`hreflang` set in `index.html` and `sitemap.xml`.
+
+Notes:
+
+- Strings `index.js` builds at runtime live in a static `#ui-strings` JSON block
+  per page, so the script itself carries no English.
+- `assets/agent-session.json` stays English on purpose: it is a verbatim
+  transcript of a real Claude session, and translating it would undercut the
+  one claim the page most needs to be believed.
+- `html[lang^="zh"]` rules at the end of `index.css` supply CJK font fallbacks
+  (the mono stack has no Han glyphs at all), drop the synthesized italic Han
+  characters don't have, and halve the wide Latin letter-spacing.
 
 ## How the media was made (the honest part)
 

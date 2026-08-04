@@ -5,6 +5,8 @@
   "description": "Marketing homepage for WeftCut — static, zero-dependency",
   "type": "module",
   "scripts": {
-    "start": "node serve.mjs"
+    "start": "node serve.mjs",
+    "build": "node build-i18n.mjs",
+    "check": "node build-i18n.mjs --check"
   }
 }

@@ -29,6 +29,20 @@
   --sec-gap: clamp(84px, 11vw, 150px);
 }
 
+/* The three stacks above carry no CJK glyphs at all — ui-monospace/SF Mono/
+   Consolas in particular would drop every hanzi to an arbitrary system fallback
+   mid-line, and .mono is used in 25 places. Overriding the variables (higher
+   specificity than :root) fixes every consumer at once. Latin inside a mixed
+   run still resolves to the original faces, which is what we want. */
+html[lang^="zh"] {
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+          "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --serif: Georgia, "Times New Roman",
+           "Songti SC", "SimSun", "Noto Serif SC", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas,
+          "PingFang SC", "Microsoft YaHei", "Noto Sans SC", monospace;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html {
@@ -121,11 +135,36 @@ code {
 }
 .brand:hover { text-decoration: none; }
 .brand img { flex: 0 0 auto; }
+/* Language switcher — a real link in both directions, never a JS toggle, so
+   crawlers can walk from one language to the other. The margin-left:auto lives
+   here now instead of on .gh, so the pair travels to the right edge together.
+   In the nav it's a globe icon; the footer keeps a worded link, so the
+   destination language is spelled out somewhere on every page. The icon carries
+   aria-label + title for the text the glyph itself can't say. */
+.lang-switch {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: var(--dim);
+  border: 1px solid transparent;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.lang-switch:hover {
+  color: var(--text);
+  border-color: var(--border2);
+  background: var(--card);
+  text-decoration: none;
+}
+.lang-switch svg { display: block; }
+
 .gh {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-left: auto;
   font: 600 12.5px var(--sans);
   letter-spacing: 0.03em;
   color: var(--text);
@@ -1181,3 +1220,38 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   .rv { opacity: 1; transform: none; }
   .bezel-rec i { animation: none; }
 }
+
+/* ============ SIMPLIFIED CHINESE ============
+   Two things the Latin design does that Chinese can't inherit. Scoped to
+   html[lang^="zh"], so the English page is untouched. */
+
+/* 1. Han characters have no italic form, so `font-style: italic` makes the
+      browser slant the upright glyphs — the classic fake oblique, which reads
+      as a rendering bug. Accent <em>s keep their colour and lose the slant;
+      runs explicitly marked lang="en" keep it, since Latin does have one. */
+html[lang^="zh"] h1 em,
+html[lang^="zh"] h2 em { font-style: normal; }
+html[lang^="zh"] h1 em[lang="en"],
+html[lang^="zh"] h2 em[lang="en"] { font-style: italic; }
+
+/* 2. Tracking tuned for short uppercase Latin labels (up to 0.32em) pulls Han
+      characters apart into disconnected glyphs — they already carry their own
+      side bearings. Roughly halved, keeping the relative hierarchy. */
+html[lang^="zh"] .kicker,
+html[lang^="zh"] .bezel-label,
+html[lang^="zh"] .timeline-marker a,
+html[lang^="zh"] .cue-tag,
+html[lang^="zh"] .film figcaption,
+html[lang^="zh"] .monitor figcaption,
+html[lang^="zh"] .finale-value-tag,
+html[lang^="zh"] .oss-eyebrow { letter-spacing: 0.1em; }
+
+html[lang^="zh"] .hero-meta,
+html[lang^="zh"] .bezel-rec,
+html[lang^="zh"] .bezel-dim,
+html[lang^="zh"] .tc,
+html[lang^="zh"] .motif-output-badge,
+html[lang^="zh"] .motif-export-frame figcaption,
+html[lang^="zh"] .motif-benefit-no,
+html[lang^="zh"] .log-stat,
+html[lang^="zh"] .foot-copy { letter-spacing: 0.06em; }

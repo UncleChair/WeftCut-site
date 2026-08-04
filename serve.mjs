@@ -46,7 +46,12 @@ const server = http.createServer((req, res) => {
     let stat
     try {
       stat = statSync(file)
-      if (stat.isDirectory()) throw new Error('dir')
+      if (stat.isDirectory()) {
+        // /zh -> /zh/ so the localized pages resolve the way a real static host
+        // serves them; without this the directory stat throws straight to 404.
+        res.writeHead(301, { Location: pathname + '/' }).end()
+        return
+      }
     } catch {
       res.writeHead(404).end('Not found: ' + pathname)
       return

@@ -21,6 +21,11 @@
 - License: MIT (bundles FFmpeg under LGPL/GPL lanes)
 - Platforms: macOS, Windows, Linux
 
+## Languages
+
+- English (canonical): https://weftcut.com/
+- Simplified Chinese: https://weftcut.com/zh/ (llms.txt: https://weftcut.com/zh/llms.txt)
+
 ## Links
 
 - Repository: https://github.com/UncleChair/WeftCut

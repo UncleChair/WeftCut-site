@@ -4,6 +4,29 @@
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- localizable UI strings ----------
+     Baked into each page as static JSON (see #ui-strings in the head), so this
+     file carries no English of its own and the zh build localizes with it. */
+  const STRINGS = (() => {
+    const el = document.getElementById("ui-strings");
+    if (!el) return {};
+    try {
+      return JSON.parse(el.textContent);
+    } catch {
+      return {};
+    }
+  })();
+
+  // Falls back to the key rather than an empty string — a missing entry should
+  // be visible in review, not silently blank a label or an aria-label.
+  const t = (key, vars) => {
+    const template = key in STRINGS ? STRINGS[key] : key;
+    if (!vars) return template;
+    return template.replace(/\{(\w+)\}/g, (whole, name) =>
+      name in vars ? String(vars[name]) : whole
+    );
+  };
+
   /* ---------- scroll reveals ---------- */
   const rvEls = document.querySelectorAll(".rv");
   if (reduced || !("IntersectionObserver" in window)) {
@@ -110,8 +133,8 @@
     downloadPlatformIcon.innerHTML = platformIcons[platform.key];
     downloadButton.dataset.platform = platform.key;
     if (platform.name) {
-      downloadButtonLabel.textContent = `Download for ${platform.name}`;
-      downloadButton.setAttribute("aria-label", `Download WeftCut for ${platform.name} from GitHub Releases`);
+      downloadButtonLabel.textContent = t("downloadFor", { platform: platform.name });
+      downloadButton.setAttribute("aria-label", t("downloadAria", { platform: platform.name }));
     }
   }
 
@@ -429,7 +452,7 @@
     if (ev.more) {
       const s = document.createElement("span");
       s.className = "tui-more";
-      s.textContent = `… +${ev.more} lines (ctrl+o to expand)`;
+      s.textContent = t("moreLines", { n: ev.more });
       lines.appendChild(s);
     }
     out.append(elbow, lines);
@@ -464,7 +487,7 @@
     if (session.prompt) {
       const { el, body } = tuiRow("tui-user", ">");
       body.textContent = session.prompt;
-      el.setAttribute("aria-label", "The brief handed to the agent");
+      el.setAttribute("aria-label", t("briefAria"));
       makeSeekable(el, 0);
       logBody.appendChild(el);
     }
@@ -484,13 +507,18 @@
         head.append(tool, params);
         row.body.appendChild(head);
         if (ev.out && ev.out.length) row.body.appendChild(tuiResult(ev));
-        row.el.title = `${ev.display}(${ev.params})\n${ev.error ? "rejected" : "ok"} in ${ev.ms}ms`;
-        row.el.setAttribute("aria-label", `${ev.display} — seek video`);
+        row.el.title = t("callTitle", {
+          tool: ev.display,
+          params: ev.params,
+          status: t(ev.error ? "callRejected" : "callOk"),
+          ms: ev.ms,
+        });
+        row.el.setAttribute("aria-label", t("callAria", { tool: ev.display }));
         if (!ev.aux) callCount++;
       } else {
         row = tuiRow(ev.kind === "final" ? "tui-say tui-final" : "tui-say", "⏺");
         row.body.appendChild(mdInline(ev.text));
-        row.el.setAttribute("aria-label", "Agent message — seek video");
+        row.el.setAttribute("aria-label", t("messageAria"));
       }
       makeSeekable(row.el, ev.t);
       logBody.appendChild(row.el);
@@ -498,11 +526,14 @@
     }
 
     lastCur = -2;
-    if (logStat) logStat.textContent = `${callCount} REAL CALLS · IN SYNC`;
+    if (logStat) logStat.textContent = t("logStatIdle", { count: callCount });
     if (logMeta) {
       const lat = session.events.filter((e) => e.kind === "call" && !e.aux).map((e) => e.ms).sort((a, b) => a - b);
       const median = lat.length ? lat[lat.length >> 1] : null;
-      logMeta.textContent = `${callCount} calls` + (median !== null ? ` · median ${median}ms` : "");
+      logMeta.textContent =
+        median !== null
+          ? t("logMetaMedian", { count: callCount, median })
+          : t("logMeta", { count: callCount });
     }
   }
 
@@ -532,8 +563,8 @@
       for (let i = 0; i <= cur; i++) if (entries[i].call) moveNo++;
       logStat.textContent =
         cur >= 0
-          ? `${moveNo}/${callCount} · T+${smpte(ct, 30).slice(3)}`
-          : `${callCount} REAL CALLS · IN SYNC`;
+          ? t("logStatProgress", { done: moveNo, count: callCount, time: smpte(ct, 30).slice(3) })
+          : t("logStatIdle", { count: callCount });
     }
     lastCur = cur;
   }
@@ -553,7 +584,7 @@
     .catch(() => {
       const p = document.createElement("p");
       p.className = "log-empty";
-      p.textContent = "session trace unavailable — see /assets/agent-session.json";
+      p.textContent = t("traceUnavailable");
       logBody.appendChild(p);
     });
 })();
