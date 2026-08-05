@@ -23,10 +23,7 @@
 <meta property="og:title" content="WeftCut — 免费开源、原生支持 AI agent 的视频剪辑软件" />
 <meta property="og:description" content="一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。" />
 <meta property="og:url" content="https://weftcut.com/zh/" />
-<!-- A dedicated 1200×630 PNG, not a page screenshot: WeChat and iMessage don't
-     decode WebP cards, and raw UI reads as noise at thumbnail size. Rendered by
-     .work/harness/og-render.mjs from og-card.html; re-run it if the hero line
-     changes. build-i18n.mjs swaps in the zh card. -->
+<!-- PNG, not WebP: WeChat and iMessage don't decode WebP cards. -->
 <meta property="og:image" content="https://weftcut.com/assets/og/card-zh.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -73,14 +70,8 @@
 })();
 </script>
 <link rel="stylesheet" href="/index.css" />
-<!-- The app, structured. `url` is this site and `sameAs` is the repo — the other
-     way round, as it was, made GitHub the app's canonical home and left the
-     domain describing something it didn't claim to be.
-     Absent on purpose, and not an oversight to fill in: softwareVersion,
-     downloadUrl, datePublished, aggregateRating. There is no public release yet
-     (the hero says "Coming soon" for the same reason) and no ratings exist, so
-     every one of those would be a fabricated claim in a machine-readable field —
-     the worst place to put one. Add them in the same commit that ships v1. -->
+<!-- No softwareVersion, downloadUrl, datePublished or aggregateRating until a
+     release and ratings actually exist. Add them in the commit that ships v1. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -119,10 +110,6 @@
   ]
 }
 </script>
-<!-- Names the site as a site, which is what Google reads to decide whether a
-     result is headed "WeftCut" or "weftcut.com". `url` stays the root in both
-     languages: the site-name signal is defined against the origin, and /zh/ is a
-     translation of this site rather than a second one. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -256,11 +243,6 @@
           <source src="/assets/video/agent-session.webm" type="video/webm" />
         </video>
 
-        <!-- No aria-label here: ARIA prohibits naming an element with no role,
-             so a plain <div> label is discarded rather than announced. The name
-             this panel needs lives on .log-body below, which has role="log" to
-             hang it on and says it more usefully — repeating it here would only
-             have a screen reader read the same sentence twice on the way in. -->
         <div class="logpanel">
           <div class="log-head">
             <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -503,13 +485,8 @@
         <p class="lede">让创作意图真正落到时间线上，同时保留对每个细节的控制，把更多时间用来讲好故事。</p>
       </header>
 
-      <!-- A real ul/li, not div + role="listitem": `listitem` is not an allowed
-           role for <article>, so that pairing produced a malformed accessibility
-           tree — three items claiming to be in a list that screen readers and
-           agents wouldn't necessarily read as one. The explicit role="list" is
-           load-bearing rather than redundant: WebKit drops list semantics from a
-           <ul> that is display:grid, which this container is. Same pattern as
-           .cue-list above. -->
+      <!-- role="list" is not redundant: WebKit drops list semantics from a
+           display:grid ul. Same as .cue-list. -->
       <ul class="finale-values rv" role="list" aria-label="WeftCut 如何让剪辑流畅推进">
         <li>
           <span class="finale-value-tag">节奏</span>
