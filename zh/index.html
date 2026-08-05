@@ -256,7 +256,12 @@
           <source src="/assets/video/agent-session.webm" type="video/webm" />
         </video>
 
-        <div class="logpanel" aria-label="真实的 agent 会话，与视频同步重放">
+        <!-- No aria-label here: ARIA prohibits naming an element with no role,
+             so a plain <div> label is discarded rather than announced. The name
+             this panel needs lives on .log-body below, which has role="log" to
+             hang it on and says it more usefully — repeating it here would only
+             have a screen reader read the same sentence twice on the way in. -->
+        <div class="logpanel">
           <div class="log-head">
             <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="log-title">claude &middot; weftcut</span>
@@ -498,23 +503,30 @@
         <p class="lede">让创作意图真正落到时间线上，同时保留对每个细节的控制，把更多时间用来讲好故事。</p>
       </header>
 
-      <div class="finale-values rv" role="list" aria-label="WeftCut 如何让剪辑流畅推进">
-        <article role="listitem">
+      <!-- A real ul/li, not div + role="listitem": `listitem` is not an allowed
+           role for <article>, so that pairing produced a malformed accessibility
+           tree — three items claiming to be in a list that screen readers and
+           agents wouldn't necessarily read as one. The explicit role="list" is
+           load-bearing rather than redundant: WebKit drops list semantics from a
+           <ul> that is display:grid, which this container is. Same pattern as
+           .cue-list above. -->
+      <ul class="finale-values rv" role="list" aria-label="WeftCut 如何让剪辑流畅推进">
+        <li>
           <span class="finale-value-tag">节奏</span>
           <h3>让创意不断档</h3>
           <p>把创作方向直接变成时间线上的改动，不再被重复操作拖住。</p>
-        </article>
-        <article role="listitem">
+        </li>
+        <li>
           <span class="finale-value-tag">专注</span>
           <h3>把注意力留给故事</h3>
           <p>让 agent 处理繁琐操作，你只需专注节奏、基调与情绪。</p>
-        </article>
-        <article role="listitem">
+        </li>
+        <li>
           <span class="finale-value-tag">掌控</span>
           <h3>按你的方式收尾</h3>
           <p>每项改动都清晰可见，也随时可以撤销，最终判断和调整始终由你完成。</p>
-        </article>
-      </div>
+        </li>
+      </ul>
 
       <div class="finale-closing rv">
         <div class="finale-cta">

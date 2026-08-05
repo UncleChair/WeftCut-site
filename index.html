@@ -255,7 +255,12 @@
           <source src="/assets/video/agent-session.webm" type="video/webm" />
         </video>
 
-        <div class="logpanel" aria-label="The real agent session, replayed in sync with the video">
+        <!-- No aria-label here: ARIA prohibits naming an element with no role,
+             so a plain <div> label is discarded rather than announced. The name
+             this panel needs lives on .log-body below, which has role="log" to
+             hang it on and says it more usefully — repeating it here would only
+             have a screen reader read the same sentence twice on the way in. -->
+        <div class="logpanel">
           <div class="log-head">
             <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="log-title">claude &middot; weftcut</span>
@@ -504,23 +509,30 @@
         and spend more time making the story feel right.</p>
       </header>
 
-      <div class="finale-values rv" role="list" aria-label="How WeftCut keeps the edit moving">
-        <article role="listitem">
+      <!-- A real ul/li, not div + role="listitem": `listitem` is not an allowed
+           role for <article>, so that pairing produced a malformed accessibility
+           tree — three items claiming to be in a list that screen readers and
+           agents wouldn't necessarily read as one. The explicit role="list" is
+           load-bearing rather than redundant: WebKit drops list semantics from a
+           <ul> that is display:grid, which this container is. Same pattern as
+           .cue-list above. -->
+      <ul class="finale-values rv" role="list" aria-label="How WeftCut keeps the edit moving">
+        <li>
           <span class="finale-value-tag">Momentum</span>
           <h3>Keep ideas moving</h3>
           <p>Turn a creative direction into timeline changes without getting buried in repetitive work.</p>
-        </article>
-        <article role="listitem">
+        </li>
+        <li>
           <span class="finale-value-tag">Focus</span>
           <h3>Stay with the story</h3>
           <p>Let your agent carry the mechanics while you focus on pacing, tone, and feeling.</p>
-        </article>
-        <article role="listitem">
+        </li>
+        <li>
           <span class="finale-value-tag">Control</span>
           <h3>Finish on your terms</h3>
           <p>Every change stays visible and reversible, ready for your judgment and final touch.</p>
-        </article>
-      </div>
+        </li>
+      </ul>
 
       <div class="finale-closing rv">
         <div class="finale-cta">

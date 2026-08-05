@@ -1038,12 +1038,13 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   border-top: 1px solid var(--border2);
   border-bottom: 1px solid var(--border2);
+  list-style: none;
 }
-.finale-values article {
+.finale-values li {
   padding: clamp(26px, 3.5vw, 42px);
   background: linear-gradient(180deg, rgba(24, 28, 35, 0.38), transparent);
 }
-.finale-values article + article { border-left: 1px solid var(--border); }
+.finale-values li + li { border-left: 1px solid var(--border); }
 .finale-value-tag {
   display: block;
   margin-bottom: 18px;
@@ -1192,7 +1193,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 @media (max-width: 720px) {
   .nav-in { justify-content: space-between; }
   .finale-values { grid-template-columns: minmax(0, 1fr); }
-  .finale-values article + article { border-left: 0; border-top: 1px solid var(--border); }
+  .finale-values li + li { border-left: 0; border-top: 1px solid var(--border); }
   .finale-closing { grid-template-columns: minmax(0, 1fr); }
   .oss-card { border-top: 1px solid var(--border2); border-left: 0; }
   .faq-list { grid-template-columns: minmax(0, 1fr); }

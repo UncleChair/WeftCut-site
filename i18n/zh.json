@@ -155,7 +155,6 @@
     "WeftCut — back to top": "WeftCut — 回到顶部",
     "Introduction": "简介",
     "Full recording of an AI agent editing a video in WeftCut — one shot, all agent": "AI agent 在 WeftCut 中剪辑视频的完整实录——一镜到底，全部由 agent 完成",
-    "The real agent session, replayed in sync with the video": "真实的 agent 会话，与视频同步重放",
     "The agent's terminal, revealed in sync with the video. Activate a call to jump the video to that moment.": "agent 终端与视频同步显示。点击任意调用，即可跳转到视频中的对应时刻。",
     "Example prompts you can hand your agent": "可以直接交给 agent 的指令示例",
     "WeftCut's live change feed, listing each agent action as it lands on the timeline": "WeftCut 的实时变更记录，逐条显示 agent 在时间线上完成的操作",

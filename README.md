@@ -163,6 +163,13 @@ build rather than trusted:
 | Skills | `.well-known/agent-skills/` | discovery index plus `weftcut-mcp/SKILL.md` |
 | In-page tools | `index.js` | WebMCP: five read-only tools over what the page already publishes |
 
+A sixth thing counts as agent legibility but can't be checked offline: the
+accessibility tree, which is how a browser-driving agent reads a page it cannot
+see. `.work/harness/a11y.mjs` runs axe-core against a served page for that —
+`npm start` in one shell, then `node .work/harness/a11y.mjs http://127.0.0.1:8080/`.
+It exists because an external auditor reported a malformed tree one finding at a
+time; running the whole rule set locally is faster than being told.
+
 Three things are worth knowing before changing any of it.
 
 **The Markdown is negotiated, not converted at the edge.** Cloudflare's Markdown

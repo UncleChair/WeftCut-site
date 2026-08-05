@@ -145,23 +145,21 @@ Epilogue At the speed of ideas
 
 Turn creative intent into real edits, refine every detail with full control, and spend more time making the story feel right.
 
-Momentum
+- Momentum
 
-### Keep ideas moving
+  ### Keep ideas moving
 
-Turn a creative direction into timeline changes without getting buried in repetitive work.
+  Turn a creative direction into timeline changes without getting buried in repetitive work.
+- Focus
 
-Focus
+  ### Stay with the story
 
-### Stay with the story
+  Let your agent carry the mechanics while you focus on pacing, tone, and feeling.
+- Control
 
-Let your agent carry the mechanics while you focus on pacing, tone, and feeling.
+  ### Finish on your terms
 
-Control
-
-### Finish on your terms
-
-Every change stays visible and reversible, ready for your judgment and final touch.
+  Every change stays visible and reversible, ready for your judgment and final touch.
 
 Let the timeline keep up with every idea.
 
