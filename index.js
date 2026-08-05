@@ -103,7 +103,10 @@
     pio.observe(promptList);
   }
 
-  /* ---------- platform-aware download ---------- */
+  /* ---------- platform-aware download ----------
+     Dormant while the hero shows "Coming soon": the three ids below aren't in
+     the markup right now, so the guard below makes this a no-op. Restoring the
+     download button in index.html re-arms it with no change here. */
   const downloadButton = document.getElementById("downloadButton");
   const downloadPlatformIcon = document.getElementById("downloadPlatformIcon");
   const downloadButtonLabel = document.getElementById("downloadButtonLabel");

@@ -383,6 +383,17 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
 }
 .btn-primary:hover { background: #7aa6ec; }
 .btn-primary svg { color: #0a0d13; }
+/* The primary slot currently holds a state, not an action — no release has
+   shipped. It keeps the primary button's size and accent so the hero still has
+   a focal point, but drops the fill, the shadow and the hover lift, because
+   nothing here is clickable. Paired with a <span>, not a disabled <a>. */
+.btn-pending {
+  background: rgba(102, 150, 230, 0.1);
+  border-color: rgba(102, 150, 230, 0.38);
+  color: var(--accent);
+  cursor: default;
+}
+.btn-pending:hover { transform: none; }
 .btn-ghost {
   border-color: var(--border2);
   color: var(--text);

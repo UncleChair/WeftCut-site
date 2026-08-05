@@ -7,6 +7,9 @@
   "scripts": {
     "start": "node serve.mjs",
     "build": "node build-i18n.mjs",
-    "check": "node build-i18n.mjs --check"
+    "check": "node build-i18n.mjs --check",
+    "dist": "npm run check && node build-dist.mjs",
+    "preview": "npm run dist && npx --yes wrangler@4 dev",
+    "deploy": "npm run dist && npx --yes wrangler@4 deploy"
   }
 }

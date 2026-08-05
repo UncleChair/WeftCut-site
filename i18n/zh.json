@@ -27,7 +27,7 @@
     "The agent native video editor": "Agent原生的视频编辑器",
     "Cut with your <em class=\"accent-agent\">agent</em> and <em class=\"accent-code\">code</em>": "通过<em class=\"accent-agent\">智能体</em>与<em class=\"accent-code\">代码</em>完成剪辑",
     "Let the agent be the weft in your timeline—threading every cut, caption, and transition into place while you stay in control.": "让 agent 穿梭于时间线，将剪辑、字幕和转场一一编织到位，而你始终掌握全局。",
-    "Download": "下载",
+    "Coming soon": "敬请期待",
     "Read the docs": "查看文档",
     "macOS · Windows · Linux&ensp;—&ensp;free &amp; open source&ensp;—&ensp;works with the agent you already use": "macOS · Windows · Linux&ensp;—&ensp;免费开源&ensp;—&ensp;与你常用的 agent 协同工作",
 
@@ -151,7 +151,6 @@
 
     "WeftCut — back to top": "WeftCut — 回到顶部",
     "Introduction": "简介",
-    "Download WeftCut from GitHub Releases": "从 GitHub Releases 下载 WeftCut",
     "Full recording of an AI agent editing a video in WeftCut — one shot, all agent": "AI agent 在 WeftCut 中剪辑视频的完整实录——一镜到底，全部由 agent 完成",
     "The real agent session, replayed in sync with the video": "真实的 agent 会话，与视频同步重放",
     "The agent's terminal, revealed in sync with the video. Activate a call to jump the video to that moment.": "agent 终端与视频同步显示。点击任意调用，即可跳转到视频中的对应时刻。",

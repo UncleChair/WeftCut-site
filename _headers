@@ -1,0 +1,14 @@
+# Response headers for the deployed site. Cloudflare reads this file out of the
+# deploy bundle; it is never served to a browser.
+#
+# Note what is NOT here: an `immutable` cache on /assets/*. The media filenames
+# carry no content hash (agent-session.mp4 keeps its name across re-records), so
+# a year-long cache would strand visitors on a stale capture. An hour, with a
+# week of stale-while-revalidate, keeps the edge doing the work without that.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/assets/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=604800

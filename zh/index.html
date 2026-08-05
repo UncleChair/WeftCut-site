@@ -159,12 +159,14 @@
       <h1 class="rv">通过<em class="accent-agent">智能体</em>与<em class="accent-code">代码</em>完成剪辑</h1>
       <p class="lede rv">让 agent 穿梭于时间线，将剪辑、字幕和转场一一编织到位，而你始终掌握全局。</p>
       <p class="cta-row rv">
-        <a class="btn btn-primary" id="downloadButton" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener" aria-label="从 GitHub Releases 下载 WeftCut">
-          <span class="platform-icon" id="downloadPlatformIcon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>
-          </span>
-          <span id="downloadButtonLabel">下载</span>
-        </a>
+        <!-- TEMPORARY: no public release exists yet. This is a <span> rather than
+             a disabled <a> on purpose — a link that goes nowhere is a screen
+             reader trap, and /releases/latest would 404. To put the download
+             button back, restore the anchor with id="downloadButton" wrapping
+             #downloadPlatformIcon and #downloadButtonLabel; index.js's platform
+             detection and the CSS for those ids are both still in place and
+             re-arm the moment the ids exist again. -->
+        <span class="btn btn-pending" aria-disabled="true">敬请期待</span>
         <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">查看文档</a>
       </p>
       <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;免费开源&ensp;—&ensp;与你常用的 agent 协同工作</p>

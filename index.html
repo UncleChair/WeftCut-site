@@ -157,12 +157,14 @@
       <h1 class="rv">Cut with your <em class="accent-agent">agent</em> and <em class="accent-code">code</em></h1>
       <p class="lede rv">Let the agent be the weft in your timeline—threading every cut, caption, and transition into place while you stay in control.</p>
       <p class="cta-row rv">
-        <a class="btn btn-primary" id="downloadButton" href="https://github.com/UncleChair/WeftCut/releases/latest" rel="noopener" aria-label="Download WeftCut from GitHub Releases">
-          <span class="platform-icon" id="downloadPlatformIcon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3ZM5 19h14v2H5v-2Z"/></svg>
-          </span>
-          <span id="downloadButtonLabel">Download</span>
-        </a>
+        <!-- TEMPORARY: no public release exists yet. This is a <span> rather than
+             a disabled <a> on purpose — a link that goes nowhere is a screen
+             reader trap, and /releases/latest would 404. To put the download
+             button back, restore the anchor with id="downloadButton" wrapping
+             #downloadPlatformIcon and #downloadButtonLabel; index.js's platform
+             detection and the CSS for those ids are both still in place and
+             re-arm the moment the ids exist again. -->
+        <span class="btn btn-pending" aria-disabled="true">Coming soon</span>
         <a class="btn btn-ghost" href="https://github.com/UncleChair/WeftCut/tree/main/docs" rel="noopener">Read the docs</a>
       </p>
       <p class="hero-meta rv">macOS · Windows · Linux&ensp;—&ensp;free &amp; open source&ensp;—&ensp;works with the agent you already use</p>

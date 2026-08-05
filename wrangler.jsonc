@@ -1,0 +1,27 @@
+{
+  // WeftCut site — Cloudflare Workers deploy config (static assets only).
+  //
+  // There is no `main`, so no Worker code runs: Cloudflare serves dist/ straight
+  // from its edge, and asset requests don't bill against the Workers request
+  // quota. Directory URLs resolve to index.html, which is what /zh/ relies on.
+  //
+  //   npm run deploy      build dist/ and publish
+  //   npm run preview     serve dist/ through the local Workers runtime
+  "name": "weftcut-site",
+  "compatibility_date": "2026-08-05",
+  "assets": {
+    "directory": "./dist"
+  }
+
+  // --- custom domain ---------------------------------------------------------
+  // Cloudflare creates and owns the apex DNS record for a custom_domain route.
+  // Never add an A/AAAA record for weftcut.com by hand: a pre-existing one makes
+  // this deploy fail on a name collision, which is what Dynadot's imported
+  // parking records (185.53.179.128) did until they were deleted.
+  //
+  // www is deliberately NOT bound here. It redirects to the apex via a Redirect
+  // Rule in the dashboard; binding it would serve the site there instead.
+  ,"routes": [
+    { "pattern": "weftcut.com", "custom_domain": true }
+  ]
+}

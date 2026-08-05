@@ -17,6 +17,10 @@ zh/                 GENERATED — do not hand-edit; run `npm run build`
 assets/             shared media: real screen recordings, screenshots, agent log
 assets/fonts/       GENERATED — the Chinese heading face, see Fonts below
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
+build-dist.mjs      assembles dist/ (the deploy bundle) from an allowlist, then link-checks it
+wrangler.jsonc      Cloudflare Workers config — static assets, no Worker code
+_headers            response headers Cloudflare applies to the deployed site
+dist/               GENERATED — do not commit; run `npm run dist`
 package.json        npm start
 robots.txt
 sitemap.xml
@@ -35,10 +39,44 @@ npm start 3000       # custom port
 
 ## Deploying
 
-1. Canonical + OG URLs already use the production domain `https://weftcut.com`. If it ever changes, replace it (canonical + OG
-   URLs in `index.html`, plus `sitemap.xml` and `robots.txt`) with the real
-   domain.
-2. Ship the directory as-is — the page is already the site root.
+The site runs on Cloudflare Workers static assets — `wrangler.jsonc` declares no
+`main`, so no Worker code executes and asset requests don't bill against the
+Workers request quota. Cloudflare resolves directory URLs to `index.html`, which
+is what `/zh/` depends on.
+
+```sh
+npm run dist       # assemble + verify dist/ without publishing
+npm run preview    # same, then serve it through the local Workers runtime
+npm run deploy     # same, then publish
+```
+
+`deploy` gates on `npm run check` first, so a stale `zh/index.html` stops the
+release rather than shipping.
+
+The repo root is the site root, which is what lets `npm start` work with no build
+step — but it can't be handed to a CDN as-is (`.work/` alone is 130 MB of raw
+captures, and `README.md` / `CONTENT.md` are working notes). So `build-dist.mjs`
+copies an explicit allowlist into `dist/` and then link-checks the result: every
+root-absolute URL in the shipped HTML/CSS/JS has to resolve inside `dist/`. A new
+file has to be named in `SHIP` before it can reach production, and forgetting one
+fails the build naming the dead link instead of publishing a page with a hole in
+it.
+
+Canonical + OG URLs, `sitemap.xml` and `robots.txt` all use the production domain
+`https://weftcut.com`. If it ever changes, replace it in all three places and
+rerun `npm run build`.
+
+### Domain
+
+`weftcut.com` is registered at Dynadot with its nameservers delegated to
+Cloudflare, so the zone is managed entirely from the Cloudflare dashboard. Two
+pieces live outside this repo:
+
+- The apex custom domain is bound by the `routes` block in `wrangler.jsonc`.
+  Cloudflare creates and owns that DNS record — don't also add an apex `A`/`AAAA`
+  record by hand.
+- `www` → apex is a **Redirect Rule** in the dashboard, not a `_redirects` entry:
+  `_redirects` matches on path only and can't act on the hostname.
 
 ## Languages
 

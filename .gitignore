@@ -4,6 +4,12 @@ node_modules
 # macOS
 .DS_Store
 
+# deploy bundle, assembled by build-dist.mjs on every deploy
+dist/
+
+# wrangler's local state (build cache, dev-server scratch)
+.wrangler/
+
 # scratch, regenerated on demand:
 # - design-review screenshots from verification runs
 .work/review*/
