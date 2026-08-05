@@ -9,8 +9,6 @@
 > 字幕（SRT/VTT/ASS）、动态 Motif 叠加层、基于角色的音频混音，以及最高 10-bit 的
 > H.264/HEVC/AV1/ProRes 导出。不内置任何模型；智能来自你接入的 agent。
 
-## 关键事实
-
 - 类型：桌面 NLE（非线性剪辑器），Electron + React + Rust（napi-rs）内核
 - Agent 协议：MCP over streamable HTTP（127.0.0.1），bearer token 鉴权
 - 工具面：约 66 个 tools/resources/prompts，覆盖完整剪辑词汇
@@ -20,11 +18,12 @@
 
 ## 语言
 
-- 英文主页：https://weftcut.com/ （llms.txt: https://weftcut.com/llms.txt）
-- 简体中文主页：https://weftcut.com/zh/
+- [英文主页（规范版本）](https://weftcut.com/)
+- [英文 llms.txt](https://weftcut.com/llms.txt): 本文件的英文原版
+- [简体中文主页](https://weftcut.com/zh/)
 
 ## 链接
 
-- 代码仓库：https://github.com/UncleChair/WeftCut
-- 文档：https://github.com/UncleChair/WeftCut/tree/main/docs
-- MCP 服务端文档：https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md
+- [代码仓库](https://github.com/UncleChair/WeftCut)
+- [文档](https://github.com/UncleChair/WeftCut/tree/main/docs)
+- [MCP 服务端文档](https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md)

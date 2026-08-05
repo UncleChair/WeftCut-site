@@ -12,8 +12,6 @@
 > overlays, role-based audio mixing, and H.264/HEVC/AV1/ProRes export up to
 > 10-bit. No bundled models; the intelligence lives in the agent you connect.
 
-## Key facts
-
 - Type: desktop NLE (non-linear editor), Electron + React + Rust (napi-rs) core
 - Agent protocol: MCP over streamable HTTP (127.0.0.1), bearer-token auth
 - Tool surface: ~66 tools/resources/prompts covering the full editing vocabulary
@@ -23,11 +21,12 @@
 
 ## Languages
 
-- English (canonical): https://weftcut.com/
-- Simplified Chinese: https://weftcut.com/zh/ (llms.txt: https://weftcut.com/zh/llms.txt)
+- [English (canonical)](https://weftcut.com/)
+- [Simplified Chinese](https://weftcut.com/zh/)
+- [Simplified Chinese llms.txt](https://weftcut.com/zh/llms.txt): this file, translated
 
 ## Links
 
-- Repository: https://github.com/UncleChair/WeftCut
-- Documentation: https://github.com/UncleChair/WeftCut/tree/main/docs
-- MCP server docs: https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md
+- [Repository](https://github.com/UncleChair/WeftCut)
+- [Documentation](https://github.com/UncleChair/WeftCut/tree/main/docs)
+- [MCP server docs](https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md)
