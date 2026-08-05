@@ -14,6 +14,23 @@
 #     path on purpose. The Markdown twins need it as much as the pages do —
 #     worker.js builds its response from the .md asset's headers, so whatever
 #     is missing here is missing from every negotiated response too.
+#   - hreflang Link targets must be FULLY QUALIFIED. RFC 8288 resolves a
+#     relative target against the request URI, so `</zh/>` is perfectly legal
+#     and works for every other rel type here — but Google ignores relative
+#     hreflang, which makes the annotation silently worthless rather than
+#     visibly broken. Measured against `wrangler dev`: a relative target ships
+#     verbatim, so production really was serving `</zh/>` — while an absolute
+#     one is re-serialized against whatever host answered the request (the dev
+#     origin locally, weftcut.com deployed). Naming the origin here therefore
+#     costs preview deploys nothing. Every other target stays relative only
+#     because no rule makes it be absolute, not because it couldn't be.
+#     build-dist.mjs enforces the hreflang half.
+#     The two page blocks declare the whole set — self and x-default included —
+#     to match index.html and sitemap.xml exactly. The .md blocks deliberately
+#     declare only the other language: they canonicalise to their HTML twin two
+#     lines above, so a self-reference there would contradict the canonical
+#     sitting beside it. For them hreflang is a hint for agents, not an index
+#     signal.
 
 /*
   X-Content-Type-Options: nosniff
@@ -35,7 +52,9 @@
   Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
   Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
   Link: <https://weftcut.com/>; rel="canonical"
-  Link: </zh/>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://weftcut.com/>; rel="alternate"; hreflang="en"
+  Link: <https://weftcut.com/zh/>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://weftcut.com/>; rel="alternate"; hreflang="x-default"
   Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
   Vary: Accept
 
@@ -47,7 +66,7 @@
   Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
   Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
   Link: <https://weftcut.com/>; rel="canonical"
-  Link: </zh/index.md>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://weftcut.com/zh/index.md>; rel="alternate"; hreflang="zh-Hans"
   Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
 
 /zh/
@@ -58,7 +77,9 @@
   Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
   Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
   Link: <https://weftcut.com/zh/>; rel="canonical"
-  Link: </>; rel="alternate"; hreflang="en"
+  Link: <https://weftcut.com/>; rel="alternate"; hreflang="en"
+  Link: <https://weftcut.com/zh/>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://weftcut.com/>; rel="alternate"; hreflang="x-default"
   Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
   Vary: Accept
 
@@ -70,7 +91,7 @@
   Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
   Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
   Link: <https://weftcut.com/zh/>; rel="canonical"
-  Link: </index.md>; rel="alternate"; hreflang="en"
+  Link: <https://weftcut.com/index.md>; rel="alternate"; hreflang="en"
   Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
 
 # --- media types the assets host can't infer ---------------------------------

@@ -13,11 +13,13 @@ index.html          THE product page — "Cinematic Timeline"
 index.css / index.js  the page's styles and interactions
 build-i18n.mjs      generates the localized pages from index.html + i18n/*.json
 build-md.mjs        generates index.md / zh/index.md from the built HTML
+build-sitemap.mjs   generates sitemap.xml, dating each page from git history
 i18n/zh.json        Simplified Chinese copy (English source text as the key)
 zh/                 GENERATED — do not hand-edit; run `npm run build`
 index.md            GENERATED — the page as Markdown, for agents
 assets/             shared media: real screen recordings, screenshots, agent log
 assets/fonts/       GENERATED — the Chinese heading face, see Fonts below
+assets/og/          GENERATED — share cards; run .work/harness/og-render.mjs
 serve.mjs           zero-dependency node static server (with Range support for video seeks)
 build-dist.mjs      assembles dist/ (the deploy bundle) from an allowlist, then link-checks it
 worker.js           the one piece of server code: Accept: text/markdown negotiation
@@ -27,7 +29,7 @@ _headers            response headers Cloudflare applies to the deployed site
 dist/               GENERATED — do not commit; run `npm run dist`
 package.json        npm start
 robots.txt          crawl rules + Content-Signal usage preferences
-sitemap.xml
+sitemap.xml         GENERATED — do not hand-edit; run `npm run build`
 llms.txt            GEO: product summary for LLM crawlers
 CONTENT.md          shared fact sheet & content spec used to build the page
 .work/              the asset lab (not for deploy): harness scripts, raw recordings, projects
@@ -59,20 +61,32 @@ npm run preview    # same, then serve it through the local Workers runtime
 npm run deploy     # same, then publish
 ```
 
-`deploy` gates on `npm run check` first, so a stale `zh/index.html` or
-`index.md` stops the release rather than shipping.
+`deploy` gates on `npm run check` first, so a stale `zh/index.html`, `index.md`
+or `sitemap.xml` stops the release rather than shipping.
 
 The repo root is the site root, which is what lets `npm start` work with no build
 step — but it can't be handed to a CDN as-is (`.work/` alone is 130 MB of raw
 captures, and `README.md` / `CONTENT.md` are working notes). So `build-dist.mjs`
-copies an explicit allowlist into `dist/` and then link-checks the result: every
-root-absolute URL in the shipped HTML/CSS/JS has to resolve inside `dist/`. A new
-file has to be named in `SHIP` before it can reach production, and forgetting one
-fails the build naming the dead link instead of publishing a page with a hole in
-it.
+copies an explicit allowlist into `dist/` and then verifies the result. A new file
+has to be named in `SHIP` before it can reach production, and forgetting one fails
+the build naming what broke instead of publishing a page with a hole in it. Four
+things are checked:
 
-Canonical + OG URLs, `sitemap.xml` and `robots.txt` all use the production domain
-`https://weftcut.com`. If it ever changes, replace it in all three places and
+- **Links.** Every root-absolute URL in the shipped HTML/CSS/JS resolves inside
+  `dist/` — and so does every URL written out as `https://weftcut.com/…`, which is
+  the only form `og:image` and `schema.org` `screenshot` can take. Share cards are
+  the one asset no visitor ever loads, so nothing but this would notice them 404.
+- **`Link` headers.** Every target in `_headers` resolves too, and any carrying
+  `hreflang` has to be fully qualified — Google ignores relative hreflang, so that
+  one fails silently in the wild rather than loudly.
+- **JSON-LD.** Every `ld+json` block parses and declares an `@type`. A trailing
+  comma there costs you the structured data with no visible symptom.
+- **Agent-skill digests.** Every `sha256` in the discovery index still matches the
+  bytes of the skill it names.
+
+The production domain `https://weftcut.com` is written out in `index.html`
+(canonical, OG, JSON-LD), `_headers` (canonical + hreflang), `robots.txt`, and
+`ORIGIN` in `build-sitemap.mjs`. If it ever changes, replace it in all four and
 rerun `npm run build`.
 
 ### Domain
@@ -94,8 +108,8 @@ there is no client-side i18n, because most LLM crawlers don't run JS and would
 see an untranslated page.
 
 ```sh
-npm run build     # regenerate zh/index.html
-npm run check     # CI guard: fail if zh/index.html is stale
+npm run build     # regenerate zh/index.html, the .md twins and sitemap.xml
+npm run check     # CI guard: fail if any of those is stale
 ```
 
 `index.html` is the single source of both structure and English copy.
@@ -105,10 +119,23 @@ invalidates its key and fails the build naming the string that went stale.
 Replacements anchor on tag boundaries (`>text<`, `="value"`), which is why no
 HTML parser — and no dependency — is needed.
 
-To add a language: copy `i18n/zh.json`, translate the values, set the `locale`
-block, and add the code to `LOCALES` in `build-i18n.mjs`. Then extend the
-`hreflang` set in `index.html` and `sitemap.xml`, and add the page to `PAGES` in
-`build-md.mjs`.
+To add a language:
+
+1. Copy `i18n/zh.json`, translate the values, and fill in its `locale` block —
+   `ogImage` included, which means the language needs a share card of its own
+   (step 5).
+2. Add the code to `LOCALES` in `build-i18n.mjs`, and the page to `PAGES` in both
+   `build-md.mjs` and `build-sitemap.mjs`.
+3. Extend the `hreflang` set in the three places that have to agree: `index.html`,
+   `ALTERNATES` in `build-sitemap.mjs`, and `_headers` — which needs a block for
+   the page *and* one for its Markdown twin, since a non-HTML resource has nowhere
+   else to carry the annotation.
+4. Keep every `hreflang` URL in `_headers` fully qualified. Leaving `_headers` out
+   of this list is how its targets once drifted to relative URLs, which Google
+   ignores outright; `build-dist.mjs` now fails on that specific mistake, but it
+   cannot tell that a language is missing altogether.
+5. Add the strings to `.work/harness/og-card.html` and run `og-render.mjs` to
+   render `assets/og/card-<code>.png`.
 
 Notes:
 

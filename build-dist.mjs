@@ -106,6 +106,57 @@ if (problems.length) {
   process.exit(1)
 }
 
+// --- Link headers -------------------------------------------------------------
+// _headers claims in a comment that every Link target is a real file, and until
+// now nothing checked it. What that cost was an invalid hreflang: RFC 8288
+// resolves a relative target against the request URI, so `</zh/>` is legal and
+// works for every other rel type on the page — but Google ignores relative
+// hreflang, so the annotation was worthless while looking perfectly fine. Both
+// halves are checked here: targets on our own origin have to resolve in the
+// bundle, and anything carrying hreflang has to be fully qualified.
+const ORIGIN = 'https://weftcut.com'
+const HEADERS = join(DIST, '_headers')
+if (existsSync(HEADERS)) {
+  let path = '(top of file)'
+  for (const raw of readFileSync(HEADERS, 'utf8').split(/\r?\n/)) {
+    if (!raw.trim() || raw.trimStart().startsWith('#')) continue
+    // A path pattern sits at column 0; every header under it is indented.
+    if (!/^\s/.test(raw)) {
+      path = raw.trim()
+      continue
+    }
+    const line = raw.trim()
+    if (!/^Link:/i.test(line)) continue
+
+    const target = line.match(/<([^>]+)>/)?.[1]
+    if (!target) {
+      problems.push(`_headers ${path}: Link with no <target> — ${line}`)
+      continue
+    }
+
+    const ours = target.startsWith(ORIGIN)
+    if (/;\s*hreflang=/i.test(line) && !ours) {
+      problems.push(`_headers ${path}: hreflang Link needs a fully-qualified URL — ${target}`)
+    }
+
+    // Anything on another origin is that host's problem, not this build's.
+    const local = ours ? target.slice(ORIGIN.length) : target
+    if (!local.startsWith('/')) continue
+
+    const file = local.endsWith('/') ? local + 'index.html' : local
+    checked.add(file)
+    if (!existsSync(join(DIST, file))) {
+      problems.push(`_headers ${path}: dead Link ${target}`)
+    }
+  }
+}
+
+if (problems.length) {
+  console.error(`✗ dist: ${problems.length} Link header problem(s)`)
+  for (const p of problems) console.error('   ' + p)
+  process.exit(1)
+}
+
 // --- JSON-LD ------------------------------------------------------------------
 // A trailing comma in a ld+json block is invisible everywhere that matters: the
 // page renders, the tests pass, and the structured data silently doesn't exist
