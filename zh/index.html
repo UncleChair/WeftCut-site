@@ -17,16 +17,25 @@
 <link rel="alternate" type="text/markdown" href="/zh/index.md" />
 <meta name="theme-color" content="#0c0e12" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="WeftCut" />
 <meta property="og:locale" content="zh_CN" />
 <meta property="og:locale:alternate" content="en_US" />
 <meta property="og:title" content="WeftCut — 免费开源、原生支持 AI agent 的视频剪辑软件" />
 <meta property="og:description" content="一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。" />
 <meta property="og:url" content="https://weftcut.com/zh/" />
-<meta property="og:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<!-- A dedicated 1200×630 PNG, not a page screenshot: WeChat and iMessage don't
+     decode WebP cards, and raw UI reads as noise at thumbnail size. Rendered by
+     .work/harness/og-render.mjs from og-card.html; re-run it if the hero line
+     changes. build-i18n.mjs swaps in the zh card. -->
+<meta property="og:image" content="https://weftcut.com/assets/og/card-zh.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="WeftCut — 通过智能体与代码完成剪辑。免费开源、原生支持 AI agent 的桌面视频剪辑软件，支持 macOS、Windows 与 Linux。" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="WeftCut — 免费开源、原生支持 AI agent 的视频剪辑软件" />
 <meta name="twitter:description" content="一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 的每一项改动。" />
-<meta name="twitter:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<meta name="twitter:image" content="https://weftcut.com/assets/og/card-zh.png" />
+<meta name="twitter:image:alt" content="WeftCut — 通过智能体与代码完成剪辑。免费开源、原生支持 AI agent 的桌面视频剪辑软件，支持 macOS、Windows 与 Linux。" />
 <link rel="preload" href="/assets/fonts/wenkai-gb-medium.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
 <script>
@@ -64,18 +73,63 @@
 })();
 </script>
 <link rel="stylesheet" href="/index.css" />
+<!-- The app, structured. `url` is this site and `sameAs` is the repo — the other
+     way round, as it was, made GitHub the app's canonical home and left the
+     domain describing something it didn't claim to be.
+     Absent on purpose, and not an oversight to fill in: softwareVersion,
+     downloadUrl, datePublished, aggregateRating. There is no public release yet
+     (the hero says "Coming soon" for the same reason) and no ratings exist, so
+     every one of those would be a fabricated claim in a machine-readable field —
+     the worst place to put one. Add them in the same commit that ships v1. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "inLanguage": "zh-Hans",
   "name": "WeftCut",
   "description": "一款原生支持 AI agent 的跨平台桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
   "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "macOS, Windows, Linux",
+  "applicationSubCategory": "Video Editor",
+  "operatingSystem": ["macOS", "Windows", "Linux"],
+  "inLanguage": "zh-Hans",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "license": "MIT",
-  "url": "https://github.com/UncleChair/WeftCut"
+  "isAccessibleForFree": true,
+  "license": "https://github.com/UncleChair/WeftCut/blob/main/LICENSE",
+  "url": "https://weftcut.com/",
+  "sameAs": "https://github.com/UncleChair/WeftCut",
+  "softwareHelp": { "@type": "CreativeWork", "url": "https://github.com/UncleChair/WeftCut/tree/main/docs" },
+  "screenshot": [
+    "https://weftcut.com/assets/shots/editor-hero.webp",
+    "https://weftcut.com/assets/shots/agent-mode.webp",
+    "https://weftcut.com/assets/shots/curve-editor.webp",
+    "https://weftcut.com/assets/shots/effects.webp",
+    "https://weftcut.com/assets/shots/captions.webp",
+    "https://weftcut.com/assets/shots/export.webp"
+  ],
+  "featureList": [
+    "原生面向 agent：整个编辑器以 MCP 工具接口的形式开放在本机，供 AI agent 调用",
+    "A/B 卷时间线，带胶片缩略图与音频波形",
+    "基于 SMPTE 时间码的帧级精确剪辑",
+    "关键帧动画，配贝塞尔曲线编辑器",
+    "分层特效链，含绿幕抠像",
+    "字幕支持 SRT、VTT 与 ASS 格式",
+    "可由 agent 编写的 Motif 动效图层",
+    "按角色分组的音频混音",
+    "导出 H.264、HEVC、AV1 与 ProRes，最高 10 位色深",
+    "不内置 AI 模型，智能能力来自你接入的 agent"
+  ]
+}
+</script>
+<!-- Names the site as a site, which is what Google reads to decide whether a
+     result is headed "WeftCut" or "weftcut.com". `url` stays the root in both
+     languages: the site-name signal is defined against the origin, and /zh/ is a
+     translation of this site rather than a second one. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "WeftCut",
+  "url": "https://weftcut.com/",
+  "inLanguage": "zh-Hans"
 }
 </script>
 <!-- The FAQ section, structured. Both languages emit their own copy of this, so
@@ -84,6 +138,7 @@
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "inLanguage": "zh-Hans",
   "mainEntity": [
     {
       "@type": "Question",

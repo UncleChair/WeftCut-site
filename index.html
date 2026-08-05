@@ -17,16 +17,25 @@
 <link rel="alternate" type="text/markdown" href="/index.md" />
 <meta name="theme-color" content="#0c0e12" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="WeftCut" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="zh_CN" />
 <meta property="og:title" content="WeftCut — Free &amp; Open Source Agent-Native Video Editor" />
 <meta property="og:description" content="A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live." />
 <meta property="og:url" content="https://weftcut.com/" />
-<meta property="og:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<!-- A dedicated 1200×630 PNG, not a page screenshot: WeChat and iMessage don't
+     decode WebP cards, and raw UI reads as noise at thumbnail size. Rendered by
+     .work/harness/og-render.mjs from og-card.html; re-run it if the hero line
+     changes. build-i18n.mjs swaps in the zh card. -->
+<meta property="og:image" content="https://weftcut.com/assets/og/card-en.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="WeftCut — Cut with your agent and code. Free &amp; open source agent-native video editor for macOS, Windows and Linux." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="WeftCut — Free &amp; Open Source Agent-Native Video Editor" />
 <meta name="twitter:description" content="A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit live." />
-<meta name="twitter:image" content="https://weftcut.com/assets/shots/editor-hero.webp" />
+<meta name="twitter:image" content="https://weftcut.com/assets/og/card-en.png" />
+<meta name="twitter:image:alt" content="WeftCut — Cut with your agent and code. Free &amp; open source agent-native video editor for macOS, Windows and Linux." />
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
 <script>
 (() => {
@@ -63,6 +72,14 @@
 })();
 </script>
 <link rel="stylesheet" href="/index.css" />
+<!-- The app, structured. `url` is this site and `sameAs` is the repo — the other
+     way round, as it was, made GitHub the app's canonical home and left the
+     domain describing something it didn't claim to be.
+     Absent on purpose, and not an oversight to fill in: softwareVersion,
+     downloadUrl, datePublished, aggregateRating. There is no public release yet
+     (the hero says "Coming soon" for the same reason) and no ratings exist, so
+     every one of those would be a fabricated claim in a machine-readable field —
+     the worst place to put one. Add them in the same commit that ships v1. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -70,10 +87,48 @@
   "name": "WeftCut",
   "description": "A cross-platform desktop video editor where AI agents are first-class citizens. Connect Claude, Cursor, or any MCP client — and audit its edits to your timeline live.",
   "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "macOS, Windows, Linux",
+  "applicationSubCategory": "Video Editor",
+  "operatingSystem": ["macOS", "Windows", "Linux"],
+  "inLanguage": "en",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "license": "MIT",
-  "url": "https://github.com/UncleChair/WeftCut"
+  "isAccessibleForFree": true,
+  "license": "https://github.com/UncleChair/WeftCut/blob/main/LICENSE",
+  "url": "https://weftcut.com/",
+  "sameAs": "https://github.com/UncleChair/WeftCut",
+  "softwareHelp": { "@type": "CreativeWork", "url": "https://github.com/UncleChair/WeftCut/tree/main/docs" },
+  "screenshot": [
+    "https://weftcut.com/assets/shots/editor-hero.webp",
+    "https://weftcut.com/assets/shots/agent-mode.webp",
+    "https://weftcut.com/assets/shots/curve-editor.webp",
+    "https://weftcut.com/assets/shots/effects.webp",
+    "https://weftcut.com/assets/shots/captions.webp",
+    "https://weftcut.com/assets/shots/export.webp"
+  ],
+  "featureList": [
+    "Agent-native: the entire editor is exposed to AI agents as an MCP tool surface on localhost",
+    "A/B-roll timeline with filmstrip thumbnails and audio waveforms",
+    "Frame-accurate SMPTE timecode editing",
+    "Keyframe animation with a bézier curve editor",
+    "Per-layer effect chains including chroma key",
+    "Captions in SRT, VTT and ASS",
+    "Animated Motif overlays, scriptable by an agent",
+    "Role-based audio mixing",
+    "Export to H.264, HEVC, AV1 and ProRes, up to 10-bit",
+    "No bundled AI models — the agent you connect is the intelligence"
+  ]
+}
+</script>
+<!-- Names the site as a site, which is what Google reads to decide whether a
+     result is headed "WeftCut" or "weftcut.com". `url` stays the root in both
+     languages: the site-name signal is defined against the origin, and /zh/ is a
+     translation of this site rather than a second one. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "WeftCut",
+  "url": "https://weftcut.com/",
+  "inLanguage": "en"
 }
 </script>
 <!-- The FAQ section, structured. Both languages emit their own copy of this, so
@@ -82,6 +137,7 @@
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "inLanguage": "en",
   "mainEntity": [
     {
       "@type": "Question",

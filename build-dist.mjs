@@ -42,13 +42,19 @@ const SHIP = [
 // deploy's `main`. Copying it into dist/ would also publish it as a fetchable
 // static file at /worker.js.
 
-// Root-absolute URLs are the only kind the site uses, so these three shapes
-// cover every local reference on the page. An external https:// URL is not this
-// build's problem and deliberately doesn't match.
+// Root-absolute URLs are the only kind the site uses in markup, so these three
+// shapes cover every local reference on the page. An external https:// URL is
+// not this build's problem and deliberately doesn't match.
+//
+// The exception is our own origin, spelled out in full: og:image, canonical and
+// hreflang have to be absolute to be worth anything, which would otherwise put
+// the share cards — the one asset no visitor ever loads, so no one would notice
+// it 404ing — outside the only check that would catch a typo.
 const REFERENCES = [
   /(?:src|href|poster)="(\/[^"]*)"/g, // markup
   /url\(\s*["']?(\/[^"')]+)["']?\s*\)/g, // css
   /fetch\(\s*["'](\/[^"']+)["']/g, // js
+  /https:\/\/weftcut\.com(\/[^"']*)/g, // our own origin, written out
 ]
 
 const problems = []
@@ -98,6 +104,27 @@ if (problems.length) {
   console.error(`✗ dist: ${problems.length} dead link(s)`)
   for (const p of problems) console.error('   ' + p)
   process.exit(1)
+}
+
+// --- JSON-LD ------------------------------------------------------------------
+// A trailing comma in a ld+json block is invisible everywhere that matters: the
+// page renders, the tests pass, and the structured data silently doesn't exist
+// as far as a crawler is concerned. Parsing it here is the only cheap way to
+// find out before deploying. Each block must also name a @type — an untyped
+// node is valid JSON and worth nothing.
+for (const file of files.filter((f) => f.endsWith('.html'))) {
+  const label = file.slice(DIST.length + 1).replaceAll('\\', '/')
+  const html = readFileSync(file, 'utf8')
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  if (!blocks.length) problems.push(`${label}: no JSON-LD`)
+  for (const [index, [, raw]] of blocks.entries()) {
+    try {
+      const node = JSON.parse(raw)
+      if (!node['@type']) problems.push(`${label}: JSON-LD block ${index + 1} has no @type`)
+    } catch (error) {
+      problems.push(`${label}: JSON-LD block ${index + 1} is not valid JSON — ${error.message}`)
+    }
+  }
 }
 
 // --- agent-skill digests ------------------------------------------------------

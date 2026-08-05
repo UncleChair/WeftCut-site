@@ -100,15 +100,22 @@ function buildLocale(locale) {
   doc = setMeta(doc, 'property', 'og:url', cfg.url)
   doc = setMeta(doc, 'property', 'og:locale', cfg.ogLocale)
   doc = setMeta(doc, 'property', 'og:locale:alternate', cfg.ogLocaleAlternate)
+  // Each language gets its own share card — the headline is rendered into the
+  // image, so an English card under a Chinese page would preview as the wrong
+  // product. Dimensions and alt travel with it: the alt text is translated
+  // through `attrs` like any other, since both image tags carry the same value.
+  doc = setMeta(doc, 'property', 'og:image', cfg.ogImage)
+  doc = setMeta(doc, 'name', 'twitter:image', cfg.ogImage)
 
   // hreflang stays identical on every page by design — each language declares
   // the whole set including itself — so it needs no rewriting here.
 
-  // Tell schema.org consumers which language this page is in.
-  doc = doc.replace(
-    /("@type": "SoftwareApplication",)/,
-    `$1\n  "inLanguage": "${cfg.lang}",`
-  )
+  // Tell schema.org consumers which language this page is in. Every JSON-LD
+  // node in index.html declares `"inLanguage": "en"` itself, so this rewrites
+  // rather than injects — a node added later is covered without touching this.
+  const langRe = /"inLanguage": "en"/g
+  if (!langRe.test(doc)) fail(`${locale}: no "inLanguage" in any JSON-LD block to rewrite`)
+  doc = doc.replace(langRe, `"inLanguage": "${cfg.lang}"`)
 
   // --- per-locale preloads --------------------------------------------------
   // The heading webfont only exists for languages that need one, so the hint

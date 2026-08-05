@@ -19,7 +19,8 @@
     "switchAria": "Switch to English",
     "switchTitle": "English",
     "preload": ["/assets/fonts/wenkai-gb-medium.woff2"],
-    "mdHref": "/zh/index.md"
+    "mdHref": "/zh/index.md",
+    "ogImage": "https://weftcut.com/assets/og/card-zh.png"
   },
 
   "html": {
@@ -149,6 +150,7 @@
     "WeftCut is a desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live.": "WeftCut 是一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
     "A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live.": "一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
     "A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit live.": "一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 的每一项改动。",
+    "WeftCut — Cut with your agent and code. Free &amp; open source agent-native video editor for macOS, Windows and Linux.": "WeftCut — 通过智能体与代码完成剪辑。免费开源、原生支持 AI agent 的桌面视频剪辑软件，支持 macOS、Windows 与 Linux。",
 
     "WeftCut — back to top": "WeftCut — 回到顶部",
     "Introduction": "简介",
@@ -192,6 +194,17 @@
 
   "jsonld": {
     "A cross-platform desktop video editor where AI agents are first-class citizens. Connect Claude, Cursor, or any MCP client — and audit its edits to your timeline live.": "一款原生支持 AI agent 的跨平台桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
+
+    "Agent-native: the entire editor is exposed to AI agents as an MCP tool surface on localhost": "原生面向 agent：整个编辑器以 MCP 工具接口的形式开放在本机，供 AI agent 调用",
+    "A/B-roll timeline with filmstrip thumbnails and audio waveforms": "A/B 卷时间线，带胶片缩略图与音频波形",
+    "Frame-accurate SMPTE timecode editing": "基于 SMPTE 时间码的帧级精确剪辑",
+    "Keyframe animation with a bézier curve editor": "关键帧动画，配贝塞尔曲线编辑器",
+    "Per-layer effect chains including chroma key": "分层特效链，含绿幕抠像",
+    "Captions in SRT, VTT and ASS": "字幕支持 SRT、VTT 与 ASS 格式",
+    "Animated Motif overlays, scriptable by an agent": "可由 agent 编写的 Motif 动效图层",
+    "Role-based audio mixing": "按角色分组的音频混音",
+    "Export to H.264, HEVC, AV1 and ProRes, up to 10-bit": "导出 H.264、HEVC、AV1 与 ProRes，最高 10 位色深",
+    "No bundled AI models — the agent you connect is the intelligence": "不内置 AI 模型，智能能力来自你接入的 agent",
 
     "Is WeftCut free?": "WeftCut 免费吗？",
     "Yes — free and open source under the MIT license. FFmpeg is bundled under its own LGPL/GPL terms.": "是的。WeftCut 免费使用，并基于 MIT 许可证开源；随附的 FFmpeg 遵循其自身的 LGPL/GPL 许可条款。",
