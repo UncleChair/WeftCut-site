@@ -12,9 +12,9 @@ macOS · Windows · Linux — free & open source — works with the agent you al
 
 Opening Scene One shot. All agent.
 
-## Not a mockup. *A recording.*
+## Real session. *Full recording.*
 
-This is the full process of an agent editing the video independently over MCP, with no human intervention. On the right, the log from that same session replays line by line.
+An agent edits the video end to end over MCP, with no human intervention. On the right, the same session's log replays line by line.
 
 claude · weftcut REAL SESSION · IN SYNC
 
@@ -23,9 +23,9 @@ trace: [agent-session.json](https://weftcut.com/assets/agent-session.json)
 
 Scene 01 The differentiator
 
-## Not bolted on. *Built in.*
+## Native by design. *For agents.*
 
-Most editors bolt AI on as a feature. WeftCut opens the whole editor to your agent over standard MCP — everything you can do, the agent can do.
+WeftCut opens the whole editor to your agent over standard MCP — everything you can do, the agent can do.
 
 - CONNECT
 
