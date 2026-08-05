@@ -1,10 +1,3 @@
-# Content-Signal states how this site may be used, separately from whether it
-# may be crawled. All three are `yes` on purpose: WeftCut is MIT-licensed and
-# exists to be driven by agents, so being trained on, indexed, and quoted back
-# to someone asking "which editor talks to Claude" is the point, not a leak.
-# https://contentsignals.org/
-Content-Signal: ai-train=yes, search=yes, ai-input=yes
-
 User-agent: *
 Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Allow: /
