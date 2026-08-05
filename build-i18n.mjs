@@ -91,6 +91,12 @@ function buildLocale(locale) {
     /<link rel="canonical" href="[^"]*" \/>/,
     `<link rel="canonical" href="${cfg.url}" />`
   )
+  // Each language's Markdown twin sits beside its HTML, so this points at the
+  // localized one — otherwise the zh page would offer English Markdown.
+  const mdRe = /(<link rel="alternate" type="text\/markdown" href=")[^"]*(" \/>)/
+  if (!mdRe.test(doc)) fail(`${locale}: no markdown <link rel="alternate"> to rewrite`)
+  doc = doc.replace(mdRe, `$1${cfg.mdHref}$2`)
+
   doc = setMeta(doc, 'property', 'og:url', cfg.url)
   doc = setMeta(doc, 'property', 'og:locale', cfg.ogLocale)
   doc = setMeta(doc, 'property', 'og:locale:alternate', cfg.ogLocaleAlternate)

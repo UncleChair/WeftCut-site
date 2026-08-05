@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "weftcut-mcp",
+      "type": "skill-md",
+      "description": "Connect to a running WeftCut desktop video editor over MCP and drive real edits — place, trim and split clips, keyframes, effect chains, captions, motifs, markers, checkpoints and undo. Use when the user asks you to edit video in WeftCut, wants their timeline changed, or asks how to wire an MCP client up to WeftCut.",
+      "url": "https://weftcut.com/.well-known/agent-skills/weftcut-mcp/SKILL.md",
+      "digest": "sha256:df907901728b460c7d3a614f34d2fb46d976e6ae167396fb0406bf9978941c3a"
+    }
+  ]
+}

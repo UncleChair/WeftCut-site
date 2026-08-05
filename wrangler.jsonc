@@ -1,16 +1,34 @@
 {
-  // WeftCut site — Cloudflare Workers deploy config (static assets only).
+  // WeftCut site — Cloudflare Workers deploy config (static assets + one hook).
   //
-  // There is no `main`, so no Worker code runs: Cloudflare serves dist/ straight
-  // from its edge, and asset requests don't bill against the Workers request
-  // quota. Directory URLs resolve to index.html, which is what /zh/ relies on.
+  // Cloudflare serves dist/ straight from its edge. Directory URLs resolve to
+  // index.html, which is what /zh/ relies on.
   //
   //   npm run deploy      build dist/ and publish
   //   npm run preview     serve dist/ through the local Workers runtime
   "name": "weftcut-site",
   "compatibility_date": "2026-08-05",
+  "main": "./worker.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+
+    // --- why this list is short --------------------------------------------
+    // The Worker answers `Accept: text/markdown` with a Markdown copy of the
+    // page (worker.js). Doing that means running code on the request, and code
+    // on a request bills against the Workers quota where a plain asset hit does
+    // not. So it runs first on the two HTML routes only: every image, font and
+    // video — which is essentially all the traffic, the videos alone dwarfing
+    // the markup — still bypasses the Worker entirely.
+    //
+    // /zh with no trailing slash is deliberately absent: the assets host
+    // redirects it to /zh/, and that second request lands here.
+    "run_worker_first": [
+      "/",
+      "/index.html",
+      "/zh/",
+      "/zh/index.html"
+    ]
   }
 
   // --- custom domain ---------------------------------------------------------

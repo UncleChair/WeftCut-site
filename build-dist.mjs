@@ -15,6 +15,7 @@
 //
 //   node build-dist.mjs
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -27,13 +28,19 @@ const SHIP = [
   'index.html',
   'index.css',
   'index.js',
+  'index.md',
   'zh',
   'assets',
+  '.well-known',
   '_headers',
   'llms.txt',
   'robots.txt',
   'sitemap.xml',
 ]
+
+// worker.js is deliberately absent: wrangler loads it from the repo root as the
+// deploy's `main`. Copying it into dist/ would also publish it as a fetchable
+// static file at /worker.js.
 
 // Root-absolute URLs are the only kind the site uses, so these three shapes
 // cover every local reference on the page. An external https:// URL is not this
@@ -89,6 +96,36 @@ for (const file of files.filter((f) => /\.(html|css|js)$/.test(f))) {
 
 if (problems.length) {
   console.error(`✗ dist: ${problems.length} dead link(s)`)
+  for (const p of problems) console.error('   ' + p)
+  process.exit(1)
+}
+
+// --- agent-skill digests ------------------------------------------------------
+// The discovery index publishes a sha256 for every skill so a client can prove
+// it got the bytes the site meant to serve. That promise is only worth anything
+// if the digest is checked here — edit a SKILL.md, forget the index, and the
+// hash silently stops matching for everyone downstream.
+const SKILLS = join(DIST, '.well-known', 'agent-skills', 'index.json')
+if (existsSync(SKILLS)) {
+  const index = JSON.parse(readFileSync(SKILLS, 'utf8'))
+  for (const skill of index.skills ?? []) {
+    const path = new URL(skill.url, 'https://weftcut.com').pathname
+    const file = join(DIST, path)
+    if (!existsSync(file)) {
+      problems.push(`agent-skills: ${skill.name} points at missing ${path}`)
+      continue
+    }
+    const actual = 'sha256:' + createHash('sha256').update(readFileSync(file)).digest('hex')
+    if (actual !== skill.digest) {
+      problems.push(
+        `agent-skills: ${skill.name} digest is stale\n     index.json: ${skill.digest}\n     ${path}: ${actual}`
+      )
+    }
+  }
+}
+
+if (problems.length) {
+  console.error(`✗ dist: ${problems.length} problem(s)`)
   for (const p of problems) console.error('   ' + p)
   process.exit(1)
 }

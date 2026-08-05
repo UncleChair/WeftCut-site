@@ -11,6 +11,10 @@
 <link rel="alternate" hreflang="en" href="https://weftcut.com/" />
 <link rel="alternate" hreflang="zh-Hans" href="https://weftcut.com/zh/" />
 <link rel="alternate" hreflang="x-default" href="https://weftcut.com/" />
+<!-- The same page as Markdown. Agents that send `Accept: text/markdown` get it
+     back from this URL directly (worker.js); this is for the ones that would
+     rather read a link than negotiate. -->
+<link rel="alternate" type="text/markdown" href="/index.md" />
 <meta name="theme-color" content="#0c0e12" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
@@ -126,7 +130,13 @@
   "callRejected": "rejected",
   "callAria": "{tool} — seek video",
   "messageAria": "Agent message — seek video",
-  "traceUnavailable": "session trace unavailable — see /assets/agent-session.json"
+  "traceUnavailable": "session trace unavailable — see /assets/agent-session.json",
+  "mcpProductTool": "Facts about WeftCut as this page states them: what it is, which platforms it runs on, its license, and whether a public release exists yet.",
+  "mcpCapabilitiesTool": "What WeftCut can do, section by section, as listed on this page — the agent-facing MCP surface, the timeline and editing features, and the open-source terms.",
+  "mcpFaqTool": "Answers to the questions this page answers directly: whether WeftCut is free, which agents connect to it, whether it works without an agent, where the AI runs, and which platforms it supports.",
+  "mcpServerCardTool": "The MCP server card for WeftCut: transport, endpoint shape, authentication, and where the tool reference lives. Read this before trying to connect an MCP client to the editor.",
+  "mcpMarkdownTool": "This entire page as Markdown, with the layout and decoration stripped out. Use it instead of scraping the HTML.",
+  "mcpFetchFailed": "Could not read {path} from this site ({status})."
 }
 </script>
 </head>

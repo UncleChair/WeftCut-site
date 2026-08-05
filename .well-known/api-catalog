@@ -1,0 +1,35 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://weftcut.com/#agent",
+      "service-doc": [
+        {
+          "href": "https://github.com/UncleChair/WeftCut/blob/main/docs/mcp.md",
+          "type": "text/html",
+          "title": "WeftCut MCP server — connection, auth, and tool reference"
+        }
+      ],
+      "service-desc": [
+        {
+          "href": "https://weftcut.com/.well-known/mcp/server-card.json",
+          "type": "application/json",
+          "title": "WeftCut MCP server card"
+        }
+      ],
+      "describedby": [
+        {
+          "href": "https://weftcut.com/llms.txt",
+          "type": "text/plain",
+          "title": "WeftCut in brief, for language models"
+        }
+      ],
+      "author": [
+        {
+          "href": "https://github.com/UncleChair/WeftCut",
+          "type": "text/html",
+          "title": "WeftCut source repository"
+        }
+      ]
+    }
+  ]
+}

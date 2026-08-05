@@ -5,10 +5,84 @@
 # carry no content hash (agent-session.mp4 keeps its name across re-records), so
 # a year-long cache would strand visitors on a stale capture. An hour, with a
 # week of stale-while-revalidate, keeps the edge doing the work without that.
+#
+# Two gotchas this file has already been bitten by:
+#   - Rules ACCUMULATE. A second block matching the same path appends its
+#     headers rather than replacing them, which on Content-Type yields a single
+#     illegal `a, b` value. Never let two blocks set the same header on one path.
+#   - There is no include mechanism, so the Link block below is repeated per
+#     path on purpose. The Markdown twins need it as much as the pages do —
+#     worker.js builds its response from the .md asset's headers, so whatever
+#     is missing here is missing from every negotiated response too.
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# --- agent discovery ---------------------------------------------------------
+# What an agent landing on the homepage can follow without guessing at URLs
+# (RFC 8288). Everything here is a real file in the deploy bundle or a real page
+# on GitHub — a Link to a 404 is worse than no Link at all.
+#
+# `alternate` + type=text/markdown is the static half of the deal worker.js
+# makes: agents that negotiate with `Accept: text/markdown` get Markdown at this
+# same URL, and agents that would rather just fetch a path have one to fetch.
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
+  Link: </index.md>; rel="alternate"; type="text/markdown"
+  Link: </llms.txt>; rel="describedby"; type="text/plain"; title="WeftCut in brief, for language models"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+  Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
+  Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
+  Link: <https://weftcut.com/>; rel="canonical"
+  Link: </zh/>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
+  Vary: Accept
+
+/index.md
+  Content-Type: text/markdown; charset=utf-8
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
+  Link: </llms.txt>; rel="describedby"; type="text/plain"; title="WeftCut in brief, for language models"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+  Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
+  Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
+  Link: <https://weftcut.com/>; rel="canonical"
+  Link: </zh/index.md>; rel="alternate"; hreflang="zh-Hans"
+  Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
+
+/zh/
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
+  Link: </zh/index.md>; rel="alternate"; type="text/markdown"
+  Link: </zh/llms.txt>; rel="describedby"; type="text/plain"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+  Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
+  Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
+  Link: <https://weftcut.com/zh/>; rel="canonical"
+  Link: </>; rel="alternate"; hreflang="en"
+  Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
+  Vary: Accept
+
+/zh/index.md
+  Content-Type: text/markdown; charset=utf-8
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
+  Link: </zh/llms.txt>; rel="describedby"; type="text/plain"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+  Link: </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="WeftCut MCP server card"
+  Link: <https://github.com/UncleChair/WeftCut/tree/main/docs>; rel="service-doc"; type="text/html"
+  Link: <https://weftcut.com/zh/>; rel="canonical"
+  Link: </index.md>; rel="alternate"; hreflang="en"
+  Link: <https://github.com/UncleChair/WeftCut/blob/main/LICENSE>; rel="license"; title="MIT"
+
+# --- media types the assets host can't infer ---------------------------------
+# /.well-known/api-catalog has no extension by design (RFC 9727 fixes the path),
+# so its type has to be declared here or it ships as octet-stream. The .json
+# documents next to it infer correctly on their own and are deliberately left
+# alone — declaring them again here would append a second Content-Type.
+/.well-known/api-catalog
+  Content-Type: application/linkset+json; charset=utf-8
+
+/.well-known/agent-skills/:skill/SKILL.md
+  Content-Type: text/markdown; charset=utf-8
 
 /assets/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=604800

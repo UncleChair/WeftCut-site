@@ -11,6 +11,10 @@
 <link rel="alternate" hreflang="en" href="https://weftcut.com/" />
 <link rel="alternate" hreflang="zh-Hans" href="https://weftcut.com/zh/" />
 <link rel="alternate" hreflang="x-default" href="https://weftcut.com/" />
+<!-- The same page as Markdown. Agents that send `Accept: text/markdown` get it
+     back from this URL directly (worker.js); this is for the ones that would
+     rather read a link than negotiate. -->
+<link rel="alternate" type="text/markdown" href="/zh/index.md" />
 <meta name="theme-color" content="#0c0e12" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="zh_CN" />
@@ -128,7 +132,13 @@
   "callRejected": "被拒绝",
   "callAria": "{tool} —— 跳转视频",
   "messageAria": "agent 消息 —— 跳转视频",
-  "traceUnavailable": "会话轨迹不可用 —— 见 /assets/agent-session.json"
+  "traceUnavailable": "会话轨迹不可用 —— 见 /assets/agent-session.json",
+  "mcpProductTool": "本页所述的 WeftCut 事实：它是什么、支持哪些平台、采用何种许可协议，以及是否已有公开发布版本。",
+  "mcpCapabilitiesTool": "WeftCut 的能力，按本页的分节列出——面向 agent 的 MCP 接口、时间线与剪辑功能，以及开源条款。",
+  "mcpFaqTool": "本页直接回答的问题：WeftCut 是否免费、可以连接哪些 agent、没有 agent 能否使用、AI 在哪里运行，以及支持哪些平台。",
+  "mcpServerCardTool": "WeftCut 的 MCP server card：传输方式、端点形式、鉴权，以及工具参考文档的位置。在尝试将 MCP 客户端接入编辑器前请先读它。",
+  "mcpMarkdownTool": "整个页面的 Markdown 版本，已去除排版与装饰。请用它替代抓取 HTML。",
+  "mcpFetchFailed": "无法从本站读取 {path}（{status}）。"
 }
 </script>
 </head>

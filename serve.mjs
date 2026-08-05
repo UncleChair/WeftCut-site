@@ -2,9 +2,10 @@
 // WeftCut site — zero-dependency static preview server.
 // Usage: npm start [port]   (default 8080)
 import http from 'node:http'
-import { createReadStream, statSync } from 'node:fs'
+import { createReadStream, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MARKDOWN, estimateTokens, wantsMarkdown } from './worker.js'
 
 const ROOT = dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.argv[2] || process.env.PORT || 8080)
@@ -27,11 +28,41 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
   '.woff2': 'font/woff2',
+  '.md': 'text/markdown; charset=utf-8',
+}
+
+// Extension-less paths whose type is fixed by the spec that defines them. On
+// the deployed site these come from _headers, which this server doesn't read.
+const BY_PATH = {
+  '/.well-known/api-catalog': 'application/linkset+json; charset=utf-8',
 }
 
 const server = http.createServer((req, res) => {
   try {
     let pathname = decodeURIComponent(new URL(req.url, 'http://x').pathname)
+
+    // Same content negotiation the edge does, using the same rule (worker.js),
+    // so `Accept: text/markdown` can be tested without a deploy.
+    const markdownPath = MARKDOWN[pathname]
+    if (markdownPath && wantsMarkdown(req.headers.accept)) {
+      const file = resolve(ROOT, `.${markdownPath}`)
+      try {
+        const text = readFileSync(file, 'utf8')
+        res.writeHead(200, {
+          'Content-Type': 'text/markdown; charset=utf-8',
+          'Content-Location': markdownPath,
+          'x-markdown-tokens': String(estimateTokens(text)),
+          Vary: 'Accept',
+          'Cache-Control': 'no-cache',
+        })
+        res.end(text)
+        return
+      } catch {
+        res.writeHead(404).end('Not found: ' + markdownPath)
+        return
+      }
+    }
+
     if (pathname.endsWith('/')) pathname += 'index.html'
     const file = resolve(ROOT, `.${pathname}`)
     const relativeFile = relative(ROOT, file)
@@ -57,7 +88,8 @@ const server = http.createServer((req, res) => {
       return
     }
 
-    const type = MIME[extname(file).toLowerCase()] || 'application/octet-stream'
+    const type =
+      BY_PATH[pathname] || MIME[extname(file).toLowerCase()] || 'application/octet-stream'
     const size = stat.size
     const range = req.headers.range
     const m = range && /^bytes=(\d*)-(\d*)$/.exec(range)

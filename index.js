@@ -620,4 +620,144 @@
       p.textContent = t("traceUnavailable");
       logBody.appendChild(p);
     });
+
+  /* ---------- WebMCP tool surface ----------
+     A page whose argument is "your agent should be able to drive this" ought to
+     be drivable itself. Every tool below reads something the page already
+     publishes — its JSON-LD, its own section markup, its Markdown twin, its
+     server card — rather than restating it, so an agent and a human can never
+     be told two different things. Nothing here mutates anything: this is a
+     marketing page, and the only honest verbs it has are read verbs. */
+  if (navigator.modelContext && typeof navigator.modelContext.provideContext === "function") {
+    const clean = (el) => (el ? el.textContent.replace(/\s+/g, " ").trim() : "");
+
+    const linkedData = (type) => {
+      for (const el of document.querySelectorAll('script[type="application/ld+json"]')) {
+        try {
+          const data = JSON.parse(el.textContent);
+          if (data && data["@type"] === type) return data;
+        } catch {
+          /* a malformed block shouldn't take the others down with it */
+        }
+      }
+      return null;
+    };
+
+    const reply = (value) => ({
+      content: [
+        {
+          type: "text",
+          text: typeof value === "string" ? value : JSON.stringify(value, null, 2),
+        },
+      ],
+    });
+
+    const readFile = async (path) => {
+      const res = await fetch(path, { headers: { accept: "*/*" } });
+      if (!res.ok) return reply(t("mcpFetchFailed", { path, status: res.status }));
+      return reply(await res.text());
+    };
+
+    const noInput = { type: "object", properties: {}, additionalProperties: false };
+
+    const productSummary = () => {
+      const app = linkedData("SoftwareApplication") || {};
+      const canonical = document.querySelector('link[rel="canonical"]');
+      return {
+        name: app.name || "WeftCut",
+        summary: app.description || "",
+        operatingSystem: app.operatingSystem || "",
+        license: app.license || "",
+        price: app.offers ? `${app.offers.price} ${app.offers.priceCurrency}` : "",
+        repository: app.url || "",
+        // Read off the page rather than hard-coded: the hero CTA is a disabled
+        // span until there's something to download, so its presence is the
+        // most current release signal this page has.
+        availability: document.querySelector(".btn-pending") ? "unreleased" : "released",
+        pageLanguage: document.documentElement.lang || "",
+        pageUrl: canonical ? canonical.href : location.href,
+      };
+    };
+
+    const capabilities = () =>
+      [...document.querySelectorAll("main section[id]")].map((section) => {
+        const points = [];
+        // h3s title the editor and FAQ cards; .cue-tag titles the agent grid.
+        // Both sit next to the paragraph that explains them.
+        for (const label of section.querySelectorAll("h3, .cue-tag")) {
+          const name = clean(label);
+          if (!name) continue;
+          const parent = label.parentElement;
+          points.push({ name, detail: clean(parent && parent.querySelector("p")) });
+        }
+        return {
+          id: section.id,
+          heading: clean(section.querySelector("h2")),
+          lede: clean(section.querySelector(".lede")),
+          points,
+        };
+      });
+
+    const faq = () => {
+      const page = linkedData("FAQPage");
+      if (!page || !Array.isArray(page.mainEntity)) return [];
+      return page.mainEntity.map((entry) => ({
+        question: entry.name,
+        answer: entry.acceptedAnswer ? entry.acceptedAnswer.text : "",
+      }));
+    };
+
+    const markdownHref = () => {
+      const link = document.querySelector('link[rel="alternate"][type="text/markdown"]');
+      return link ? link.getAttribute("href") : "/index.md";
+    };
+
+    navigator.modelContext.provideContext({
+      tools: [
+        {
+          name: "get_product_summary",
+          description: t("mcpProductTool"),
+          inputSchema: noInput,
+          execute: async () => reply(productSummary()),
+        },
+        {
+          name: "list_capabilities",
+          description: t("mcpCapabilitiesTool"),
+          inputSchema: {
+            type: "object",
+            properties: {
+              section: {
+                type: "string",
+                description: "Limit to one section id, e.g. agent, editor, motifs, oss, faq.",
+              },
+            },
+            additionalProperties: false,
+          },
+          execute: async (args) => {
+            const all = capabilities();
+            const wanted = args && args.section;
+            return reply(wanted ? all.filter((s) => s.id === wanted) : all);
+          },
+        },
+        {
+          name: "get_faq",
+          description: t("mcpFaqTool"),
+          inputSchema: noInput,
+          execute: async () => reply(faq()),
+        },
+        {
+          name: "get_mcp_server_card",
+          description: t("mcpServerCardTool"),
+          inputSchema: noInput,
+          execute: async () => readFile("/.well-known/mcp/server-card.json"),
+        },
+        {
+          name: "read_page_as_markdown",
+          description: t("mcpMarkdownTool"),
+          inputSchema: noInput,
+          execute: async () => readFile(markdownHref()),
+        },
+      ],
+    });
+  }
 })();
