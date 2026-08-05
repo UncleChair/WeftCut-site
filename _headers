@@ -105,5 +105,16 @@
 /.well-known/agent-skills/:skill/SKILL.md
   Content-Type: text/markdown; charset=utf-8
 
+# .txt infers text/plain, but with no charset — and a charset-less text/plain is
+# decoded with the browser's locale default, which is windows-1252 in a Western
+# one. Production really was serving every Chinese character in /zh/llms.txt as
+# mojibake; nosniff above blocks the encoding sniffing that might have saved it.
+# robots.txt is pure ASCII, so it needs no rule to survive the same treatment.
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/zh/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
 /assets/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=604800
