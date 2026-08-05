@@ -157,10 +157,12 @@
       <h1 class="rv">Cut with your <em class="accent-agent">agent</em> and <em class="accent-code">code</em></h1>
       <p class="lede rv">Let the agent be the weft in your timeline—threading every cut, caption, and transition into place while you stay in control.</p>
       <p class="cta-row rv">
-        <!-- TEMPORARY: no public release exists yet. This is a <span> rather than
-             a disabled <a> on purpose — a link that goes nowhere is a screen
-             reader trap, and /releases/latest would 404. To put the download
-             button back, restore the anchor with id="downloadButton" wrapping
+        <!-- TEMPORARY: no public release exists yet, so /releases/latest just
+             redirects to an empty releases list. This is a <span> rather than a
+             disabled <a> on purpose: a link that goes nowhere is a screen reader
+             trap, and there is nothing to disable when there is nothing to
+             download. To put the button back, restore the anchor with
+             id="downloadButton" wrapping
              #downloadPlatformIcon and #downloadButtonLabel; index.js's platform
              detection and the CSS for those ids are both still in place and
              re-arm the moment the ids exist again. -->
