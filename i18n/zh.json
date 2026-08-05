@@ -23,7 +23,7 @@
   },
 
   "html": {
-    "WeftCut — The Agent-Native Video Editor": "WeftCut — 原生支持 AI agent 的视频剪辑软件",
+    "WeftCut — Free &amp; Open Source Agent-Native Video Editor": "WeftCut — 免费开源、原生支持 AI agent 的视频剪辑软件",
 
     "The agent native video editor": "Agent原生的视频编辑器",
     "Cut with your <em class=\"accent-agent\">agent</em> and <em class=\"accent-code\">code</em>": "通过<em class=\"accent-agent\">智能体</em>与<em class=\"accent-code\">代码</em>完成剪辑",
@@ -145,7 +145,7 @@
   },
 
   "attrs": {
-    "WeftCut — The Agent-Native Video Editor": "WeftCut — 原生支持 AI agent 的视频剪辑软件",
+    "WeftCut — Free &amp; Open Source Agent-Native Video Editor": "WeftCut — 免费开源、原生支持 AI agent 的视频剪辑软件",
     "WeftCut is a desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live.": "WeftCut 是一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
     "A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit as it lands on your timeline, live.": "一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 在时间线上的每一项改动。",
     "A desktop video editor built for humans and AI agents alike. Connect Claude, Cursor, or any MCP client — and review every edit live.": "一款面向创作者、原生支持 AI agent 的桌面视频剪辑软件。接入 Claude、Cursor 或任意 MCP 客户端，即可实时查看 agent 的每一项改动。",
