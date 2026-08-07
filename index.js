@@ -170,7 +170,11 @@
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const documentY = (el) => el.getBoundingClientRect().top + window.scrollY;
-    const timelineInset = 5;
+    // Half the first label's width, measured in measureTimeline(). The film's
+    // 0%–100% runs inset from the rail ends by this much, so every marker —
+    // the first included — centers on its stop; the ruler running past both
+    // ends is the film's deliberate leader and trailer.
+    let timelineInset = 0;
     const playheadWidth = 20;
 
     function progressToRailX(progress, width = timelineRail ? timelineRail.clientWidth : 0) {
@@ -238,6 +242,10 @@
       const timelineHeight = pageTimeline.offsetHeight;
       const dockTop = documentY(timelineDock);
       const railWidth = timelineRail ? timelineRail.clientWidth : 0;
+      const firstLink = markerEls.length ? markerEls[0].querySelector("a") : null;
+      timelineInset = firstLink ? firstLink.offsetWidth / 2 : 0;
+      const railLeft = timelineRail ? timelineRail.offsetLeft : 0;
+      pageTimeline.style.setProperty("--ruler-phase", `${(railLeft + timelineInset).toFixed(2)}px`);
       timelineEnd = Math.max(1, dockTop - window.innerHeight + timelineHeight);
 
       markerStops = markerEls.map((marker, index) => {

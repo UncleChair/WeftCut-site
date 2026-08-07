@@ -443,6 +443,13 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   background: var(--sunken);
 }
 
+/* The ruler runs edge to edge on purpose — the film reads as continuing past
+   both ends of the viewport. The scrubbable range (playhead 0%–100%, marker
+   stops) is narrower: it lives on the inset .timeline-rail, pulled in by half
+   the first label (timelineInset in index.js) so every marker — the first
+   included — centers on its stop. --ruler-phase (set from index.js) slides the
+   tick grid so a major tick lands exactly on the film's 0%, under the parked
+   playhead. */
 .scroll-timeline {
   position: fixed;
   z-index: 45;
@@ -454,8 +461,8 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background:
-    repeating-linear-gradient(90deg, var(--border2) 0 1px, transparent 1px 132px) left top / 100% 12px no-repeat,
-    repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 22px) left top / 100% 6px no-repeat,
+    linear-gradient(90deg, var(--border2) 0 1px, transparent 1px) var(--ruler-phase, 0px) top / 132px 12px repeat-x,
+    linear-gradient(90deg, var(--border) 0 1px, transparent 1px) var(--ruler-phase, 0px) top / 22px 6px repeat-x,
     var(--sunken);
 }
 
@@ -480,7 +487,7 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   height: 18px;
   background: transparent;
   cursor: grab;
-  transform: translate3d(var(--playhead-x, -5px), 0, 0);
+  transform: translate3d(var(--playhead-x, -10px), 0, 0);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -524,7 +531,6 @@ h3 { font-size: 16.5px; font-weight: 650; letter-spacing: 0.01em; }
   transform: translateX(-50%);
   pointer-events: auto;
 }
-.timeline-marker:first-child { transform: none; }
 .timeline-marker a {
   position: relative;
   display: flex;
