@@ -239,14 +239,15 @@
       const scrollPaddingTop = Number.isFinite(measuredScrollPaddingTop)
         ? measuredScrollPaddingTop
         : navHeight;
-      const timelineHeight = pageTimeline.offsetHeight;
-      const dockTop = documentY(timelineDock);
       const railWidth = timelineRail ? timelineRail.clientWidth : 0;
       const firstLink = markerEls.length ? markerEls[0].querySelector("a") : null;
       timelineInset = firstLink ? firstLink.offsetWidth / 2 : 0;
       const railLeft = timelineRail ? timelineRail.offsetLeft : 0;
       pageTimeline.style.setProperty("--ruler-phase", `${(railLeft + timelineInset).toFixed(2)}px`);
-      timelineEnd = Math.max(1, dockTop - window.innerHeight + timelineHeight);
+      // The film covers the full scroll range, footer included — if 100% ended
+      // at the dock instead, grabbing the playhead while the footer is open
+      // would snap the page up by the footer's height.
+      timelineEnd = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
 
       markerStops = markerEls.map((marker, index) => {
         const link = marker.querySelector("a");
